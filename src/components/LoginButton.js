@@ -5,9 +5,13 @@ const LoginButton = () => {
 
     return (
         !isAuthenticated && (
+            <h3>
             <button onClick={() => loginWithRedirect()}>
                 Sign In
             </button>
+            Darren was here. Normal Email addr and password does not work cos Django isn't up
+            :D
+            </h3>
         )
 
     )

@@ -8,6 +8,7 @@ const Profile = () => {
             <article className="column">
                 {user?.picture && <img src={user.picture} alt={user?.name} />}
                 <h2>{user?.name}</h2>
+                {/* printing out all user info from Auth0 universal login in list */}
                 <ul>
                     {Object.keys(user).map((objKey, i) => <li key={i}>{objKey}: {user[objKey]}
                     </li>)}
