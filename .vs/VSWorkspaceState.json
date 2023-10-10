@@ -1,17 +1,16 @@
 {
   "ExpandedNodes": [
     "",
-    "\\.next",
-    "\\.next\\cache",
-    "\\.next\\cache\\swc",
-    "\\.next\\cache\\swc\\plugins",
-    "\\.next\\cache\\swc\\plugins\\v7_windows_x86_64_0.98.13",
     "\\client",
-    "\\client\\public",
-    "\\client\\public\\assets",
-    "\\client\\public\\css",
-    "\\client\\public\\js"
+    "\\client\\src",
+    "\\client\\src\\css",
+    "\\client\\src\\pages",
+    "\\client\\src\\pages\\Admin",
+    "\\client\\src\\pages\\General",
+    "\\client\\src\\pages\\Users",
+    "\\client\\src\\public",
+    "\\server"
   ],
-  "SelectedNode": "\\client\\package.json",
+  "SelectedNode": "\\client\\package-lock.json",
   "PreviewInSolutionExplorer": false
 }
