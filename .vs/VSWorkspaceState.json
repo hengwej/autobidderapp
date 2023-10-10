@@ -4,8 +4,14 @@
     "\\.next",
     "\\.next\\cache",
     "\\.next\\cache\\swc",
+    "\\.next\\cache\\swc\\plugins",
+    "\\.next\\cache\\swc\\plugins\\v7_windows_x86_64_0.98.13",
     "\\client",
-    "\\server"
+    "\\client\\public",
+    "\\client\\public\\assets",
+    "\\client\\public\\css",
+    "\\client\\public\\js"
   ],
+  "SelectedNode": "\\client\\package.json",
   "PreviewInSolutionExplorer": false
 }
