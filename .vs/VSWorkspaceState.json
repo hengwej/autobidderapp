@@ -1,0 +1,11 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\.next",
+    "\\.next\\cache",
+    "\\.next\\cache\\swc",
+    "\\client",
+    "\\server"
+  ],
+  "PreviewInSolutionExplorer": false
+}
