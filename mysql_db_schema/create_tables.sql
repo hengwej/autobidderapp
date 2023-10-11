@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS Orders (
     deliveryType VARCHAR(20) NOT NULL,
     shippingAddress VARCHAR(255),
     orderCreationTime DATETIME NOT NULL,
-    orderCompletionTime DATETIME,
+    orderCompletionTime DateTime,
     orderCreatorID INT,
     auctionID INT,
     PRIMARY KEY (orderID),
