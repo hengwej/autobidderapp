@@ -2,15 +2,15 @@
   "ExpandedNodes": [
     "",
     "\\client",
+    "\\client\\public",
+    "\\client\\public\\assets",
+    "\\client\\public\\css",
     "\\client\\src",
+    "\\client\\src\\components",
     "\\client\\src\\css",
     "\\client\\src\\pages",
-    "\\client\\src\\pages\\Admin",
-    "\\client\\src\\pages\\General",
-    "\\client\\src\\pages\\Users",
-    "\\client\\src\\public",
     "\\server"
   ],
-  "SelectedNode": "\\client\\package-lock.json",
+  "SelectedNode": "\\client\\src\\pages",
   "PreviewInSolutionExplorer": false
 }
