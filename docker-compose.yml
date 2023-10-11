@@ -4,7 +4,7 @@ services:
   mysql:
     image: mysql:latest
     ports:
-      - "3307:3306"
+      - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: xEjg7922vXZp
       MYSQL_DATABASE: autobiddata
@@ -26,9 +26,23 @@ services:
     networks:
       - autobidnet
 
+  express-server:
+    build:
+      context: ./server
+      dockerfile: dockerfile
+    ports:
+      - "5000:5000"
+    volumes:
+      - express_server_data:/app
+    depends_on:
+      - mysql
+    networks:
+      - autobidnet
+
 volumes:
   mysql_data:
   nginx_conf:
+  express_server_data:
 
 networks:
   autobidnet:
