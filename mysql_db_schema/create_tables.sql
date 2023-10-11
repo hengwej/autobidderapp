@@ -65,14 +65,14 @@ CREATE TABLE IF NOT EXISTS Comment (
     FOREIGN KEY (auctionID) REFERENCES Auction(auctionID) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS Order (
+CREATE TABLE IF NOT EXISTS Orders (
     orderID INT AUTO_INCREMENT NOT NULL,
     orderStatus VARCHAR(20) NOT NULL,
     paymentDeadline DATETIME NOT NULL,
     deliveryType VARCHAR(20) NOT NULL,
     shippingAddress VARCHAR(255),
     orderCreationTime DATETIME NOT NULL,
-    orderCompletionTime DateTime,
+    orderCompletionTime DATETIME,
     orderCreatorID INT,
     auctionID INT,
     PRIMARY KEY (orderID),
@@ -85,7 +85,7 @@ CREATE TABLE IF NOT EXISTS SellingHistory (
     PRIMARY KEY (saleID),
     orderID INT,
     accountID INT,
-    FOREIGN KEY (orderID) REFERENCES Order(orderID) ON DELETE CASCADE,
+    FOREIGN KEY (orderID) REFERENCES Orders(orderID) ON DELETE CASCADE,
     FOREIGN KEY (accountID) REFERENCES Account(accountID) ON DELETE CASCADE
 );
 
