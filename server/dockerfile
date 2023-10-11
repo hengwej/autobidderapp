@@ -1,0 +1,17 @@
+# Use the latest Node.js base image
+FROM node:latest
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy the server code to the container
+COPY . .
+
+# Install dependencies
+RUN npm install
+
+# Expose the port your Express.js app is running on (e.g., 5000)
+EXPOSE 5000
+
+# Define the command to start your Express.js app
+CMD ["node", "server.js"]
