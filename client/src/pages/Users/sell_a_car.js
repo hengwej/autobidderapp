@@ -11,7 +11,7 @@ export default class SellCar extends React.Component {
                     className="navbar-brand"
                     href="#page-top"
                 >
-                    FAQ
+                    Sell a car
                 </a>
                 <Header headerText="Sell a Car" />
             </div>
