@@ -94,6 +94,33 @@
     scroll-behavior: smooth;
   }
 }
+/* FAQ.css */
+.contact-icon {
+    font-size: 24px;
+    color: white;
+}
+
+.contact-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.contact-icon-container {
+    padding-right: 10px;
+}
+
+.faq-section {
+    text-align: center;
+    color: white;
+    padding: 20px;
+}
+
+.faq-dropdown {
+    padding: 20px;
+    text-align: center;
+}
 
 body {
   margin: 0;
