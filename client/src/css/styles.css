@@ -11228,3 +11228,66 @@ body {
 .footer {
   padding: 5rem 0;
 }
+
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    background-color: black;
+    margin-top: 20px;
+    border: 2px solid white;
+    height: 200px;
+}
+
+td, th {
+    border: 1px solid white;
+    text-align: left;
+    padding: 8px;
+    color: white;
+}
+
+tr:nth-child(even) {
+    background-color: #5A5A5A;
+}
+
+.timer {
+    background-color: black;
+    padding: 10px;
+    color: white;
+    border: 2px solid white;
+    width: 550px;
+    text-align: center;
+    position: relative;
+    top: 43px;
+}
+
+.cardetails_label {
+    color: white;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+hr.solid {
+    border-top: 5px solid white;
+}
+
+.inputComment {
+    padding: 7px;
+    background-color: black;
+    border: 1px solid white;
+    color: white;
+    margin-top: 10px;
+}
+
+.bar-bg {
+    margin: 0;
+    background: #262626;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-grow: 1;
+    color: white;
+    justify-content: center;
+    align-items: center;
+}

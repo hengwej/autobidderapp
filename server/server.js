@@ -8,10 +8,10 @@ app.use(cors());
 const mysql = require('mysql')
 const database = require('./database.js');
 
-database.connect((err => {
-    if (err) throw err;
-    console.log('MySQL Connected');
-}));
+//database.connect((err => {
+//    if (err) throw err;
+//    console.log('MySQL Connected');
+//}));
 
 //app.get('/inventory', (req, res) => {
 //    let sql = 'SELECT * FROM inventory';
