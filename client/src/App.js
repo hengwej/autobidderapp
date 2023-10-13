@@ -5,6 +5,8 @@ import Homepage from "./pages/General/homepage";
 import FAQ from "./pages/General/faq";
 import SignUp from "./pages/General/signup";
 import SellCar from "./pages/Users/sell_a_car";
+import ViewCarDetails from "./pages/Users/view_car_details";
+import Placebid from "./pages/Users/placebid";
 import "./css/styles.css";
 
 function App() {
@@ -42,6 +44,8 @@ function App() {
                 <Route path="/faq" element={<FAQ />} />
                 <Route path="/sellCar" element={<SellCar />} />
                 <Route path="/signup" element={<SignUp />} />
+                <Route path="/viewCarDetails" element={<ViewCarDetails />} />
+                <Route path="/placebid" element={<Placebid />} />
             </Routes>
             <Modal show={showSignUpModal} onHide={handleSignUpClose}>
                 <Modal.Header closeButton>
