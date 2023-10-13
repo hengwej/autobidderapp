@@ -3,14 +3,15 @@
     "",
     "\\client",
     "\\client\\public",
-    "\\client\\public\\assets",
     "\\client\\public\\css",
     "\\client\\src",
     "\\client\\src\\components",
     "\\client\\src\\css",
     "\\client\\src\\pages",
+    "\\client\\src\\pages\\General",
+    "\\client\\src\\pages\\Users",
     "\\server"
   ],
-  "SelectedNode": "\\client\\src\\pages",
+  "SelectedNode": "\\client\\src\\css\\styles.css",
   "PreviewInSolutionExplorer": false
 }

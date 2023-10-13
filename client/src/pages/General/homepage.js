@@ -5,12 +5,14 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Header from "../../components/Header";
+import { Link } from "react-router-dom";
 
 export default class Home extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            carData: [] // Initialize an empty array to store car data
+            carData: [], // Initialize an empty array to store car data
+            timeLeft: {}
         };
     }
 
@@ -40,9 +42,37 @@ export default class Home extends Component {
         ];
 
         this.setState({ carData: fetchedData });
+
+        this.calculateTimeLeft();
+        this.startCountdown();
     }
 
+    calculateTimeLeft = () => {
+        const year = new Date().getFullYear();
+        const difference = +new Date(`${year}-12-31`) - +new Date();
+        let timeLeft = {};
+
+        if (difference >= 0) {
+            timeLeft = {
+                /*days: Math.floor(difference / (1000 * 60 * 60 * 24)),*/
+                hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+                minutes: Math.floor((difference / (1000 * 60)) % 60),
+                seconds: Math.floor((difference / 1000) % 60)
+            };
+        }
+
+        this.setState({ timeLeft });
+    };
+
+    startCountdown = () => {
+        this.countdownInterval = setInterval(() => {
+            this.calculateTimeLeft();
+        }, 1000);
+    };
+
     render() {
+        const { timeLeft } = this.state;
+
         return (
             <div>
                 <a
@@ -60,13 +90,22 @@ export default class Home extends Component {
                     <Row>
                         {this.state.carData.map((car) => (
                             <Col lg={4} key={car.id}> {/* Use lg for larger column widths */}
-                                <Card>
-                                    <Card.Img src={car.image} alt={car.modelName} />
-                                    <Card.Body>
-                                        <Card.Title>{car.modelName}</Card.Title>
-                                        <Card.Text>Price: {car.price}</Card.Text>
-                                    </Card.Body>
-                                </Card>
+                                <Link to={`/viewCarDetails`} style={{ textDecoration: "none" }}> {/* Specify the target route */}
+                                    <Card>
+                                        <Card.Img src={car.image} alt={car.modelName} />
+                                        <Card.Body>
+                                            <Card.Title>{car.modelName}</Card.Title>
+                                            <Card.Text>Price: {car.price}</Card.Text>
+                                            <Card.Text class="bar-bg">
+                                                {Object.keys(timeLeft).map((interval) => (
+                                                    <span key={interval}>
+                                                        {timeLeft[interval]} {interval !== "seconds" && ":"}
+                                                    </span>
+                                                ))}
+                                            </Card.Text>
+                                        </Card.Body>
+                                    </Card>
+                                </Link>
                             </Col>
                         ))}
                     </Row>
