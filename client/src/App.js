@@ -4,6 +4,7 @@ import { Routes, Route, Link } from "react-router-dom";
 import Homepage from "./pages/General/homepage";
 import FAQ from "./pages/General/faq";
 import SignUp from "./pages/General/signup";
+import Login from "./pages/General/login";
 import SellCar from "./pages/Users/sell_a_car";
 import ViewCarDetails from "./pages/Users/view_car_details";
 import Placebid from "./pages/Users/placebid";
@@ -11,9 +12,14 @@ import "./css/styles.css";
 
 function App() {
     const [showSignUpModal, setShowSignUpModal] = useState(false);
+    const [showLoginModal, setShowLoginModal] = useState(false);
+
 
     const handleSignUpClose = () => setShowSignUpModal(false);
     const handleSignUpShow = () => setShowSignUpModal(true);
+
+    const handleLoginClose = () => setShowLoginModal(false);
+    const handleLoginShow = () => setShowLoginModal(true);
 
     return (
         <div className="App">
@@ -31,7 +37,7 @@ function App() {
                             <Link class="nav-link" to="/sellCar">Sell a Car</Link>
                         </li>
                         <li class="nav-item" style={{marginTop: 28 +'px'}}>
-                            <a class="btn btn-primary" href="#about">Login</a>
+                            <Button variant="primary" onClick={handleLoginShow}>Login</Button>
                         </li>
                         <li class="nav-item" style={{ marginTop: 28 + 'px', marginLeft: 8 + 'px' }}>
                             <Button variant="primary" onClick={handleSignUpShow}>Sign Up</Button>
@@ -43,6 +49,7 @@ function App() {
                 <Route path="/" element={<Homepage />} />
                 <Route path="/faq" element={<FAQ />} />
                 <Route path="/sellCar" element={<SellCar />} />
+                <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<SignUp />} />
                 <Route path="/viewCarDetails" element={<ViewCarDetails />} />
                 <Route path="/placebid" element={<Placebid />} />
@@ -56,6 +63,19 @@ function App() {
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleSignUpClose}>
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+            <Modal show={showLoginModal} onHide={handleLoginClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Login</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Login />
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleLoginClose}>
                         Close
                     </Button>
                 </Modal.Footer>
