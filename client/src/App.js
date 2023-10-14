@@ -5,6 +5,7 @@ import Homepage from "./pages/General/homepage";
 import FAQ from "./pages/General/faq";
 import SignUp from "./pages/General/signup";
 import Login from "./pages/General/login";
+import Logout from "./pages/General/logout"; 
 import SellCar from "./pages/Users/sell_a_car";
 import ViewCarDetails from "./pages/Users/view_car_details";
 import Placebid from "./pages/Users/placebid";
@@ -13,6 +14,7 @@ import "./css/styles.css";
 function App() {
     const [showSignUpModal, setShowSignUpModal] = useState(false);
     const [showLoginModal, setShowLoginModal] = useState(false);
+    const [showLogoutModal, setShowLogoutModal] = useState(false);
 
 
     const handleSignUpClose = () => setShowSignUpModal(false);
@@ -20,6 +22,16 @@ function App() {
 
     const handleLoginClose = () => setShowLoginModal(false);
     const handleLoginShow = () => setShowLoginModal(true);
+
+    const handleLogoutClose = () => setShowLogoutModal(false);
+    const handleLogoutShow = () => setShowLogoutModal(true);
+
+    const handleLogoutConfirm = () => {
+        // Handle the logout logic here
+        // For example, clear the user's session or perform any necessary actions
+        alert("Logging out..."); // You can replace this with your actual logout logic
+        handleLogoutClose(); // Close the logout confirmation modal
+    };
 
     return (
         <div className="App">
@@ -42,6 +54,10 @@ function App() {
                         <li class="nav-item" style={{ marginTop: 28 + 'px', marginLeft: 8 + 'px' }}>
                             <Button variant="primary" onClick={handleSignUpShow}>Sign Up</Button>
                         </li>
+
+                        <li class="nav-item" style={{ marginTop: 28 + 'px', marginLeft: 16 + 'px' }}>
+                            <Button variant="primary" onClick={handleLogoutShow}>Logout</Button>
+                        </li>
                     </ul>
                 </div>
             </nav>
@@ -50,6 +66,7 @@ function App() {
                 <Route path="/faq" element={<FAQ />} />
                 <Route path="/sellCar" element={<SellCar />} />
                 <Route path="/login" element={<Login />} />
+                <Route path="/logout" element={<Logout handleLogoutClose={handleLogoutClose} />} />
                 <Route path="/signup" element={<SignUp />} />
                 <Route path="/viewCarDetails" element={<ViewCarDetails />} />
                 <Route path="/placebid" element={<Placebid />} />
@@ -77,6 +94,22 @@ function App() {
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleLoginClose}>
                         Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+            <Modal show={showLogoutModal} onHide={handleLogoutClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Logout Confirmation</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <p>Do you want to logout?</p>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleLogoutClose}>
+                        No
+                    </Button>
+                    <Button variant="primary" onClick={handleLogoutConfirm}>
+                        Yes
                     </Button>
                 </Modal.Footer>
             </Modal>
