@@ -16,35 +16,21 @@ export default class Home extends Component {
         };
     }
 
-    // Simulated data fetching (replace with actual API call)
-    componentDidMount() {
-        // Simulate fetching car data from a database or API
-        const fetchedData = [
-            {
-                id: 1,
-                image: "car1.jpg",
-                price: "$25,000",
-                modelName: "Model X"
-            },
-            {
-                id: 2,
-                image: "car2.jpg",
-                price: "$30,000",
-                modelName: "Model S"
-            },
-            {
-                id: 3,
-                image: "car3.jpg",
-                price: "$20,000",
-                modelName: "Model 3"
-            }
-            // Add more car data here
-        ];
 
-        this.setState({ carData: fetchedData });
 
-        this.calculateTimeLeft();
-        this.startCountdown();
+
+    async componentDidMount() {
+        try {
+            const response = await fetch("http://localhost:5000/");
+            const data = await response.json();
+            this.setState({ carData: data, loading: false });
+
+            this.calculateTimeLeft();
+            this.startCountdown();
+        } catch (error) {
+            console.error("Error fetching data:", error);
+            this.setState({ error, loading: false });
+        }
     }
 
     calculateTimeLeft = () => {
@@ -72,11 +58,13 @@ export default class Home extends Component {
 
     render() {
         const { timeLeft } = this.state;
+        if (this.state.loading) return <div>Loading...</div>;
+        if (this.state.error) return <div>Error: {this.state.error.message}</div>;
 
         return (
             <div>
                 <a
-                    style={{ margin: "20px 20px 0",fontSize : "25px", color: "white" }}
+                    style={{ margin: "20px 20px 0", fontSize: "25px", color: "white" }}
                     className="navbar-brand"
                     href="#page-top"
                 >
@@ -92,10 +80,10 @@ export default class Home extends Component {
                             <Col lg={4} key={car.id}> {/* Use lg for larger column widths */}
                                 <Link to={`/viewCarDetails`} style={{ textDecoration: "none" }}> {/* Specify the target route */}
                                     <Card>
-                                        <Card.Img src={car.image} alt={car.modelName} />
+                                        <Card.Img src={car.carImage} alt={car.model} />
                                         <Card.Body>
-                                            <Card.Title>{car.modelName}</Card.Title>
-                                            <Card.Text>Price: {car.price}</Card.Text>
+                                            <Card.Title>{car.make} {car.model}</Card.Title>
+                                            <Card.Text>Price: ${car.startingBid}</Card.Text>
                                             <Card.Text class="bar-bg">
                                                 {Object.keys(timeLeft).map((interval) => (
                                                     <span key={interval}>

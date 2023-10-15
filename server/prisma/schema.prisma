@@ -1,0 +1,157 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "mysql"
+    url      = env("DATABASE_URL")
+}
+
+model User {
+    userID       Int       @id @default(autoincrement())
+    firstName    String
+    lastName     String
+    address      String?
+    phoneNumber  String
+    emailAddress String
+    createdAt    DateTime  @default(now())
+    updatedAt    DateTime  @default(now()) @updatedAt
+    accounts     Account[]
+}
+
+model Account {
+    accountID      Int              @id @default(autoincrement())
+    accountType    String
+    accountStatus  String
+    username       String
+    password       String
+    userID         Int?             @map("userID")
+    createdAt      DateTime         @default(now())
+    updatedAt      DateTime         @default(now()) @updatedAt
+    user           User?            @relation(fields: [userID], references: [userID], onDelete: Cascade)
+    cars           Car[]
+    auctions       Auction[]        @relation("AccountToAuction")
+    comments       Comment[]
+    orders         Orders[]         @relation("AccountToOrders")
+    sellingHistory SellingHistory[]
+    biddingHistory BiddingHistory[]
+    requests       Request[]
+}
+
+model Car {
+    carID         Int       @id @default(autoincrement())
+    vehicleNumber String
+    carImage      Bytes
+    highlights    String?
+    equipment     String?
+    modifications String?
+    knownFlaws    String?
+    make          String
+    model         String
+    interiorColor String?
+    exteriorColor String?
+    startingBid   Float
+    reservePrice  Float
+    accountID     Int       @map("accountID")
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime  @default(now()) @updatedAt
+    account       Account   @relation(fields: [accountID], references: [accountID], onDelete: Cascade)
+    auctions      Auction[]
+}
+
+model Auction {
+    auctionID           Int              @id @default(autoincrement())
+    auctionStatus       String
+    startDate           DateTime
+    endDate             DateTime
+    currentHighestBid   Float
+    auctionCreationTime DateTime
+    auctionCreatorID    Int              @map("auctionCreatorID")
+    carID               Int              @map("carID")
+    createdAt           DateTime         @default(now())
+    updatedAt           DateTime         @default(now()) @updatedAt
+    auctionCreator      Account          @relation("AccountToAuction", fields: [auctionCreatorID], references: [accountID], onDelete: Cascade)
+    car                 Car              @relation(fields: [carID], references: [carID], onDelete: Cascade)
+    comments            Comment[]
+    orders              Orders[]
+    biddingHistories    BiddingHistory[]
+}
+
+model Comment {
+    commentID Int      @id @default(autoincrement())
+    details   String   @map("commentDetails")
+    accountID Int      @map("accountID")
+    auctionID Int      @map("auctionID")
+    createdAt DateTime @default(now())
+    updatedAt DateTime @default(now()) @updatedAt
+    account   Account  @relation(fields: [accountID], references: [accountID], onDelete: Cascade)
+    auction   Auction  @relation(fields: [auctionID], references: [auctionID], onDelete: Cascade)
+}
+
+model Orders {
+    orderID             Int              @id @default(autoincrement())
+    orderStatus         String
+    paymentDeadline     DateTime
+    deliveryType        String
+    shippingAddress     String?
+    orderCreationTime   DateTime
+    orderCompletionTime DateTime?
+    orderCreatorID      Int              @map("orderCreatorID")
+    auctionID           Int              @map("auctionID")
+    createdAt           DateTime         @default(now())
+    updatedAt           DateTime         @default(now()) @updatedAt
+    orderCreator        Account          @relation("AccountToOrders", fields: [orderCreatorID], references: [accountID], onDelete: Cascade)
+    auction             Auction          @relation(fields: [auctionID], references: [auctionID], onDelete: Cascade)
+    sellingHistory      SellingHistory[]
+}
+
+model SellingHistory {
+    saleID    Int     @id @default(autoincrement())
+    orderID   Int     @map("orderID")
+    accountID Int     @map("accountID")
+    order     Orders  @relation(fields: [orderID], references: [orderID], onDelete: Cascade)
+    account   Account @relation(fields: [accountID], references: [accountID], onDelete: Cascade)
+}
+
+model BiddingHistory {
+    bidID        Int      @id @default(autoincrement())
+    bidAmount    Float
+    bidTimestamp DateTime
+    bidStatus    String
+    accountID    Int      @map("accountID")
+    auctionID    Int      @map("auctionID")
+    createdAt    DateTime @default(now())
+    updatedAt    DateTime @default(now()) @updatedAt
+    account      Account  @relation(fields: [accountID], references: [accountID], onDelete: Cascade)
+    auction      Auction  @relation(fields: [auctionID], references: [auctionID], onDelete: Cascade)
+}
+
+model Request {
+    requestID      Int      @id @default(autoincrement())
+    requestStatus  String
+    submissionTime DateTime @map("requestSubmissionTime")
+    vehicleNumber  String
+    carImage       Bytes
+    highlights     String?
+    equipment      String?
+    modifications  String?
+    knownFlaws     String?
+    make           String
+    model          String
+    interiorColor  String?
+    exteriorColor  String?
+    startingBid    Float
+    reservePrice   Float
+    accountID      Int      @map("accountID")
+    createdAt      DateTime @default(now())
+    updatedAt      DateTime @default(now()) @updatedAt
+    account        Account  @relation(fields: [accountID], references: [accountID], onDelete: Cascade)
+}
+
+model FAQ {
+    questionID   Int      @id @default(autoincrement())
+    questionType String
+    questionAns  String
+    createdAt    DateTime @default(now())
+    updatedAt    DateTime @default(now()) @updatedAt
+}
