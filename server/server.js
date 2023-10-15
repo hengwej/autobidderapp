@@ -1,26 +1,41 @@
+require('express-async-errors');
+
 const express = require('express');
 const cors = require('cors');
-
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
 const app = express();
 const port = 5000;
+
+
 app.use(cors());
+app.use(express.json());
 
-const mysql = require('mysql')
-const database = require('./database.js');
+app.get("/", async (req, res) => {
+  const allCars = await prisma.car.findMany();
+  res.json(allCars);
+});
 
-//database.connect((err => {
-//    if (err) throw err;
-//    console.log('MySQL Connected');
-//}));
+app.post("/addCar", async (req, res) => {
+  const newCar = await prisma.car.create({
+    data: req.body,
+  });
+  res.json(newCar);
+});
 
-//app.get('/inventory', (req, res) => {
-//    let sql = 'SELECT * FROM inventory';
-//    connection.query(sql, (err, result) => {
-//        if (err) throw err;
-//        console.log(result);
-//        res.send('Inventory received');
-//    });
-//});
+app.post("/adduser", async (req, res) => {
+  const newUser = await prisma.user.create({
+    data: req.body,
+  });
+  res.json(newUser);
+});
+
+app.post("/addAccount", async (req, res) => {
+  const newAccount = await prisma.account.create({
+    data: req.body,
+  });
+  res.json(newAccount);
+});
 
 app.get('/', (req, res) => {
   res.send('Hello from Express!');
