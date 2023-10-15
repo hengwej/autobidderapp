@@ -11,12 +11,12 @@ import Placebid from "./pages/Users/placebid";
 import "./css/styles.css";
 
 function App() {
-    const [showSignUpModal, setShowSignUpModal] = useState(false);
+    /*const [showSignUpModal, setShowSignUpModal] = useState(false);*/
     const [showLoginModal, setShowLoginModal] = useState(false);
 
 
-    const handleSignUpClose = () => setShowSignUpModal(false);
-    const handleSignUpShow = () => setShowSignUpModal(true);
+    //const handleSignUpClose = () => setShowSignUpModal(false);
+    //const handleSignUpShow = () => setShowSignUpModal(true);
 
     const handleLoginClose = () => setShowLoginModal(false);
     const handleLoginShow = () => setShowLoginModal(true);
@@ -39,8 +39,10 @@ function App() {
                         <li class="nav-item" style={{marginTop: 28 +'px'}}>
                             <Button variant="primary" onClick={handleLoginShow}>Login</Button>
                         </li>
-                        <li class="nav-item" style={{ marginTop: 28 + 'px', marginLeft: 8 + 'px' }}>
-                            <Button variant="primary" onClick={handleSignUpShow}>Sign Up</Button>
+                        <li class="nav-item" style={{ marginTop: -3 + 'px', marginLeft: 8 + 'px' }}>
+                            <Link class="nav-link" to="/signup">
+                                <Button variant="primary">Sign Up</Button>
+                            </Link>
                         </li>
                     </ul>
                 </div>
@@ -54,19 +56,19 @@ function App() {
                 <Route path="/viewCarDetails" element={<ViewCarDetails />} />
                 <Route path="/placebid" element={<Placebid />} />
             </Routes>
-            <Modal show={showSignUpModal} onHide={handleSignUpClose}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Sign Up</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <SignUp />
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handleSignUpClose}>
-                        Close
-                    </Button>
-                </Modal.Footer>
-            </Modal>
+            {/*<Modal show={showSignUpModal} onHide={handleSignUpClose}>*/}
+            {/*    <Modal.Header closeButton>*/}
+            {/*        <Modal.Title>Sign Up</Modal.Title>*/}
+            {/*    </Modal.Header>*/}
+            {/*    <Modal.Body>*/}
+            {/*        <SignUp />*/}
+            {/*    </Modal.Body>*/}
+            {/*    <Modal.Footer>*/}
+            {/*        <Button variant="secondary" onClick={handleSignUpClose}>*/}
+            {/*            Close*/}
+            {/*        </Button>*/}
+            {/*    </Modal.Footer>*/}
+            {/*</Modal>*/}
             <Modal show={showLoginModal} onHide={handleLoginClose}>
                 <Modal.Header closeButton>
                     <Modal.Title>Login</Modal.Title>
