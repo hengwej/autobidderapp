@@ -1,7 +1,8 @@
 import React, { Component } from "react";
-import "../../css/styles.css";
+import "../../../css/styles.css";
+import "./styles.css";
 import { Modal, Button } from "react-bootstrap";
-import Placebid from "./placebid";
+import Placebid from "../PlaceBid/placebid";
 
 export default class CarDetails extends Component {
     constructor(props) {
@@ -83,7 +84,7 @@ export default class CarDetails extends Component {
 
         return (
             <div>
-                <div class="timer">
+                <div className="timer">
                     Time Left:{" "}
                     {Object.keys(timeLeft).map((interval) => (
                         <span key={interval}>
@@ -112,7 +113,7 @@ export default class CarDetails extends Component {
                 {this.state.carData.map((car) => (
                     <table key={car.id}>
                         <tr>
-                            <th style={{ width: 180 + 'px', borderRight: "2px solid white"}}>Make</th>
+                            <th style={{ width: 180 + 'px', borderRight: "2px solid white" }}>Make</th>
                             <td style={{ width: 500 + 'px' }}>{car.make}</td>
                         </tr>
                         <tr>
@@ -131,28 +132,28 @@ export default class CarDetails extends Component {
                 ))}
 
                 <div>
-                    <label class="cardetails_label" style={{ marginTop: 30 + 'px' }}>Highlights</label>
-                    <hr class="solid" />
+                    <label className="cardetails_label" style={{ marginTop: 30 + 'px' }}>Highlights</label>
+                    <hr className="solid" />
                 </div>
 
                 <div>
-                    <label class="cardetails_label">Equipment</label>
-                    <hr class="solid" />
+                    <label className="cardetails_label">Equipment</label>
+                    <hr className="solid" />
                 </div>
 
                 <div>
-                    <label class="cardetails_label">Modifications</label>
-                    <hr class="solid" />
+                    <label className="cardetails_label">Modifications</label>
+                    <hr className="solid" />
                 </div>
 
                 <div>
-                    <label class="cardetails_label">Known Flaws</label>
-                    <hr class="solid" />
+                    <label className="cardetails_label">Known Flaws</label>
+                    <hr className="solid" />
                 </div>
 
                 <div>
-                    <label class="cardetails_label">Comments</label><br />
-                    <input type="text" id="comment" name="comment" size="70" class="inputComment" />
+                    <label className="cardetails_label">Comments</label><br />
+                    <input type="text" id="comment" name="comment" size="70" className="inputComment" />
                     <Button variant="info" style={{ marginLeft: 20 + 'px', marginBottom: 6 + 'px', padding: 8 + 'px', width: 100 + 'px' }}>
                         Add
                     </Button>
