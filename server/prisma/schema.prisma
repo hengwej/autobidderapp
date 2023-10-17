@@ -13,7 +13,7 @@ model User {
     lastName     String
     address      String?
     phoneNumber  String
-    emailAddress String
+    emailAddress String    @unique
     createdAt    DateTime  @default(now())
     updatedAt    DateTime  @default(now()) @updatedAt
     accounts     Account[]

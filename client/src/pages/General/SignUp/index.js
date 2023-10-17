@@ -1,33 +1,102 @@
-import React from "react";
-import Card from "react-bootstrap/Card";
-import "../../../css/styles.css";
-import "./styles.css";
+import React from 'react'
+import './styles.css'
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
 
-export default class SignUp extends React.Component {
-    render() {
-        return (
-            <div>
-                <Card>
-                    <Card.Body>
-                        <Card.Title>Sign Up</Card.Title>
-                        <form>
-                            <label>First Name:</label>&nbsp;<br />
-                            <input type="text" id="fname" name="fname" size="58" /><br /><br />
-                            <label>Last Name:</label>&nbsp;<br />
-                            <input type="text" id="lname" name="lname" size="58" /><br /><br />
-                            <label>Address:</label>&nbsp;<br />
-                            <input type="text" id="address" name="address" size="58" /><br /><br />
-                            <label>Phone Number:</label>&nbsp;<br />
-                            <input type="number" id="pnum" name="pnum" style={{ width: 29.2 + 'em' }} /><br /><br />
-                            <label>Email:</label>&nbsp;<br />
-                            <input type="email" id="email" name="email" size="58" /><br /><br />
-                            <label>Password:</label>&nbsp;<br />
-                            <input type="password" id="password" name="password" size="58" /><br /><br />
-                            <input className="btn btn-primary" type="submit" value="Submit" style={{ width: 29.2 + 'em' }} />
-                        </form>
-                    </Card.Body>
-                </Card>
-            </div>
-        )
+function SignUp() {
+    const initialValues = {
+        username: '',
+        email: '',
+        password: '',
+        firstName: '',
+        lastName: '',
+        address: '',
+        phoneNumber: '',
     }
+
+    const onSubmit = async (data) => {
+        const accountData = {
+            username: data.username,
+            password: data.password,
+        }
+
+        const userData = {
+            firstName: data.firstName,
+            lastName: data.lastName,
+            address: data.address,
+            phoneNumber: data.phoneNumber,
+            emailAddress: data.emailAddress
+        }
+
+        try {
+            const response = await fetch("http://127.0.0.1:5000/api/auth/signup", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    accountData: accountData,
+                    userData: userData
+                })
+            });
+
+            const data = await response.json();
+
+            console.log(data);
+
+
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+
+
+
+
+    }
+
+
+
+    const validationSchema = Yup.object().shape({
+        username: Yup.string().required("You must enter a username"),
+        emailAddress: Yup.string().email("Invalid email").required("You must enter an email"),
+        password: Yup.string().min(8).required("You must enter a password"),
+        firstName: Yup.string().required("You must enter a first name"),
+        lastName: Yup.string().required("You must enter a last name"),
+        address: Yup.string().required("You must enter an address"),
+        phoneNumber: Yup.string().required("You must enter a phone number")
+    });
+
+    return (
+        <div className='signUpPage'>
+            <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
+                <Form>
+                    <label>Username: </label>
+                    <Field id="inputSignUpUsername" type="text" name="username" placeholder="Username" />
+                    <ErrorMessage className="error-message" name="username" component="span" />
+                    <label>Email: </label>
+                    <Field id="inputSignUpEmail" type="email" name="emailAddress" placeholder="Email" />
+                    <ErrorMessage className="error-message" name="email" component="span" />
+                    <label>Password: </label>
+                    <Field id="inputSignUpPassword" type="password" name="password" placeholder="Password" />
+                    <ErrorMessage className="error-message" name="password" component="span" />
+                    <label>First Name: </label>
+                    <Field id="inputSignUpFirstName" type="text" name="firstName" placeholder="First Name" />
+                    <ErrorMessage className="error-message" name="firstName" component="span" />
+                    <label>Last Name: </label>
+                    <Field id="inputSignUpLastName" type="text" name="lastName" placeholder="Last Name" />
+                    <ErrorMessage className="error-message" name="lastName" component="span" />
+                    <label>Address: </label>
+                    <Field id="inputSignUpAddress" type="text" name="address" placeholder="Address" />
+                    <ErrorMessage className="error-message" name="address" component="span" />
+                    <label>Phone Number: </label>
+                    <Field id="inputSignUpPhoneNumber" type="text" name="phoneNumber" placeholder="Phone Number" />
+                    <ErrorMessage className="error-message" name="phoneNumber" component="span" />
+
+                    <button type="submit">Sign Up</button>
+                </Form>
+            </Formik>
+        </div>
+    )
 }
+
+export default SignUp
