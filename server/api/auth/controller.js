@@ -49,8 +49,56 @@ exports.signUp = async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 
+};
 
 
+exports.otp = async (req, res) => {
+
+    const { username, password } = req.body;
+
+    try {
+        // Find the account with the username
+        const account = await prisma.account.findUnique({
+            where: {
+                username: username
+            }
+        });
+
+        // Check if the account exists
+        if (account == null) {
+            return res.status(400).json({ message: 'Invalid username or password' });
+        }
+
+        // Check if the account is active
+        if (account.accountStatus != "Active") {
+            return res.status(400).json({ message: 'Account is not active' });
+        }
+
+        // Check if the password is correct
+        const match = await bcrypt.compare(password, account.password);
+        if (!match) {
+            return res.status(400).json({ message: 'Invalid username or password' });
+        }
+
+        // Generate OTP
+        const otp = Math.floor(100000 + Math.random() * 900000);
+
+        // Store the OTP in the database
+        await prisma.account.update({
+            where: {
+                username: username
+            },
+            data: {
+                otp: otp
+            }
+        });
+
+        // Send the OTP to the user
+
+    } catch (error) {
+        console.error("Error processing login:", error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
 };
 
 
