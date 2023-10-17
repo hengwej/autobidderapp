@@ -49,9 +49,6 @@ function SignUp() {
             console.error("Error fetching data:", error);
         }
 
-
-
-
     }
 
 
@@ -68,6 +65,7 @@ function SignUp() {
 
     return (
         <div className='signUpPage'>
+            <h3>Sign Up</h3>
             <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
                 <Form>
                     <label>Username: </label>
@@ -75,7 +73,7 @@ function SignUp() {
                     <ErrorMessage className="error-message" name="username" component="span" />
                     <label>Email: </label>
                     <Field id="inputSignUpEmail" type="email" name="emailAddress" placeholder="Email" />
-                    <ErrorMessage className="error-message" name="email" component="span" />
+                    <ErrorMessage className="error-message" name="emailAddress" component="span" />
                     <label>Password: </label>
                     <Field id="inputSignUpPassword" type="password" name="password" placeholder="Password" />
                     <ErrorMessage className="error-message" name="password" component="span" />
