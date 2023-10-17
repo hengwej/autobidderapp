@@ -13,10 +13,13 @@ app.use(express.json());
 const carRoutes = require('./api/cars');
 const userRoutes = require('./api/users');
 const accountRoutes = require('./api/accounts');
+const authRoutes = require('./api/auth');
+
 
 app.use('/api/cars', carRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/accounts', accountRoutes);
+app.use('/api/auth', authRoutes);
 
 
 app.get('/', (req, res) => {
@@ -25,4 +28,5 @@ app.get('/', (req, res) => {
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
+
 });
