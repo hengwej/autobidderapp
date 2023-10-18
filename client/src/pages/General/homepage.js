@@ -16,13 +16,11 @@ export default class Home extends Component {
         };
     }
 
-
-
-
     async componentDidMount() {
         try {
             const response = await fetch("http://localhost:5000/");
             const data = await response.json();
+            
             this.setState({ carData: data, loading: false });
 
             this.calculateTimeLeft();
@@ -77,10 +75,10 @@ export default class Home extends Component {
                 <Container fluid> {/* Use a fluid container for a full-width layout */}
                     <Row>
                         {this.state.carData.map((car) => (
-                            <Col lg={4} key={car.id}> {/* Use lg for larger column widths */}
-                                <Link to={`/viewCarDetails`} style={{ textDecoration: "none" }}> {/* Specify the target route */}
+                            <Col lg={4} key={car.carID}> {/* Use lg for larger column widths */}
+                                <Link to={`/viewCarDetails/${car.carID}`} style={{ textDecoration: "none" }}> {/* Specify the target route */}
                                     <Card>
-                                        <Card.Img src={car.carImage} alt={car.model} />
+                                        <Card.Img src={URL.createObjectURL(new File([new Blob([new Uint8Array(car.carImage.data)])], { type: 'image/jpeg' }))} alt={car.model} />
                                         <Card.Body>
                                             <Card.Title>{car.make} {car.model}</Card.Title>
                                             <Card.Text>Price: ${car.startingBid}</Card.Text>
