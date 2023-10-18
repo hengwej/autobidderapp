@@ -1,5 +1,7 @@
 import React from "react";
-import Header from "../../components/Header";
+import Header from "../../../components/Header";
+import "../../../css/styles.css";
+import "./styles.css";
 
 export default class SellCar extends React.Component {
     render() {
