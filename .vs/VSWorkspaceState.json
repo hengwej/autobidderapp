@@ -2,16 +2,15 @@
   "ExpandedNodes": [
     "",
     "\\client",
-    "\\client\\public",
-    "\\client\\public\\css",
     "\\client\\src",
-    "\\client\\src\\components",
-    "\\client\\src\\css",
     "\\client\\src\\pages",
     "\\client\\src\\pages\\General",
     "\\client\\src\\pages\\Users",
-    "\\server"
+    "\\server",
+    "\\server\\prisma",
+    "\\server\\prisma\\migrations",
+    "\\server\\prisma\\migrations\\20231014153749_init"
   ],
-  "SelectedNode": "\\client\\src\\css\\styles.css",
+  "SelectedNode": "\\server\\server.js",
   "PreviewInSolutionExplorer": false
 }

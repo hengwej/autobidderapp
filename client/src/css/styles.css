@@ -11291,3 +11291,11 @@ hr.solid {
     justify-content: center;
     align-items: center;
 }
+
+.carDetailUl {
+    color: white;
+}
+
+.wrapper {
+    margin-top: 300px;
+}
