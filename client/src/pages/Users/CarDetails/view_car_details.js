@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import "../../css/styles.css";
+import "./styles.css";
 import { Modal, Button } from "react-bootstrap";
-import Placebid from "./placebid";
+import Placebid from "../PlaceBid/placebid";
 import { useParams } from "react-router-dom";
 
 export default function ViewCarDetails() {
@@ -10,7 +10,7 @@ export default function ViewCarDetails() {
     const [timeLeft, setTimeLeft] = useState({});
     const [showPlaceBidModal, setShowPlaceBidModal] = useState(false);
     const [error, setError] = useState(null);
-    
+
     const handlePlaceBidClose = () => {
         setShowPlaceBidModal(false);
     };
