@@ -55,16 +55,8 @@ function Login() {
             });
 
             const responseBody = await response.json();  // Parse the JSON response
+
             console.log(responseBody);
-
-
-            if (response.ok) {
-                window.location.href = "/auth/confirmation";
-            }
-
-
-            //Redirect to dashboard or other page
-
 
             //if (response.ok) {
             //    // Handle successful login, e.g. redirect, show success message, etc.
@@ -107,7 +99,7 @@ function Login() {
                     <Field id="inputLoginPassword" type="password" name="password" placeholder="Password" />
                     <ErrorMessage className="error-message" name="password" component="span" />
                     <ErrorMessage className="error-message" name="login-error" component="span" />
-                    <button type="submit">Login</button>
+                    <button type="submit" disabled={!csrfToken}>Login</button>
                 </Form>
             </Formik>
         </div>
