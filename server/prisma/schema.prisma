@@ -23,7 +23,7 @@ model Account {
     accountID      Int              @id @default(autoincrement())
     accountType    String
     accountStatus  String
-    username       String
+    username       String           @unique
     password       String
     userID         Int?             @map("userID")
     token2fa       String?
@@ -42,7 +42,7 @@ model Account {
 model Car {
     carID         Int       @id @default(autoincrement())
     vehicleNumber String
-    carImage      Bytes
+    carImage      Bytes?
     highlights    String?
     equipment     String?
     modifications String?
