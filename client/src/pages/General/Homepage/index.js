@@ -1,10 +1,11 @@
 import React, { Component } from "react";
-import "../../css/styles.css";
+import "../../../css/styles.css";
+import "./styles.css";
 import Card from "react-bootstrap/Card";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import Header from "../../components/Header";
+import Header from "../../../components/Header";
 import { Link } from "react-router-dom";
 
 export default class Home extends Component {
@@ -18,7 +19,7 @@ export default class Home extends Component {
 
     async componentDidMount() {
         try {
-            const response = await fetch("http://localhost:5000/");
+            const response = await fetch("http://127.0.0.1:5000/api/cars/allCar");
             const data = await response.json();
             
             this.setState({ carData: data, loading: false });
