@@ -6,7 +6,10 @@ CREATE TABLE `User` (
     `address` VARCHAR(191) NULL,
     `phoneNumber` VARCHAR(191) NOT NULL,
     `emailAddress` VARCHAR(191) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
+    UNIQUE INDEX `User_emailAddress_key`(`emailAddress`),
     PRIMARY KEY (`userID`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -18,6 +21,9 @@ CREATE TABLE `Account` (
     `username` VARCHAR(191) NOT NULL,
     `password` VARCHAR(191) NOT NULL,
     `userID` INTEGER NULL,
+    `token2fa` VARCHAR(191) NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     PRIMARY KEY (`accountID`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -38,6 +44,8 @@ CREATE TABLE `Car` (
     `startingBid` DOUBLE NOT NULL,
     `reservePrice` DOUBLE NOT NULL,
     `accountID` INTEGER NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     PRIMARY KEY (`carID`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -52,6 +60,8 @@ CREATE TABLE `Auction` (
     `auctionCreationTime` DATETIME(3) NOT NULL,
     `auctionCreatorID` INTEGER NOT NULL,
     `carID` INTEGER NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     PRIMARY KEY (`auctionID`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -62,6 +72,8 @@ CREATE TABLE `Comment` (
     `commentDetails` VARCHAR(191) NOT NULL,
     `accountID` INTEGER NOT NULL,
     `auctionID` INTEGER NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     PRIMARY KEY (`commentID`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -77,6 +89,8 @@ CREATE TABLE `Orders` (
     `orderCompletionTime` DATETIME(3) NULL,
     `orderCreatorID` INTEGER NOT NULL,
     `auctionID` INTEGER NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     PRIMARY KEY (`orderID`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -98,6 +112,8 @@ CREATE TABLE `BiddingHistory` (
     `bidStatus` VARCHAR(191) NOT NULL,
     `accountID` INTEGER NOT NULL,
     `auctionID` INTEGER NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     PRIMARY KEY (`bidID`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -120,6 +136,8 @@ CREATE TABLE `Request` (
     `startingBid` DOUBLE NOT NULL,
     `reservePrice` DOUBLE NOT NULL,
     `accountID` INTEGER NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     PRIMARY KEY (`requestID`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -129,6 +147,8 @@ CREATE TABLE `FAQ` (
     `questionID` INTEGER NOT NULL AUTO_INCREMENT,
     `questionType` VARCHAR(191) NOT NULL,
     `questionAns` VARCHAR(191) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     PRIMARY KEY (`questionID`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
