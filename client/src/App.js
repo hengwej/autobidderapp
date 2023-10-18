@@ -70,7 +70,7 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/logout" element={<Logout handleLogoutClose={handleLogoutClose} />} />
                 <Route path="/signup" element={<SignUp />} />
-                <Route path="/viewCarDetails" element={<ViewCarDetails />} />
+                <Route path="/viewCarDetails/:carID" element={<ViewCarDetails />} />
                 <Route path="/placebid" element={<Placebid />} />
             </Routes>
             {/*<Modal show={showSignUpModal} onHide={handleSignUpClose}>*/}
