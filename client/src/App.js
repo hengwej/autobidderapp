@@ -15,7 +15,9 @@ import axios from "axios";
 
 async function logout() {
     try {
-        const response = await axios.post("http://127.0.0.1:5000/api/auth/logout");
+        const response = await axios.post("http://localhost:5000/api/auth/logout", {}, {
+            withCredentials: true
+        });
         console.log(response.data.message);
         window.location.href = '/auth/login';
     } catch (error) {
