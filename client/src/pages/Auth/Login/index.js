@@ -28,7 +28,7 @@ function Login() {
 
             if (response.status === 200) {
                 document.cookie = `token=${response.data.token}; HttpOnly; Secure; SameSite=None`;
-                //navigate('/auth/confirmation');
+                navigate('/auth/confirmation');
             }
         } catch (error) {
             console.error("Failed to login:", error);
