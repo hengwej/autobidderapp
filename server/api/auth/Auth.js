@@ -1,15 +1,14 @@
+const express = require('express');
 const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
 const bcrypt = require('bcrypt');
-const { body, validationResult } = require('express-validator');
+const { validationResult } = require('express-validator');
+const { sign } = require('jsonwebtoken');
 
-
+const router = express.Router();
+const prisma = new PrismaClient();
 const saltRounds = 10;
 
-
-
-exports.signUp = async (req, res) => {
-
+router.post('/signUp', async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
@@ -20,70 +19,87 @@ exports.signUp = async (req, res) => {
     console.log("userData:", userData);
     console.log("accountData:", accountData);
 
-
     try {
-        // Create the user
-        const user = await prisma.user.create({
-            data: userData
-        });
-
-        // Link the user to the account
+        const user = await prisma.user.create({ data: userData });
         accountData.userID = user.userID;
-
-        // Set accountType and accountStatus
         accountData.accountType = "Bidder";
         accountData.accountStatus = "Active";
-
-        // Hash the password
         const hashedPassword = await bcrypt.hash(accountData.password, saltRounds);
         accountData.password = hashedPassword;
-
-        // Create the account linked to the user
-        const account = await prisma.account.create({
-            data: accountData
-        });
+        const account = await prisma.account.create({ data: accountData });
 
         res.json({ message: 'Signup successful!', user, account });
     } catch (error) {
         console.error("Error processing signup:", error);
         res.status(500).json({ message: 'Internal server error' });
     }
+});
 
-};
+router.post('/login', async (req, res) => {
+    const { username, password } = req.body.accountData;
+
+    const account = await prisma.account.findUnique({
+        where: {
+            username: username
+        }
+    });
+
+    if (account == null) {
+        return res.status(400).json({ error: 'Invalid username or password' });
+    }
+
+    const match = await bcrypt.compare(password, account.password);
+    if (!match) {
+        return res.status(400).json({ error: 'Invalid username or password' });
+    } else {
+        return res.json({ message: "Logged In successfully." });
+        // Generate an access token
+        const accessToken = sign({ username: account.username, accountID: account.accountID }, process.env.ACCESS_TOKEN_SECRET);
+
+        // Set access token in a secure, httpOnly, sameSite cookie
+        res.cookie('accessToken', accessToken, {
+            httpOnly: true,
+            secure: false,
+            sameSite: 'strict'
+        });
+
+        // Send CSRF token in the JSON response for your frontend to use in future requests
+        res.json({ csrfToken: req.csrfToken() });
+    }
+});
+
+router.post('/logout', (req, res) => {
+    res.clearCookie('accessToken');
+    res.json({ message: "Logged out successfully." });
+});
+
+//router.get('/csrf-token', (req, res) => {
+//    res.json({ csrfToken: req.csrfToken() });
+//});
 
 
-exports.otp = async (req, res) => {
 
+
+router.post('/otp', async (req, res) => {
     const { username, password } = req.body;
 
     try {
-        // Find the account with the username
         const account = await prisma.account.findUnique({
             where: {
                 username: username
             }
         });
-
-        // Check if the account exists
         if (account == null) {
             return res.status(400).json({ message: 'Invalid username or password' });
         }
-
-        // Check if the account is active
         if (account.accountStatus != "Active") {
             return res.status(400).json({ message: 'Account is not active' });
         }
-
-        // Check if the password is correct
         const match = await bcrypt.compare(password, account.password);
         if (!match) {
             return res.status(400).json({ message: 'Invalid username or password' });
         }
-
-        // Generate OTP
         const otp = Math.floor(100000 + Math.random() * 900000);
-
-        // Store the OTP in the database
         await prisma.account.update({
             where: {
                 username: username
@@ -92,15 +108,11 @@ exports.otp = async (req, res) => {
                 otp: otp
             }
         });
-
-        // Send the OTP to the user
-
+        // Code to send the OTP to the user would go here
     } catch (error) {
         console.error("Error processing login:", error);
         res.status(500).json({ message: 'Internal server error' });
     }
-};
+});
 
-
-
-
+module.exports = router;
