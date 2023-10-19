@@ -10,6 +10,8 @@ import ViewCarDetails from "./pages/Users/CarDetails/view_car_details";
 import Placebid from "./pages/Users/PlaceBid/placebid";
 import "./css/styles.css";
 import Login2FA from "./pages/Auth/Login2FA";
+import UserManagement from "./pages/Admin/viewUsers";
+
 
 
 function App() {
@@ -38,6 +40,9 @@ function App() {
                         <li className="nav-item">
                             <Link className="nav-link" to="/logout">Logout</Link>
                         </li>
+                        <li className="nav-item">
+                            <Link className="nav-link" to="/userManagement">admin user view test</Link>
+                        </li>
                     </ul>
                 </div>
             </nav>
@@ -51,6 +56,8 @@ function App() {
                 <Route path="/signup" element={<SignUp />} />
                 <Route path="/viewCarDetails/:carID" element={<ViewCarDetails />} />
                 <Route path="/placebid" element={<Placebid />} />
+                <Route path="/userManagement" element={<UserManagement />} />
+
             </Routes>
         </div>
     );
