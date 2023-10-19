@@ -11,7 +11,17 @@ import Placebid from "./pages/Users/PlaceBid/placebid";
 import "./css/styles.css";
 import Login2FA from "./pages/Auth/Login2FA";
 import UserManagement from "./pages/Admin/viewUsers";
+import axios from "axios";
 
+async function logout() {
+    try {
+        const response = await axios.post("http://127.0.0.1:5000/api/auth/logout");
+        console.log(response.data.message);
+        window.location.href = '/auth/login';
+    } catch (error) {
+        console.error("Failed to logout:", error);
+    }
+}
 
 
 function App() {
@@ -38,7 +48,7 @@ function App() {
                             <Link className="nav-link" to="/signup">Sign Up</Link>
                         </li>
                         <li className="nav-item">
-                            <Link className="nav-link" to="/logout">Logout</Link>
+                            <Link className="nav-link" to="/logout" onClick={logout}>Logout</Link>
                         </li>
                         <li className="nav-item">
                             <Link className="nav-link" to="/userManagement">admin user view test</Link>
