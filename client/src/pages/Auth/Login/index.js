@@ -19,7 +19,7 @@ function Login() {
         const { username, password } = data;
 
         try {
-            const response = await axios.post("http://127.0.0.1:5000/api/auth/login", {
+            const response = await axios.post("http://localhost:5000/api/auth/login", {
                 username,
                 password
             }, {
@@ -27,8 +27,8 @@ function Login() {
             });
 
             if (response.status === 200) {
-                document.cookie = `token=${response.data.token}; HttpOnly; Secure; SameSite=Strict`;
-                navigate('/auth/confirmation');
+                document.cookie = `token=${response.data.token}; HttpOnly; Secure; SameSite=None`;
+                //navigate('/auth/confirmation');
             }
         } catch (error) {
             console.error("Failed to login:", error);
