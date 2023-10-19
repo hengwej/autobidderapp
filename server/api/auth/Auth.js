@@ -2,7 +2,7 @@ const express = require('express');
 const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcrypt');
 const { validationResult } = require('express-validator');
-const { sign } = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 
 const router = express.Router();
 const prisma = new PrismaClient();
@@ -15,9 +15,6 @@ router.post('/signUp', async (req, res) => {
     }
 
     const { userData, accountData } = req.body;
-
-    console.log("userData:", userData);
-    console.log("accountData:", accountData);
 
     try {
         const user = await prisma.user.create({ data: userData });
@@ -36,48 +33,42 @@ router.post('/signUp', async (req, res) => {
 });
 
 router.post('/login', async (req, res) => {
-    const { username, password } = req.body.accountData;
+    const { username, password } = req.body;
 
-    const account = await prisma.account.findUnique({
-        where: {
-            username: username
+    try {
+        const account = await prisma.account.findUnique({ where: { username } });
+
+        if (!account || !(await bcrypt.compare(password, account.password))) {
+            return res.status(401).json({ error: 'Invalid credentials' });
         }
-    });
 
-    if (account == null) {
-        return res.status(400).json({ error: 'Invalid username or password' });
-    }
+        // Define payload
+        const payload = {
+            accountId: account.accountID,
+            role: account.accountType
+        };
 
-    const match = await bcrypt.compare(password, account.password);
-    if (!match) {
-        return res.status(400).json({ error: 'Invalid username or password' });
-    } else {
-        return res.json({ message: "Logged In successfully." });
-        // Generate an access token
-        const accessToken = sign({ username: account.username, accountID: account.accountID }, process.env.ACCESS_TOKEN_SECRET);
+        // Sign JWT
+        const token = jwt.sign(payload, 'your-secret-key', { expiresIn: '1h' });  // Replace 'your-secret-key' with your actual secret key
 
-        // Set access token in a secure, httpOnly, sameSite cookie
-        res.cookie('accessToken', accessToken, {
-            httpOnly: true,
-            secure: false,
-            sameSite: 'strict'
-        });
+        // Send token in a cookie
+        //res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'Strict' });
+        res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'None' });
 
-        // Send CSRF token in the JSON response for your frontend to use in future requests
-        res.json({ csrfToken: req.csrfToken() });
+
+        return res.json({ message: 'Logged in successfully.' });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Server error' });
     }
 });
+
 
 router.post('/logout', (req, res) => {
-    res.clearCookie('accessToken');
+    res.clearCookie('token', { path: '/' });
     res.json({ message: "Logged out successfully." });
 });
-
-//router.get('/csrf-token', (req, res) => {
-//    res.json({ csrfToken: req.csrfToken() });
-//});
-
-
 
 
 router.post('/otp', async (req, res) => {
