@@ -3,14 +3,14 @@
     "",
     "\\client",
     "\\client\\src",
+    "\\client\\src\\css",
     "\\client\\src\\pages",
     "\\client\\src\\pages\\General",
+    "\\client\\src\\pages\\General\\Homepage",
     "\\client\\src\\pages\\Users",
-    "\\server",
-    "\\server\\prisma",
-    "\\server\\prisma\\migrations",
-    "\\server\\prisma\\migrations\\20231014153749_init"
+    "\\client\\src\\pages\\Users\\CarDetails",
+    "\\client\\src\\pages\\Users\\PlaceBid"
   ],
-  "SelectedNode": "\\server\\server.js",
+  "SelectedNode": "\\client\\src\\css\\styles.css",
   "PreviewInSolutionExplorer": false
 }
