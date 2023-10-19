@@ -86,3 +86,16 @@
     outline: none;
     border-bottom: 0.25rem solid #64a19d;
 }
+
+.bar-bg {
+    margin: 0;
+    background: #262626;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-grow: 1;
+    color: white;
+    justify-content: center;
+    align-items: center;
+}

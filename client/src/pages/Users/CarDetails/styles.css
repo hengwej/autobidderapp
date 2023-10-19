@@ -1,5 +1,61 @@
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    background-color: white;
+    margin-top: 20px;
+    border: 2px solid black;
+    height: 200px;
+}
+
+td, th {
+    border: 1px solid white;
+    text-align: left;
+    padding: 8px;
+    color: black;
+}
+
+tr:nth-child(even) {
+    background-color: #dddddd;
+}
+
+.timer {
+    background-color: white;
+    padding: 10px;
+    color: black;
+    border: 2px solid black;
+    width: 550px;
+    position: relative;
+    top: 43px;
+    font-size: 15px;
+}
+
 .cardetails_label {
-    color: white;
+    color: black;
     font-weight: bold;
     font-size: 20px;
+}
+
+hr.solid {
+    border-top: 5px solid black;
+}
+
+.inputComment {
+    padding: 7px;
+    background-color: white;
+    border: 1px solid black;
+    color: black;
+}
+
+.carDetailUl {
+    color: black;
+}
+
+.wrapper {
+    margin-top: 700px;
+}
+
+.carImages {
+    width: 700px;
+    height: 480px;
 }
