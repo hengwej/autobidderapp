@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route, Link} from "react-router-dom"; // Change 'BrowserRouter' to 'Routes'
 import Homepage from "./pages/General/Homepage";
 import FAQ from "./pages/General/FAQ";
 import SignUp from "./pages/Auth/SignUp";
@@ -14,7 +14,9 @@ import UserManagement from "./pages/Admin/viewUsers";
 import ViewDetails from "./pages/Admin/view_user_details";
 import Requests from "./pages/Admin/requests";
 import ViewRequestDetails from "./pages/Admin/view_request_details";
+import UserProfile from "./pages/Users/UserProfile/UserProfile";
 import axios from "axios";
+
 
 async function logout() {
     try {
@@ -60,24 +62,27 @@ function App() {
                         <li className="nav-item">
                             <Link className="nav-link" to="/Requests">admin requests</Link>
                         </li>
+                        <li className="nav-item">
+                            <Link className="nav-link" to="/userProfile">User Profile (Testing)</Link>
+                        </li>
                     </ul>
                 </div>
             </nav>
             <Routes> {/* Use <Routes> instead of <Router> */}
-                    <Route path="/" element={<Homepage />} />
-                    <Route path="/faq" element={<FAQ />} />
-                    <Route path="/sellCar" element={<SellCar />} />
-                    <Route path="/auth/login" element={<Login />} />
-                    <Route path="/auth/confirmation" element={<Login2FA />} />
-                    <Route path="/logout" element={<Logout />} />
-                    <Route path="/signup" element={<SignUp />} />
-                    <Route path="/viewCarDetails/:carID" element={<ViewCarDetails />} />
-                    <Route path="/placebid/:carID" element={<Placebid />} />
-                    <Route path="/userManagement" element={<UserManagement />} />
-                    <Route path="/viewUser/:userID" element={<ViewDetails />} />
-                   <Route path="/requests" element={<Requests />} />
+                <Route path="/" element={<Homepage />} />
+                <Route path="/faq" element={<FAQ />} />
+                <Route path="/sellCar" element={<SellCar />} />
+                <Route path="/auth/login" element={<Login />} />
+                <Route path="/auth/confirmation" element={<Login2FA />} />
+                <Route path="/logout" element={<Logout />} />
+                <Route path="/signup" element={<SignUp />} />
+                <Route path="/viewCarDetails/:carID" element={<ViewCarDetails />} />
+                <Route path="/placebid" element={<Placebid />} />
+                <Route path="/userManagement" element={<UserManagement />} />
+                <Route path="/userProfile" element={<UserProfile />} />
+                <Route path="/viewUser/:userID" element={<ViewDetails />} />
+                <Route path="/requests" element={<Requests />} />
                 <Route path="/viewRequestDetails/:requestID" element={<ViewRequestDetails />} />
-
             </Routes>
         </div>
     );
