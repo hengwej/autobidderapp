@@ -12,7 +12,8 @@ export default class Home extends Component {
         super(props);
         this.state = {
             carData: [], // Initialize an empty array to store car data
-            timeLeft: {}
+            timeLeft: {},
+            auctionData: []
         };
     }
 
@@ -23,10 +24,20 @@ export default class Home extends Component {
 
             this.setState({ carData: data, loading: false });      
 
+            const auctionResponse = await fetch("http://127.0.0.1:5000/api/auctions/allAuction");
+            const retrieveAuctionData = await auctionResponse.json();
+            this.setState({ auctionData: retrieveAuctionData, loading: false });
+
             // Initialize timers for each car
             const initialTimers = {};
-            data.forEach((car) => {
-                initialTimers[car.carID] = this.calculateTimeLeft(car.createdAt);
+            retrieveAuctionData.forEach((auctionDate) => {
+                const auction = retrieveAuctionData.find((auctionDate) => data.carID === auctionDate.carID);
+                if (auction) {
+                    initialTimers[auctionDate.carID] = this.calculateTimeLeft(
+                        new Date(auction.startDate),
+                        new Date(auction.endDate)
+                    );
+                }
             });
             this.setState({ timeLeft: initialTimers });
 
@@ -37,12 +48,11 @@ export default class Home extends Component {
         }
     }
 
-    calculateTimeLeft = (createdAt) => {
-        const startDate = new Date(createdAt);
-        const endDate = new Date(startDate);
-        endDate.setDate(endDate.getDate() + 7);
+    calculateTimeLeft = (startDate, endDate) => {
+        const auctionStartDate = new Date(startDate);
+        const auctionEndDate = new Date(endDate);
         const currentDate = new Date();
-        const difference = endDate - currentDate;
+        const difference = auctionEndDate - currentDate;
         let timeLeft = {};
 
         if (difference >= 0) {
@@ -59,11 +69,12 @@ export default class Home extends Component {
 
     startCountdown = () => {
         this.countdownInterval = setInterval(() => {
-            const { carData, timeLeft } = this.state;
+            const { auctionData, timeLeft } = this.state;
             const updatedTimers = { ...timeLeft };
 
-            carData.forEach((car) => {
-                updatedTimers[car.carID] = this.calculateTimeLeft(car.createdAt);
+            auctionData.forEach((auction) => {
+                const timer = this.calculateTimeLeft(auction.startDate, auction.endDate);
+                updatedTimers[auction.carID] = timer;
             });
 
             this.setState({ timeLeft: updatedTimers });
@@ -98,7 +109,7 @@ export default class Home extends Component {
                                         <Card.Body>
                                             <Card.Title>{car.make} {car.model}</Card.Title>
                                             <Card.Text>Price: ${car.startingBid}</Card.Text>
-                                            <Card.Text class="bar-bg">
+                                            <Card.Text className="bar-bg">
                                                 {Object.keys(timeLeft[car.carID] || {}).map((interval) => (
                                                     <span key={interval}>
                                                         {timeLeft[car.carID][interval]} {interval !== "seconds" && ":"}
