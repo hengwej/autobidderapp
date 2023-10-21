@@ -1,17 +1,44 @@
-import React from 'react'
-import './styles.css'
+import React from 'react';
+import './styles.css';
+import axios from 'axios';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
+import { useNavigate } from 'react-router-dom';
+
 
 function Login2FA() {
     const initialValues = {
         Code2FA: '',
-    }
+    };
 
-    const onSubmit = (data) => {
-        console.log(data);
-        //To do: send data to server
-    }
+    const navigate = useNavigate();
+
+
+    const onSubmit = async (data, { setSubmitting, setFieldError }) => {
+
+        try {
+            const response = await axios.post('http://localhost:5000/api/auth/otp', {
+                otp: data.Code2FA,
+            }, {
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (response.status === 200) {
+                console.log('OTP verification successful!');
+                navigate('/');
+            }
+        } catch (error) {
+            console.error('OTP verification failed:', error.response ? error.response.data : error.message);
+            setFieldError('otp-error', 'OTP verification failed. Please try again.');
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
 
     const validationSchema = Yup.object().shape({
         Code2FA: Yup.string().required("Enter OTP code"),
@@ -30,7 +57,7 @@ function Login2FA() {
                 </Form>
             </Formik>
         </div>
-    )
+    );
 }
 
-export default Login2FA
+export default Login2FA;
