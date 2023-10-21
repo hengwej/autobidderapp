@@ -47,12 +47,16 @@ const carRoutes = require('./api/cars');
 const userRoutes = require('./api/users');
 const accountRoutes = require('./api/accounts');
 const authRoutes = require('./api/auth/auth');
+const auctionRoutes = require('./api/auctions');
+const bidHistoryRoutes = require('./api/biddingHistory');
 
 
 app.use('/api/cars', carRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/accounts', accountRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/auctions', auctionRoutes);
+app.use('/api/biddingHistory', bidHistoryRoutes);
 
 
 app.get('/', (req, res) => {

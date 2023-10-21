@@ -24,10 +24,11 @@ tr:nth-child(even) {
     padding: 10px;
     color: black;
     border: 2px solid black;
-    width: 550px;
+    width: 575px;
     position: relative;
     top: 43px;
     font-size: 15px;
+    border-radius: 13px;
 }
 
 .cardetails_label {

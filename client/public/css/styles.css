@@ -12878,11 +12878,15 @@ body {
   border: 0;
 }
 
+html {
+    background: var(--bs-gray-200);
+}
+
 .masthead {
   position: relative;
   width: 100%;
-  height: auto;
-  min-height: 35rem;
+  height: 100%;
+  min-height: 60rem;
   padding: 15rem 0;
   background: var(--bs-gray-200);
   background-position: center;
@@ -13040,5 +13044,7 @@ body {
 }
 
 .footer {
-  padding: 5rem 0;
+    padding: 5rem 0;
+    position: relative;
+    top:  800px;
 }

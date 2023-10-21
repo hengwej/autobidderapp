@@ -13,7 +13,6 @@ import Login2FA from "./pages/Auth/Login2FA";
 
 
 function App() {
-
     return (
         <div className="App">
             <nav className="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
@@ -50,7 +49,7 @@ function App() {
                 <Route path="/logout" element={<Logout />} />
                 <Route path="/signup" element={<SignUp />} />
                 <Route path="/viewCarDetails/:carID" element={<ViewCarDetails />} />
-                <Route path="/placebid" element={<Placebid />} />
+                <Route path="/placebid/:carID" element={<Placebid />} />
             </Routes>
         </div>
     );
