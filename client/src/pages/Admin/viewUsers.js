@@ -1,16 +1,13 @@
 import React, { Component } from "react";
+import { useNavigate } from "react-router-dom"; // Import the hook
 import "../../css/styles.css";
 import "./styles.css";
-import Card from "react-bootstrap/Card";
 import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import Header from "../../components/Header";
 import axios from "axios";
 import Button from 'react-bootstrap/Button';
 import { Table } from 'react-bootstrap';
 
-export default class UserManagement extends Component {
+class UserManagement extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -61,6 +58,13 @@ export default class UserManagement extends Component {
         }
     }
 
+    // Handle navigation to edit user details page
+    handleViewUser = (userID) => {
+        this.props.navigate(`/viewUser/${userID}`); // Use the passed navigate function
+    }
+
+
+
     render() {
         if (this.state.loading) return <div>Loading...</div>;
         if (this.state.error) return <div>Error: {this.state.error.message}</div>;
@@ -88,7 +92,7 @@ export default class UserManagement extends Component {
                                     <Button variant="danger" onClick={() => this.handleDeleteUser(user.userID)}>Delete</Button>
                                 </td>
                                 <td>
-                                    <Button variant="danger" onClick={() => this.handleEditUser(user.id)}>View</Button>
+                                    <Button variant="danger" onClick={() => this.handleViewUser(user.userID)}>View</Button>
                                 </td>
                             </tr>
                         ))}
@@ -98,3 +102,8 @@ export default class UserManagement extends Component {
         );
     }
 }
+
+export default function UserManagementWithNavigation() {
+    const navigate = useNavigate(); // Initialize navigate using useNavigate hook
+    return <UserManagement navigate={navigate} />;
+}// Wrap and export
