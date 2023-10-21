@@ -3,10 +3,17 @@ const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcrypt');
 const { validationResult } = require('express-validator');
 const jwt = require('jsonwebtoken');
+const nodemailer = require('nodemailer');
+const Mailgen = require('mailgen');
+const crypto = require('crypto');
 
 const router = express.Router();
 const prisma = new PrismaClient();
 const saltRounds = 10;
+const email = '';
+
+
+
 
 router.post('/signUp', async (req, res) => {
     const errors = validationResult(req);
@@ -42,6 +49,73 @@ router.post('/login', async (req, res) => {
             return res.status(401).json({ error: 'Invalid credentials' });
         }
 
+        //generate 6 digit OTP
+        const generateOTP = () => {
+            // otp logic 
+            const otp = crypto.randomInt(100000, 1000000); // This generates a value between 100000 (inclusive) and 1000000 (exclusive)
+            return otp;
+        }
+
+        const generatedOtp = generateOTP();
+        console.log(generatedOtp);
+
+        userEmailAddress = '';
+
+        //obtain user email
+        try {
+
+            const account = await prisma.account.findUnique({
+                where: {
+                    username: username,
+                },
+                include: {
+                    user: true,
+                },
+            });
+
+            if (account && account.user) {
+                console.log(account.user.emailAddress);
+                userEmailAddress = account.user.emailAddress;
+                res.json({ emailAddress: account.user.emailAddress });
+            } else {
+                res.status(404).send('User not found');
+            }
+        } catch (error) {
+            console.error(error);
+            res.status(500).send('Server error');
+        }
+
+        // Send out email
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: 'starbyleth5@gmail.com',
+                pass: 'uqfr vgss bxeb otdh'
+            }
+        });
+
+
+
+        const mailOptions = {
+            from: 'starbyleth5@gmail.com',
+            to: userEmailAddress,
+            subject: 'Autobidder OTP',
+            text: generatedOtp.toString()
+        };
+
+        transporter.sendMail(mailOptions, function (error, info) {
+            if (error) {
+                console.log(error);
+            } else {
+                console.log('Email sent: ' + info.response);
+                // do something useful
+            }
+        });
+
+
+        //Store to backend
+
+
         // Define payload
         const payload = {
             accountId: account.accountID,
@@ -66,10 +140,9 @@ router.post('/login', async (req, res) => {
 
 
 router.post('/logout', (req, res) => {
-    res.clearCookie('token', { path: '/', secure: true, sameSite: 'None' });
+    res.clearCookie('token', { path: '/' });
     res.json({ message: "Logged out successfully." });
 });
-
 
 
 router.post('/otp', async (req, res) => {
@@ -101,6 +174,7 @@ router.post('/otp', async (req, res) => {
             }
         });
         // Code to send the OTP to the user would go here
+
     } catch (error) {
         console.error("Error processing login:", error);
         res.status(500).json({ message: 'Internal server error' });
