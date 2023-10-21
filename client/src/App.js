@@ -10,6 +10,23 @@ import ViewCarDetails from "./pages/Users/CarDetails/view_car_details";
 import Placebid from "./pages/Users/PlaceBid/placebid";
 import "./css/styles.css";
 import Login2FA from "./pages/Auth/Login2FA";
+import UserManagement from "./pages/Admin/viewUsers";
+import ViewDetails from "./pages/Admin/view_user_details";
+import Requests from "./pages/Admin/requests";
+import ViewRequestDetails from "./pages/Admin/view_request_details";
+import axios from "axios";
+
+async function logout() {
+    try {
+        const response = await axios.post("http://localhost:5000/api/auth/logout", {}, {
+            withCredentials: true
+        });
+        console.log(response.data.message);
+        window.location.href = '/auth/login';
+    } catch (error) {
+        console.error("Failed to logout:", error);
+    }
+}
 
 
 function App() {
@@ -37,19 +54,30 @@ function App() {
                         <li className="nav-item">
                             <Link className="nav-link" to="/logout">Logout</Link>
                         </li>
+                        <li className="nav-item">
+                            <Link className="nav-link" to="/userManagement">admin test users</Link>
+                        </li>
+                        <li className="nav-item">
+                            <Link className="nav-link" to="/Requests">admin requests</Link>
+                        </li>
                     </ul>
                 </div>
             </nav>
-            <Routes>
-                <Route path="/" element={<Homepage />} />
-                <Route path="/faq" element={<FAQ />} />
-                <Route path="/sellCar" element={<SellCar />} />
-                <Route path="/auth/login" element={<Login />} />
-                <Route path="/auth/confirmation" element={<Login2FA />} />
-                <Route path="/logout" element={<Logout />} />
-                <Route path="/signup" element={<SignUp />} />
-                <Route path="/viewCarDetails/:carID" element={<ViewCarDetails />} />
-                <Route path="/placebid/:carID" element={<Placebid />} />
+            <Routes> {/* Use <Routes> instead of <Router> */}
+                    <Route path="/" element={<Homepage />} />
+                    <Route path="/faq" element={<FAQ />} />
+                    <Route path="/sellCar" element={<SellCar />} />
+                    <Route path="/auth/login" element={<Login />} />
+                    <Route path="/auth/confirmation" element={<Login2FA />} />
+                    <Route path="/logout" element={<Logout />} />
+                    <Route path="/signup" element={<SignUp />} />
+                    <Route path="/viewCarDetails/:carID" element={<ViewCarDetails />} />
+                    <Route path="/placebid/:carID" element={<Placebid />} />
+                    <Route path="/userManagement" element={<UserManagement />} />
+                    <Route path="/viewUser/:userID" element={<ViewDetails />} />
+                   <Route path="/requests" element={<Requests />} />
+                <Route path="/viewRequestDetails/:requestID" element={<ViewRequestDetails />} />
+
             </Routes>
         </div>
     );
