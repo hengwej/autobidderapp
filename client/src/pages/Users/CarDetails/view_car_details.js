@@ -10,6 +10,9 @@ export default function ViewCarDetails() {
     const [timeLeft, setTimeLeft] = useState({});
     const [showPlaceBidModal, setShowPlaceBidModal] = useState(false);
     const [error, setError] = useState(null);
+    const [currentHighestBid, setCurrentHighestBid] = useState(null);
+    const [auctionStartDate, setAuctionStartDate] = useState(null);
+    const [auctionEndDate, setAuctionEndDate] = useState(null);
     let countdownInterval;
 
     const handlePlaceBidClose = () => {
@@ -37,6 +40,13 @@ export default function ViewCarDetails() {
                     console.log("Data not found for ID", carID);
                 }
 
+                const auctionResponse = await fetch("http://127.0.0.1:5000/api/auctions/allAuction");
+                const auctionData = await auctionResponse.json();
+                const auction = auctionData.find((auction) => parseInt(carID) === auction.carID);
+                setCurrentHighestBid(auction.currentHighestBid);
+                setAuctionStartDate(auction.startDate);
+                setAuctionEndDate(auction.endDate);
+
             } catch (error) {
                 console.error("Error fetching data:", error);
                 setError(error);
@@ -53,42 +63,11 @@ export default function ViewCarDetails() {
         }
     }, [carData]);
 
-    //const calculateTimeLeft = () => {
-    //    const dateString = carData.createdAt;
-    //    console.log("date " + carData.createdAt);
-    //    const startDate = new Date(dateString);
-    //    const endDate = new Date(startDate);
-    //    endDate.setDate(endDate.getDate() + 7);
-    //    const currentDate = new Date();
-    //    const difference = endDate - startDate;
-    //    let timeLeft = {};
-
-    //    if (currentDate < startDate) {
-    //        console.log('The event has not started yet.');
-    //    } else if (currentDate >= startDate && currentDate <= endDate) {
-    //        timeLeft = {
-    //            days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-    //            hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-    //            minutes: Math.floor((difference / (1000 * 60)) % 60),
-    //            seconds: Math.floor((difference / 1000) % 60)
-    //        };
-    //    }
-    //    else {
-    //        console.log('The event has ended.');
-    //    }
-    //    //if (difference >= 0) {
-            
-    //    //}
-
-    //    setTimeLeft(timeLeft);
-    //};
-
     const calculateTimeLeft = () => {
-        const dateString = carData.createdAt;
-        const startDate = new Date(dateString);
-        const endDate = new Date(startDate);
-        endDate.setDate(endDate.getDate() + 7);
+        const startDate = new Date(auctionStartDate);
+        const endDate = new Date(auctionEndDate);
         const currentDate = new Date();
+
         const difference = endDate - currentDate;
 
         if (difference > 0) {
@@ -119,24 +98,24 @@ export default function ViewCarDetails() {
     return (
         <div class="wrapper">
             <div key={carData.carID}>
-                <label class="cardetails_label">{carData.make}&nbsp;{carData.model}</label><br />
+                <label className="cardetails_label">{carData.make}&nbsp;{carData.model}</label><br />
                 {carData && carData.carImage && carData.carImage.data && (
-                    <img src={URL.createObjectURL(new File([new Blob([new Uint8Array(carData.carImage.data)])], { type: 'image/jpeg' }))} class="carImages" />
+                    <img src={URL.createObjectURL(new File([new Blob([new Uint8Array(carData.carImage.data)])], { type: 'image/jpeg' }))} className="carImages" />
                 )}
             </div>
 
-            <div class="timer">
+            <div className="timer">
                 <b>Time Left:</b>{" "}
                 {Object.keys(timeLeft).map((interval) => (
                     <span key={interval}>
                         {timeLeft[interval]} {interval}{" "}
                     </span>
                 ))}
-                <b>Last Bid ($)</b>
-                <span>500</span>
+                <b>High Bid($) </b>
+                <span>{currentHighestBid}</span>
             </div>
 
-            <Button variant="warning" onClick={handlePlaceBidShow} style={{ marginLeft: 568 + 'px', padding: 8 + 'px' }}>
+            <Button variant="warning" onClick={handlePlaceBidShow} style={{ marginLeft: 585 + 'px', padding: 8 + 'px' }}>
                 Place Bid
             </Button>
             <Modal show={showPlaceBidModal} onHide={handlePlaceBidClose}>
@@ -144,7 +123,7 @@ export default function ViewCarDetails() {
                     <Modal.Title>Place Bid</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Placebid />
+                    <Placebid carID={carData.carID} handleClose={handlePlaceBidClose}/>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handlePlaceBidClose}>
@@ -178,9 +157,9 @@ export default function ViewCarDetails() {
 
             <div key={carData.carID}>
                 <div>
-                    <label class="cardetails_label" style={{ marginTop: 30 + 'px' }}>Highlights</label>
-                    <hr class="solid" />
-                    <ul class="carDetailUl">
+                    <label className="cardetails_label" style={{ marginTop: 30 + 'px' }}>Highlights</label>
+                    <hr className="solid" />
+                    <ul className="carDetailUl">
                         {carData.highlights ? (
                             carData.highlights.split('\n').map((highlight, index) => (
                                 <li key={index}>{highlight}</li>
@@ -192,9 +171,9 @@ export default function ViewCarDetails() {
                 </div>
 
                 <div>
-                    <label class="cardetails_label">Equipment</label>
-                    <hr class="solid" />
-                    <ul class="carDetailUl">
+                    <label className="cardetails_label">Equipment</label>
+                    <hr className="solid" />
+                    <ul className="carDetailUl">
                         {carData.equipment ? (
                             carData.equipment.split('\n').map((equipment, index) => (
                                 <li key={index}>{equipment}</li>
@@ -206,9 +185,9 @@ export default function ViewCarDetails() {
                 </div>
 
                 <div>
-                    <label class="cardetails_label">Modifications</label>
-                    <hr class="solid" />
-                    <ul class="carDetailUl">
+                    <label className="cardetails_label">Modifications</label>
+                    <hr className="solid" />
+                    <ul className="carDetailUl">
                         {carData.modifications ? (
                             carData.modifications.split('\n').map((modification, index) => (
                                 <li key={index}>{modification}</li>
@@ -220,9 +199,9 @@ export default function ViewCarDetails() {
                 </div>
 
                 <div>
-                    <label class="cardetails_label">Known Flaws</label>
-                    <hr class="solid" />
-                    <ul class="carDetailUl">
+                    <label className="cardetails_label">Known Flaws</label>
+                    <hr className="solid" />
+                    <ul className="carDetailUl">
                         {carData.knownFlaws ? (
                             carData.knownFlaws.split('\n').map((knownflaw, index) => (
                                 <li key={index}>{knownflaw}</li>
@@ -234,9 +213,9 @@ export default function ViewCarDetails() {
                 </div>
             </div>
 
-            <div>
-                <label class="cardetails_label">Comments</label><br />
-                <input type="text" id="comment" name="comment" size="70" class="inputComment" />
+            <div>`
+                <label className="cardetails_label">Comments</label><br />
+                <input type="text" id="comment" name="comment" size="70" className="inputComment" />
                 <Button variant="info" style={{ marginLeft: 20 + 'px', marginBottom: 6 + 'px', padding: 8 + 'px', width: 100 + 'px' }}>
                     Add
                 </Button>
