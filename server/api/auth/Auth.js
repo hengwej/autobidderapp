@@ -3,10 +3,24 @@ const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcrypt');
 const { validationResult } = require('express-validator');
 const jwt = require('jsonwebtoken');
-
+const nodemailer = require('nodemailer');
+const crypto = require('crypto');
 const router = express.Router();
 const prisma = new PrismaClient();
 const saltRounds = 10;
+
+// Middleware to validate JWT token
+const authenticateToken = (req, res, next) => {
+    const token = req.cookies.token;
+    if (token == null) return res.sendStatus(401);
+
+    jwt.verify(token, 'your-secret-key', (err, user) => {
+        if (err) return res.sendStatus(403);
+        req.user = user;
+        next();
+    });
+};
+
 
 router.post('/signUp', async (req, res) => {
     const errors = validationResult(req);
@@ -36,25 +50,88 @@ router.post('/login', async (req, res) => {
     const { username, password } = req.body;
 
     try {
-        const account = await prisma.account.findUnique({ where: { username } });
+        const account = await prisma.account.findUnique({
+            where: { username },
+            include: { user: true },
+        });
 
         if (!account || !(await bcrypt.compare(password, account.password))) {
             return res.status(401).json({ error: 'Invalid credentials' });
         }
 
-        // Define payload
-        const payload = {
-            accountId: account.accountID,
-            role: account.accountType
+        const generatedOtp = crypto.randomInt(100000, 1000000).toString();
+        console.log("Generated OTP: " + generatedOtp);
+
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.EMAIL,
+                pass: process.env.EPASSWORD,
+            },
+        });
+
+        const mailOptions = {
+            from: process.env.EMAIL,
+            to: account.user.emailAddress,
+            subject: 'Autobidder OTP',
+            text: generatedOtp.toString()
         };
 
-        // Sign JWT
-        const token = jwt.sign(payload, 'your-secret-key', { expiresIn: '1h' });  // Replace 'your-secret-key' with your actual secret key
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.log(error);
+                return res.status(500).json({ error: 'Error sending OTP' });
+            }
+            console.log('Email sent: ' + info.response);
+        });
 
-        // Send token in a cookie
-        //res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'Strict' });
+        // Create temporary session token
+        const tempPayload = {
+            accountID: account.accountID,
+            otp: generatedOtp,
+            timestamp: new Date(),
+        };
+
+        const tempToken = jwt.sign(tempPayload, 'temp-secret-key', { expiresIn: '10m' });
+
+        // Send temporary token as a cookie
+        res.cookie('tempToken', tempToken, { httpOnly: true, secure: true, sameSite: 'None' });
+
+        return res.json({ message: 'OTP sent successfully. Please check your email.' });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Server error' });
+    }
+});
+
+
+router.post('/otp', async (req, res) => {
+    const { otp } = req.body;
+
+    try {
+        const tempToken = req.cookies.tempToken;
+        if (!tempToken) return res.status(401).json({ error: 'Temporary session not found' });
+
+        // Verify temporary session token
+        let tempUser;
+        try {
+            tempUser = jwt.verify(tempToken, 'temp-secret-key');
+        } catch (error) {
+            return res.status(401).json({ error: 'Invalid or expired temporary session' });
+        }
+
+        if (tempUser.otp !== otp) return res.status(401).json({ error: 'Invalid OTP' });
+
+        // OTP is valid, create a new fully authenticated session token
+        const payload = {
+            accountID: tempUser.accountID,
+            accountType: tempUser.accountType,
+        };
+
+        const token = jwt.sign(payload, 'your-secret-key', { expiresIn: '1h' });
         res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'None' });
-
+        res.clearCookie('tempToken');
 
         return res.json({ message: 'Logged in successfully.' });
 
@@ -65,46 +142,10 @@ router.post('/login', async (req, res) => {
 });
 
 
+
 router.post('/logout', (req, res) => {
     res.clearCookie('token', { path: '/', secure: true, sameSite: 'None' });
     res.json({ message: "Logged out successfully." });
-});
-
-
-
-router.post('/otp', async (req, res) => {
-    const { username, password } = req.body;
-
-    try {
-        const account = await prisma.account.findUnique({
-            where: {
-                username: username
-            }
-        });
-        if (account == null) {
-            return res.status(400).json({ message: 'Invalid username or password' });
-        }
-        if (account.accountStatus != "Active") {
-            return res.status(400).json({ message: 'Account is not active' });
-        }
-        const match = await bcrypt.compare(password, account.password);
-        if (!match) {
-            return res.status(400).json({ message: 'Invalid username or password' });
-        }
-        const otp = Math.floor(100000 + Math.random() * 900000);
-        await prisma.account.update({
-            where: {
-                username: username
-            },
-            data: {
-                otp: otp
-            }
-        });
-        // Code to send the OTP to the user would go here
-    } catch (error) {
-        console.error("Error processing login:", error);
-        res.status(500).json({ message: 'Internal server error' });
-    }
 });
 
 module.exports = router;
