@@ -22,7 +22,7 @@ export default class Home extends Component {
             const response = await fetch("http://127.0.0.1:5000/api/cars/allCar");
             const data = await response.json();
 
-            this.setState({ carData: data, loading: false });      
+            this.setState({ carData: data, loading: false });
 
             const auctionResponse = await fetch("http://127.0.0.1:5000/api/auctions/allAuction");
             const retrieveAuctionData = await auctionResponse.json();
@@ -98,7 +98,6 @@ export default class Home extends Component {
 
                 <Header headerText="Welcome" />
 
-                <div className="navbar navbar-expand-lg navbar-light" id="mainNav"></div>
                 <Container fluid> {/* Use a fluid container for a full-width layout */}
                     <Row>
                         {this.state.carData.map((car) => (
