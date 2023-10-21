@@ -3,14 +3,14 @@
     "",
     "\\client",
     "\\client\\src",
-    "\\client\\src\\css",
     "\\client\\src\\pages",
     "\\client\\src\\pages\\General",
-    "\\client\\src\\pages\\General\\Homepage",
+    "\\client\\src\\pages\\General\\FAQ",
     "\\client\\src\\pages\\Users",
     "\\client\\src\\pages\\Users\\CarDetails",
-    "\\client\\src\\pages\\Users\\PlaceBid"
+    "\\server",
+    "\\server\\api",
+    "\\server\\api\\cars"
   ],
-  "SelectedNode": "\\client\\src\\css\\styles.css",
   "PreviewInSolutionExplorer": false
 }
