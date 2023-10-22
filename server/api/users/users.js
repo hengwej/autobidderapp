@@ -23,7 +23,7 @@ router.delete('/deleteAccount', async (req, res) => {
     if (!token) return res.status(401).json({ error: 'Unauthorized' });
 
     try {
-        const payload = jwt.verify(token, 'your-secret-key');
+        const payload = jwt.verify(token, process.env.JWT_SECRET);
         const accountID = payload.accountID;
 
         // Delete the account (and the associated user due to cascading)
