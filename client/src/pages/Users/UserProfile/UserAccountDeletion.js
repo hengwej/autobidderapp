@@ -16,7 +16,7 @@ const UserAccountDeletion = ({ account }) => {
 
   const handleDeleteAccount = () => {
     // Make an HTTP DELETE request to delete the account
-    axios.delete(`http://localhost:5000/api/accounts/deleteAccount`)
+    axios.delete('http://localhost:5000/api/users/deleteAccount', { withCredentials: true })
       .then(response => {
         // Handle a successful deletion
         console.log("Account deleted successfully");
