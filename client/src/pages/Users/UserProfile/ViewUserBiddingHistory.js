@@ -54,48 +54,55 @@ const ViewUserBiddingHistory = () => {
 
   return (
     <div>
-      <Table className="table-header-grey">
-        <thead>
-          <tr>
-            <th>Bid ID</th>
-            <th>Details</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {displayedHistory.map((bid) => (
-            <React.Fragment key={bid.bidID}>
+      <h3>Bidding History</h3>
+      {biddingHistory.length === 0 ? (
+        <p>No records found</p>
+      ) : (
+        <div>
+          <Table className="table-header-grey">
+            <thead>
               <tr>
-                <td>{bid.bidID}</td>
-                <td>
-                  <div>
-                    <p>Bid Time: {new Date(bid.bidTimestamp).toLocaleString({timeZone: 'Asia/Singapore' })}</p>
-                    <p>Bid Status: {bid.bidStatus}</p>
-                    <p>Bid Amount: {bid.bidAmount}</p>
-                  </div>
-                  {expandedItem === bid.bidID && (
-                    <div>
-                      <p>Auction ID: {bid.auction.auctionID}</p>
-                      <p>Auction Status: {bid.auction.auctionStatus}</p>
-                      <p>Car Details: {`${bid.auction.car.exteriorColor} ${bid.auction.car.make} ${bid.auction.car.model}`}</p>
-                    </div>
-                  )}
-                </td>
-                <td> 
-                  <Button variant="primary" size="sm" onClick={() => handleViewDetails(bid.bidID)}>
-                    {expandedItem === bid.bidID ? 'View Less Details' : 'View All Details'}
-                  </Button>
-                </td>
+                <th>Bid ID</th>
+                <th>Details</th>
+                <th>Action</th>
               </tr>
-            </React.Fragment>
-          ))}
-        </tbody>
-      </Table>
-      <div className="pagination d-flex justify-content-end">
-        <Button variant="primary" size="sm" disabled={currentPage === 1} onClick={handlePreviousPage}>Previous</Button>
-        <span className="page-number">{currentPage}</span>
-        <Button variant="primary" size="sm" disabled={currentPage * recordsPerPage >= biddingHistory.length} onClick={handleNextPage}>Next</Button>
-      </div>
+            </thead>
+            <tbody>
+              {displayedHistory.map((bid) => (
+                <React.Fragment key={bid.bidID}>
+                  <tr>
+                    <td>{bid.bidID}</td>
+                    <td>
+                      <div>
+                        <p>Bid Time: {new Date(bid.bidTimestamp).toLocaleString({timeZone: 'Asia/Singapore' })}</p>
+                        <p>Bid Status: {bid.bidStatus}</p>
+                        <p>Bid Amount: {bid.bidAmount}</p>
+                      </div>
+                      {expandedItem === bid.bidID && (
+                        <div>
+                          <p>Auction ID: {bid.auction.auctionID}</p>
+                          <p>Auction Status: {bid.auction.auctionStatus}</p>
+                          <p>Car Details: {`${bid.auction.car.exteriorColor} ${bid.auction.car.make} ${bid.auction.car.model}`}</p>
+                        </div>
+                      )}
+                    </td>
+                    <td> 
+                      <Button variant="primary" size="sm" onClick={() => handleViewDetails(bid.bidID)}>
+                        {expandedItem === bid.bidID ? 'View Less Details' : 'View All Details'}
+                      </Button>
+                    </td>
+                  </tr>
+                </React.Fragment>
+              ))}
+            </tbody>
+          </Table>
+          <div className="pagination d-flex justify-content-end">
+            <Button variant="primary" size="sm" disabled={currentPage === 1} onClick={handlePreviousPage}>Previous</Button>
+            <span className="page-number">{currentPage}</span>
+            <Button variant="primary" size="sm" disabled={currentPage * recordsPerPage >= biddingHistory.length} onClick={handleNextPage}>Next</Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
