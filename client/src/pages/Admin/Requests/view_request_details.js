@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
-import { Table, Card, Button } from 'react-bootstrap';
+import { useParams, useNavigate } from "react-router-dom";
+import { Table, Card, Button, Alert } from 'react-bootstrap';
 
 export default function ViewRequestDetails() {
     const { requestID } = useParams();
@@ -9,6 +9,8 @@ export default function ViewRequestDetails() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [carImageSrc, setCarImageSrc] = useState(null);
+    const [showSuccess, setShowSuccess] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         axios.get(`http://127.0.0.1:5000/api/requests/viewRequestDetails/${requestID}`)
@@ -31,10 +33,35 @@ export default function ViewRequestDetails() {
     const handleApprove = () => {
         // Implement the logic to approve the request here
     };
-
     const handleReject = () => {
-        // Implement the logic to reject the request here
+        // Display a confirmation dialog
+        const shouldDelete = window.confirm("Are you sure you want to reject this request?");
+
+        if (shouldDelete) {
+            // Send an API request to delete the request when the "Reject" button is clicked.
+            axios.delete(`http://127.0.0.1:5000/api/requests/deleteRequest/${requestID}`)
+                .then((response) => {
+                    // Handle success, show a message, and refresh the page.
+                    console.log('Request rejected successfully:', response.data);
+                    setShowSuccess(true);
+                })
+                .catch((error) => {
+                    // Handle error, display an error message.
+                    console.error('Error rejecting request:', error);
+                });
+        }
     };
+
+    useEffect(() => {
+        // Automatically refresh the page after deletion
+        if (showSuccess) {
+            const timer = setTimeout(() => {
+                setShowSuccess(false);
+                navigate("/Requests"); // Redirect to another page or the same page to refresh
+            }, 2000); // Refresh the page after 2 seconds
+            return () => clearTimeout(timer);
+        }
+    }, [showSuccess, navigate]);
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error.message}</div>;
@@ -96,6 +123,11 @@ export default function ViewRequestDetails() {
                             </tr>
                         </tbody>
                     </Table>
+                    {showSuccess && (
+                        <Alert variant="success" style={{ marginTop: "10px" }}>
+                            Request rejected successfully.
+                        </Alert>
+                    )}
                     <div style={{ marginTop: "10px" }}>
                         <Button variant="success" onClick={handleApprove}>Approve</Button>
                         <span style={{ margin: "10px" }}></span>
