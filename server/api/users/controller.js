@@ -57,3 +57,109 @@ exports.viewUser = async (req, res) => {
     }
 };
 
+exports.getUserProfileDetails = async (req, res) => {
+    const accountID = req.params.id; // Use req.params.id to get the account ID from the URL
+
+    try {
+        const account = await prisma.account.findUnique({
+            where: { accountID: parseInt(accountID) }, // Parse to an integer
+            include: {
+                user: true, // Include the associated user details
+            },
+        });
+
+        if (!account) {
+            return res.status(404).json({ error: 'Account not found' });
+        }
+
+        const user = account.user;
+        res.json(user);
+    } catch (error) {
+        console.error("Error getting user details:", error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+exports.getUserBiddingHistory = async (req, res) => {
+    const accountID = req.params.id; // Use req.params.id to get the account ID from the URL
+
+    try {
+        const biddingHistory = await prisma.biddingHistory.findMany({
+            where: { accountID: parseInt(accountID) }, // Filter by the accountID
+            include: {
+                auction: {
+                    include: {
+                        car: true,
+                    },
+                },
+            },
+        });
+
+        res.json(biddingHistory);
+    } catch (error) {
+        console.error("Error getting user's bidding history:", error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+exports.getUserSellingHistory = async (req, res) => {
+    const accountID = req.params.id; // Use req.params.id to get the account ID from the URL
+
+    try {
+        const sellingHistory = await prisma.sellingHistory.findMany({
+            where: { accountID: parseInt(accountID) }, // Filter by the accountID
+            include: {
+                account: true,
+                order: {
+                    include: {
+                        auction: {
+                            include: {
+                                car: true,
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        res.json(sellingHistory);
+    } catch (error) {
+        console.error("Error getting user's selling history:", error);
+        res.status(500).json({ error: 'Internal server error', details: error });
+    }
+};
+
+exports.updateUserProfileDetails = async (req, res) => {
+    const accountID = parseInt(req.params.id); // Use req.params.id to get the account ID from the URL
+    const { newUserData, newAccountData } = req.body; // You can pass the updated data in the request body
+
+    try {
+        // Find the account associated with the given account ID
+        const account = await prisma.account.findUnique({
+            where: { accountID },
+            include: {
+                user: true, // Include the associated user
+            },
+        });
+
+        if (!account) {
+            return res.status(404).json({ error: 'Account not found' });
+        }
+        
+        const updatedUser = await prisma.user.update({
+            where: { userID: account.user.userID },
+            data: newUserData, // An object containing the updated user data
+        });
+
+        // Update the account data
+        const updatedAccount = await prisma.account.update({
+            where: { accountID },
+            data: newAccountData, // An object containing the updated account data
+        });
+
+        res.json({ updatedUser, updatedAccount });
+    } catch (error) {
+        console.error("Error updating user and account data:", error);
+        res.status(500).json({ error: 'Internal server error', details: error });
+    }
+};

@@ -646,7 +646,7 @@ progress {
 }
 
     .blockquote-footer::before {
-        content: "— ";
+        content: "ï¿½ï¿½";
     }
 
 .img-fluid {
@@ -12594,7 +12594,7 @@ body {
     letter-spacing: 0.0625em;
 }
 
-#mainNav {
+/* #mainNav {
     min-height: 3.5rem;
     background-color: #fff;
 }
@@ -12682,7 +12682,7 @@ body {
                     outline: none;
                     border-bottom: 0.25rem solid #64a19d;
                 }
-}
+} */
 
 .btn {
     box-shadow: 0 0.1875rem 0.1875rem 0 rgba(0, 0, 0, 0.1) !important;
