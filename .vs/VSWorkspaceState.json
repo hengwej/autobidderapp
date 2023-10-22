@@ -1,16 +1,20 @@
 {
   "ExpandedNodes": [
     "",
+    "\\client",
+    "\\client\\src",
+    "\\client\\src\\pages",
+    "\\client\\src\\pages\\General",
+    "\\client\\src\\pages\\General\\Homepage",
     "\\server",
     "\\server\\api",
-    "\\server\\api\\auctions",
-    "\\server\\api\\auth",
-    "\\server\\api\\cars",
-    "\\server\\api\\users",
+    "\\server\\api\\accounts",
+    "\\server\\api\\biddingHistory",
+    "\\server\\api\\comments",
     "\\server\\prisma",
     "\\server\\prisma\\migrations",
-    "\\server\\prisma\\migrations\\20231017092454_init"
+    "\\server\\prisma\\migrations\\20231018103401_"
   ],
-  "SelectedNode": "\\server\\prisma\\schema.prisma",
+  "SelectedNode": "\\server\\api\\accounts\\index.js",
   "PreviewInSolutionExplorer": false
 }
