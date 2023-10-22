@@ -2,11 +2,6 @@ const express = require('express');
 const router = express.Router();
 const controller = require('./controller');
 
-router.post('/addAccount', controller.addAccount);
-router.get('/allAccount', controller.allAccount);
+router.get('/allComment', controller.allComment);
 
 module.exports = router;
-
-
-
-
