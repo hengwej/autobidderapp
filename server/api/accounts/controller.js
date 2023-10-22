@@ -9,6 +9,9 @@ exports.addAccount = async (req, res) => {
     res.json(newAccount);
 };
 
-
+exports.allAccount = async (req, res) => {
+    const allAccounts = await prisma.account.findMany();
+    res.json(allAccounts);
+};
 
 

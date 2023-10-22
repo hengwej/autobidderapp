@@ -13,6 +13,10 @@ export default function ViewCarDetails() {
     const [currentHighestBid, setCurrentHighestBid] = useState(null);
     const [auctionStartDate, setAuctionStartDate] = useState(null);
     const [auctionEndDate, setAuctionEndDate] = useState(null);
+    const [auctionID, setAuctionID] = useState(null);
+    const [carCommentData, setCarCommentData] = useState(null);
+    const [accountID, setAccountID] = useState(null);
+    const [userName, setUserName] = useState(null);
     let countdownInterval;
 
     const handlePlaceBidClose = () => {
@@ -46,6 +50,16 @@ export default function ViewCarDetails() {
                 setCurrentHighestBid(auction.currentHighestBid);
                 setAuctionStartDate(auction.startDate);
                 setAuctionEndDate(auction.endDate);
+                
+                const commentResponse = await fetch("http://127.0.0.1:5000/api/comments/allComment");
+                const commentData = await commentResponse.json();
+                const comment = commentData.find((comment) => auction.auctionID === comment.auctionID);
+                setCarCommentData(comment.details);
+                
+                const accountResponse = await fetch("http://127.0.0.1:5000/api/accounts/allAccount");
+                const accountData = await accountResponse.json();
+                const account = accountData.find((account) => comment.accountID === account.accountID);
+                setUserName(account.username);
 
             } catch (error) {
                 console.error("Error fetching data:", error);
@@ -219,6 +233,10 @@ export default function ViewCarDetails() {
                 <Button variant="info" style={{ marginLeft: 20 + 'px', marginBottom: 6 + 'px', padding: 8 + 'px', width: 100 + 'px' }}>
                     Add
                 </Button>
+                <div>
+                    {userName} <br />
+                    {carCommentData}
+                </div>
             </div>
         </div>
     );
