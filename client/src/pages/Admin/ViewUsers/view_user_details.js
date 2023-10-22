@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import { Card } from "react-bootstrap";
+
 
 
 export default function ViewUserDetails() {
@@ -28,14 +30,16 @@ export default function ViewUserDetails() {
     if (!user) return <div>User not found</div>;
 
     return (
-        <div>
-            <p id="view-user-details">View User Details</p>
-            <div>
-                <p>Name: {user.firstName} {user.lastName}</p>
-                <p>Email: {user.emailAddress}</p>
-                <p>Phone Number: {user.phoneNumber}</p>
-                <p> Address : {user.address}</p>
-            </div>
-        </div>
+        <Card>
+            <Card.Header>View User Details</Card.Header>
+            <Card.Body>
+                <div>
+                    <p>Name: {user.firstName} {user.lastName}</p>
+                    <p>Email: {user.emailAddress}</p>
+                    <p>Phone Number: {user.phoneNumber}</p>
+                    <p>Address: {user.address}</p>
+                </div>
+            </Card.Body>
+        </Card>
     );
 }

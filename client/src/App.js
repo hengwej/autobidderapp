@@ -9,10 +9,10 @@ import ViewCarDetails from "./pages/Users/CarDetails/view_car_details";
 import Placebid from "./pages/Users/PlaceBid/placebid";
 import "./css/styles.css";
 import Login2FA from "./pages/Auth/Login2FA";
-import UserManagement from "./pages/Admin/viewUsers";
-import ViewDetails from "./pages/Admin/view_user_details";
-import Requests from "./pages/Admin/requests";
-import ViewRequestDetails from "./pages/Admin/view_request_details";
+import UserManagement from "./pages/Admin/ViewUsers/viewUsers";
+import ViewDetails from "./pages/Admin/ViewUsers/view_user_details";
+import Requests from "./pages/Admin/Requests/requests";
+import ViewRequestDetails from "./pages/Admin/Requests/view_request_details";
 import UserProfile from "./pages/Users/UserProfile/UserProfile";
 import axios from "axios";
 
