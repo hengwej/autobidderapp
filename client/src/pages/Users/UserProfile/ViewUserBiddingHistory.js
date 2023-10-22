@@ -11,24 +11,20 @@ const ViewUserBiddingHistory = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    const accountID = 9;
-
-    // Fetch bidding history based on the account identifier
-    axios.get(`http://localhost:5000/api/users/getUserBiddingHistory/${accountID}`)
-      .then(biddingHistoryResponse => {
-        setBiddingHistory(biddingHistoryResponse.data);
+    axios.post('http://localhost:5000/api/users/getUserBiddingHistory', {}, { withCredentials: true })
+      .then(response => {
+        setBiddingHistory(response.data);
       })
-      .catch(biddingHistoryError => {
-        console.error("Failed to fetch bidding history:", biddingHistoryError);
+      .catch(error => {
+        console.error("Failed to fetch user profile:", error);
       });
-
   }, []);
 
   useEffect(() => {
     // Calculate the range of records to display for the current page
     const startIndex = (currentPage - 1) * recordsPerPage;
     const endIndex = startIndex + recordsPerPage;
-    
+
     // Set the displayed records based on the range
     setDisplayedHistory(biddingHistory.slice(startIndex, endIndex));
   }, [biddingHistory, currentPage]);
@@ -74,7 +70,7 @@ const ViewUserBiddingHistory = () => {
                     <td>{bid.bidID}</td>
                     <td>
                       <div>
-                        <p>Bid Time: {new Date(bid.bidTimestamp).toLocaleString({timeZone: 'Asia/Singapore' })}</p>
+                        <p>Bid Time: {new Date(bid.bidTimestamp).toLocaleString({ timeZone: 'Asia/Singapore' })}</p>
                         <p>Bid Status: {bid.bidStatus}</p>
                         <p>Bid Amount: {bid.bidAmount}</p>
                       </div>
@@ -86,7 +82,7 @@ const ViewUserBiddingHistory = () => {
                         </div>
                       )}
                     </td>
-                    <td> 
+                    <td>
                       <Button variant="primary" size="sm" onClick={() => handleViewDetails(bid.bidID)}>
                         {expandedItem === bid.bidID ? 'View Less Details' : 'View All Details'}
                       </Button>
