@@ -14,12 +14,14 @@ const authenticateToken = (req, res, next) => {
     const token = req.cookies.token;
     if (token == null) return res.sendStatus(401);
 
-    jwt.verify(token, 'your-secret-key', (err, user) => {
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
         if (err) return res.sendStatus(403);
         req.user = user;
         next();
     });
 };
+
+
 
 
 router.post('/signUp', async (req, res) => {
@@ -92,7 +94,7 @@ router.post('/login', async (req, res) => {
             timestamp: new Date(),
         };
 
-        const tempToken = jwt.sign(tempPayload, 'temp-secret-key', { expiresIn: '10m' });
+        const tempToken = jwt.sign(tempPayload, process.env.JWT_TEMP_SECRET, { expiresIn: '10m' });
 
         // Send temporary token as a cookie
         res.cookie('tempToken', tempToken, { httpOnly: true, secure: true, sameSite: 'None' });
@@ -116,7 +118,7 @@ router.post('/otp', async (req, res) => {
         // Verify temporary session token
         let tempUser;
         try {
-            tempUser = jwt.verify(tempToken, 'temp-secret-key');
+            tempUser = jwt.verify(tempToken, process.env.JWT_TEMP_SECRET);
         } catch (error) {
             return res.status(401).json({ error: 'Invalid or expired temporary session' });
         }
@@ -129,7 +131,7 @@ router.post('/otp', async (req, res) => {
             accountType: tempUser.accountType,
         };
 
-        const token = jwt.sign(payload, 'your-secret-key', { expiresIn: '1h' });
+        const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
         res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'None' });
         res.clearCookie('tempToken');
 

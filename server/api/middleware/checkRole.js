@@ -6,7 +6,7 @@ function checkRole(role) {
             return res.status(401).json({ error: 'Not authorized' });
         }
 
-        jwt.verify(token, 'your-secret-key', (err, decodedToken) => {
+        jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
             if (err || !decodedToken) {
                 return res.status(401).json({ error: 'Not authorized' });
             }

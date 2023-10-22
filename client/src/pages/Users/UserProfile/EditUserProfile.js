@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import axios from 'axios';
 import * as Yup from 'yup';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { Modal, Button} from 'react-bootstrap';
-import './styles.css'; 
+import { Modal, Button } from 'react-bootstrap';
+import './styles.css';
 
 const EditUserProfile = ({ user, account }) => {
   const [showEditProfileModal, setShowEditProfileModal] = useState(false);
@@ -47,7 +47,7 @@ const EditUserProfile = ({ user, account }) => {
   const handleShowConfirmModal = () => {
     setShowConfirmModal(true);
   };
-  
+
   // Function to handle saving profile
   const handleSaveProfile = (data) => {
     // Update newValues with the form data
@@ -71,25 +71,29 @@ const EditUserProfile = ({ user, account }) => {
     setShowEditProfileModal(false);
 
     const requestData = {
-        newUserData: {
-          firstName: newValues.firstName,
-          lastName: newValues.lastName,
-          address: newValues.address,
-          phoneNumber: newValues.phoneNumber,
-          emailAddress: newValues.emailAddress
-        },
+      newUserData: {
+        firstName: newValues.firstName,
+        lastName: newValues.lastName,
+        address: newValues.address,
+        phoneNumber: newValues.phoneNumber,
+        emailAddress: newValues.emailAddress
+      },
 
-        newAccountData: {
-            username: newValues.username,
-        },
+      newAccountData: {
+        username: newValues.username,
+      },
     };
-    
+
     // Send an HTTP request to save the updated profile data in the database
     axios
-      .put(`http://localhost:5000/api/users/updateUserProfileDetails/${account.accountID}`, requestData)
+      .put(`http://localhost:5000/api/users/updateUserProfileDetails`, requestData, {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
       .then(response => {
         console.log("Profile edited successfully");
-        
         // Display the success message modal
         setShowSuccessModal(true);
       })
@@ -100,71 +104,71 @@ const EditUserProfile = ({ user, account }) => {
 
   return (
     <div>
-        <Button variant="primary" onClick={handleShowEditProfile} className="UserProfile-button">Edit Profile</Button>
-        <Modal show={showEditProfileModal} onHide={handleCloseEditProfile}>
-            <Modal.Header closeButton>
-                <Modal.Title>Edit Profile</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <Formik initialValues={newValues} validationSchema={validationSchema} onSubmit={handleSaveProfile}>
-                {() => (
-                    <Form>
-                    <div className="form-group">
-                        <label htmlFor="editUsername">Username:</label>
-                        <Field id="editUsername" type="text" name="username" placeholder="Username" className="form-control" />
-                        <ErrorMessage className="error-message" name="username" component="span" />
-                    </div>
+      <Button variant="primary" onClick={handleShowEditProfile} className="UserProfile-button">Edit Profile</Button>
+      <Modal show={showEditProfileModal} onHide={handleCloseEditProfile}>
+        <Modal.Header closeButton>
+          <Modal.Title>Edit Profile</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Formik initialValues={newValues} validationSchema={validationSchema} onSubmit={handleSaveProfile}>
+            {() => (
+              <Form>
+                <div className="form-group">
+                  <label htmlFor="editUsername">Username:</label>
+                  <Field id="editUsername" type="text" name="username" placeholder="Username" className="form-control" />
+                  <ErrorMessage className="error-message" name="username" component="span" />
+                </div>
 
-                    <div className="form-group">
-                        <label htmlFor="editFirstName">First Name:</label>
-                        <Field id="editFirstName" type="text" name="firstName" placeholder="First Name" className="form-control" />
-                        <ErrorMessage className="error-message" name="firstName" component="span" />
-                    </div>
+                <div className="form-group">
+                  <label htmlFor="editFirstName">First Name:</label>
+                  <Field id="editFirstName" type="text" name="firstName" placeholder="First Name" className="form-control" />
+                  <ErrorMessage className="error-message" name="firstName" component="span" />
+                </div>
 
-                    <div className="form-group">
-                        <label htmlFor="editLastName">Last Name:</label>
-                        <Field id="editLastName" type="text" name="lastName" placeholder="Last Name" className="form-control" />
-                        <ErrorMessage className="error-message" name="lastName" component="span" />
-                    </div>
+                <div className="form-group">
+                  <label htmlFor="editLastName">Last Name:</label>
+                  <Field id="editLastName" type="text" name="lastName" placeholder="Last Name" className="form-control" />
+                  <ErrorMessage className="error-message" name="lastName" component="span" />
+                </div>
 
-                    <div className="form-group">
-                        <label htmlFor="editEmail">Email:</label>
-                        <Field id="editEmail" type="email" name="emailAddress" placeholder="Email" className="form-control" />
-                        <ErrorMessage className="error-message" name="emailAddress" component="span" />
-                    </div>
+                <div className="form-group">
+                  <label htmlFor="editEmail">Email:</label>
+                  <Field id="editEmail" type="email" name="emailAddress" placeholder="Email" className="form-control" />
+                  <ErrorMessage className="error-message" name="emailAddress" component="span" />
+                </div>
 
-                    <div className="form-group">
-                        <label htmlFor="editAddress">Address:</label>
-                        <Field id="editAddress" type="text" name="address" placeholder="Address" className="form-control" />
-                        <ErrorMessage className="error-message" name="address" component="span" />
-                    </div>
+                <div className="form-group">
+                  <label htmlFor="editAddress">Address:</label>
+                  <Field id="editAddress" type="text" name="address" placeholder="Address" className="form-control" />
+                  <ErrorMessage className="error-message" name="address" component="span" />
+                </div>
 
-                    <div className="form-group">
-                        <label htmlFor="editPhoneNumber">Phone Number:</label>
-                        <Field id="editPhoneNumber" type="text" name="phoneNumber" placeholder="Phone Number" className="form-control" />
-                        <ErrorMessage className="error-message" name="phoneNumber" component="span" />
-                    </div>
-                    <Modal.Footer className="d-flex justify-content-center">
-                        <Button variant="secondary" onClick={handleCloseEditProfile}>Cancel</Button>
-                        <Button variant="primary" type="submit">Save Changes</Button>
-                    </Modal.Footer>
-                    </Form>
-                )}
-                </Formik>
-            </Modal.Body>
-        </Modal>
-        <Modal show={showConfirmModal} onHide={() => setShowConfirmModal(false)}>
-            <Modal.Header closeButton>
-                <Modal.Title>Confirm Changes</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-            <p>Are you sure you want to save the following changes?</p>
-            <p>Username: {newValues.username}</p>
-            <p>First Name: {newValues.firstName}</p>
-            <p>Last Name: {newValues.lastName}</p>
-            <p>Email: {newValues.emailAddress}</p>
-            <p>Address: {newValues.address}</p>
-            <p>Phone Number: {newValues.phoneNumber}</p>
+                <div className="form-group">
+                  <label htmlFor="editPhoneNumber">Phone Number:</label>
+                  <Field id="editPhoneNumber" type="text" name="phoneNumber" placeholder="Phone Number" className="form-control" />
+                  <ErrorMessage className="error-message" name="phoneNumber" component="span" />
+                </div>
+                <Modal.Footer className="d-flex justify-content-center">
+                  <Button variant="secondary" onClick={handleCloseEditProfile}>Cancel</Button>
+                  <Button variant="primary" type="submit">Save Changes</Button>
+                </Modal.Footer>
+              </Form>
+            )}
+          </Formik>
+        </Modal.Body>
+      </Modal>
+      <Modal show={showConfirmModal} onHide={() => setShowConfirmModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirm Changes</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>Are you sure you want to save the following changes?</p>
+          <p>Username: {newValues.username}</p>
+          <p>First Name: {newValues.firstName}</p>
+          <p>Last Name: {newValues.lastName}</p>
+          <p>Email: {newValues.emailAddress}</p>
+          <p>Address: {newValues.address}</p>
+          <p>Phone Number: {newValues.phoneNumber}</p>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowConfirmModal(false)}>Cancel</Button>
