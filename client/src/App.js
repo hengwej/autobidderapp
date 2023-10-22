@@ -1,10 +1,9 @@
 import React from "react";
-import { Routes, Route, Link} from "react-router-dom"; // Change 'BrowserRouter' to 'Routes'
+import { Routes, Route, Link } from "react-router-dom"; // Change 'BrowserRouter' to 'Routes'
 import Homepage from "./pages/General/Homepage";
 import FAQ from "./pages/General/FAQ";
 import SignUp from "./pages/Auth/SignUp";
 import Login from "./pages/Auth/Login";
-import Logout from "./pages/Auth/Logout";
 import SellCar from "./pages/Users/SellACar/sell_a_car";
 import ViewCarDetails from "./pages/Users/CarDetails/view_car_details";
 import Placebid from "./pages/Users/PlaceBid/placebid";
@@ -54,7 +53,7 @@ function App() {
                             <Link className="nav-link" to="/signup">Sign Up</Link>
                         </li>
                         <li className="nav-item">
-                            <Link className="nav-link" to="/logout">Logout</Link>
+                            <Link className="nav-link" to="/" onClick={logout}>Logout</Link>
                         </li>
                         <li className="nav-item">
                             <Link className="nav-link" to="/userManagement">admin test users</Link>
@@ -74,7 +73,6 @@ function App() {
                 <Route path="/sellCar" element={<SellCar />} />
                 <Route path="/auth/login" element={<Login />} />
                 <Route path="/auth/confirmation" element={<Login2FA />} />
-                <Route path="/logout" element={<Logout />} />
                 <Route path="/signup" element={<SignUp />} />
                 <Route path="/viewCarDetails/:carID" element={<ViewCarDetails />} />
                 <Route path="/placebid" element={<Placebid />} />

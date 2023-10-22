@@ -144,10 +144,10 @@ router.post('/otp', async (req, res) => {
 });
 
 
-
 router.post('/logout', (req, res) => {
-    res.clearCookie('token', { path: '/', secure: true, sameSite: 'None' });
+    res.clearCookie('token', { path: '/', httpOnly: true, secure: true, sameSite: 'None' });
     res.json({ message: "Logged out successfully." });
 });
+
 
 module.exports = router;
