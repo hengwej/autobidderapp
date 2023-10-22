@@ -8,6 +8,24 @@ const crypto = require('crypto');
 const router = express.Router();
 const prisma = new PrismaClient();
 const saltRounds = 10;
+const axios = require('axios'); //for recaptcha backend logic
+const validator = require('validator');
+
+
+//asynchronous recaptcha backend logic
+async function verifyRecaptcha(token) { //takes the token arg from frontend
+    const secretKey = process.env.RECAPTCHA_SERVER_KEY;  
+    console.log("Server CAPTCHA key is:",process.env.RECAPTCHA_SERVER_KEY);
+    try {
+        const response = await axios.post(`https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${token}`); //REMEMBER TO SWAP OUT TESTING KEY MR DARREN
+        res.json(response.data); // this sends the response data back to the client
+        console.log("RECAPTCHA successfully completed");
+      } catch (error) {
+        res.status(500).send(error.toString());
+      }
+  }
+
+
 
 // Middleware to validate JWT token
 const authenticateToken = (req, res, next) => {
@@ -51,6 +69,23 @@ router.post('/signUp', async (req, res) => {
 router.post('/login', async (req, res) => {
     const { username, password } = req.body;
 
+    if (!username || !password) {
+        return res.status(400).json({ message: 'Please enter both username and password' });
+    }
+
+
+    // validation and sanitisation
+    // Check for illegal characters in username and password
+    if (validator.matches(username, /[<>]/) || validator.matches(password, /[<>]/)) {
+        return res.status(400).json({ message: 'Illegal characters detected' });
+    }
+
+    // Sanitize
+    const sanitizedUsername = validator.escape(username);
+    const sanitizedPassword = validator.escape(password);
+
+
+    //resume backend logic
     try {
         const account = await prisma.account.findUnique({
             where: { username },
