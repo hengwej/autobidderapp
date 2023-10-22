@@ -46,12 +46,14 @@ const carRoutes = require('./api/cars');
 const userRoutes = require('./api/users');
 const accountRoutes = require('./api/accounts');
 const authRoutes = require('./api/auth/auth');
+// const sellcarRoutes = require('/api/sellcar/sellcar')
 
 // Setting up routes
 app.use('/api/cars', carRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/accounts', accountRoutes);
 app.use('/api/auth', authRoutes);
+// app.use('/api/sellcar', sellcarRoutes);
 
 // Protected route example
 app.get('/some-protected-route', checkRole('admin'), (req, res) => {
