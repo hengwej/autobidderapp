@@ -54,48 +54,55 @@ const ViewUserSellingHistory = () => {
 
   return (
     <div>
-      <Table className="table-header-grey">
-        <thead>
-          <tr>
-            <th>Order ID</th>
-            <th>Details</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {displayedHistory.map((sale) => (
-            <React.Fragment key={sale.saleID}>
+      <h3>Selling History</h3>
+      {sellingHistory.length === 0 ? (
+        <p>No records found</p>
+      ) : (
+        <div>
+          <Table className="table-header-grey">
+            <thead>
               <tr>
-                <td>{sale.orderID}</td>
-                <td>
-                  <div>
-                    <p>Order Completion Time: {new Date(sale.order.orderCompletionTime).toLocaleString({timeZone: 'Asia/Singapore' })}</p>
-                    <p>Order Status: {sale.order.orderStatus}</p>
-                    <p>Bidder: {sale.account.username}</p>
-                  </div>
-                  {expandedItem === sale.saleID && (
-                    <div>
-                      <p>Car Details: {`${sale.order.auction.car.exteriorColor} ${sale.order.auction.car.make} ${sale.order.auction.car.model}`}</p>
-                    </div>
-                  )}
-                </td>
-                <td> 
-                  <Button variant="primary" size="sm" onClick={() => handleViewDetails(sale.saleID)}>
-                    {expandedItem === sale.saleID ? 'View Less Details' : 'View All Details'}
-                  </Button>
-                </td>
+                <th>Order ID</th>
+                <th>Details</th>
+                <th>Action</th>
               </tr>
-            </React.Fragment>
-          ))}
-        </tbody>
-      </Table>
-      <div className="pagination d-flex justify-content-end">
-        <Button variant="primary" size="sm" disabled={currentPage === 1} onClick={handlePreviousPage}>Previous</Button>
-        <span className="page-number">{currentPage}</span>
-        <Button variant="primary" size="sm" disabled={currentPage * recordsPerPage >= sellingHistory.length} onClick={handleNextPage}>Next</Button>
-      </div>
+            </thead>
+            <tbody>
+              {displayedHistory.map((sale) => (
+                <React.Fragment key={sale.saleID}>
+                  <tr>
+                    <td>{sale.orderID}</td>
+                    <td>
+                      <div>
+                        <p>Order Completion Time: {new Date(sale.order.orderCompletionTime).toLocaleString({timeZone: 'Asia/Singapore' })}</p>
+                        <p>Order Status: {sale.order.orderStatus}</p>
+                        <p>Bidder: {sale.account.username}</p>
+                      </div>
+                      {expandedItem === sale.saleID && (
+                        <div>
+                          <p>Car Details: {`${sale.order.auction.car.exteriorColor} ${sale.order.auction.car.make} ${sale.order.auction.car.model}`}</p>
+                        </div>
+                      )}
+                    </td>
+                    <td>
+                      <Button variant="primary" size="sm" onClick={() => handleViewDetails(sale.saleID)}>
+                        {expandedItem === sale.saleID ? 'View Less Details' : 'View All Details'}
+                      </Button>
+                    </td>
+                  </tr>
+                </React.Fragment>
+              ))}
+            </tbody>
+          </Table>
+          <div className="pagination d-flex justify-content-end">
+            <Button variant="primary" size="sm" disabled={currentPage === 1} onClick={handlePreviousPage}>Previous</Button>
+            <span className="page-number">{currentPage}</span>
+            <Button variant="primary" size="sm" disabled={currentPage * recordsPerPage >= sellingHistory.length} onClick={handleNextPage}>Next</Button>
+          </div>
+        </div>
+      )}
     </div>
-  );
+  );  
 };
 
 export default ViewUserSellingHistory;
