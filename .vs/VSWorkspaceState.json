@@ -4,17 +4,12 @@
     "\\client",
     "\\client\\src",
     "\\client\\src\\pages",
-    "\\client\\src\\pages\\General",
-    "\\client\\src\\pages\\General\\Homepage",
+    "\\client\\src\\pages\\Users",
+    "\\client\\src\\pages\\Users\\UserProfile",
     "\\server",
     "\\server\\api",
-    "\\server\\api\\accounts",
-    "\\server\\api\\biddingHistory",
-    "\\server\\api\\comments",
-    "\\server\\prisma",
-    "\\server\\prisma\\migrations",
-    "\\server\\prisma\\migrations\\20231018103401_"
+    "\\server\\api\\auth",
+    "\\server\\api\\users"
   ],
-  "SelectedNode": "\\server\\api\\accounts\\index.js",
   "PreviewInSolutionExplorer": false
 }

@@ -1,11 +1,14 @@
 import React, { Component } from "react";
 import { useNavigate } from "react-router-dom"; // Import the hook
-import "../../css/styles.css";
-import "./styles.css";
+import "../../../css/styles.css";
+import "../styles.css";
 import Container from "react-bootstrap/Container";
 import axios from "axios";
-import Button from 'react-bootstrap/Button';
-import { Table } from 'react-bootstrap';
+import Button from "react-bootstrap/Button";
+import "../../../css/styles.css";
+import "../styles.css";
+import { Table, Card } from "react-bootstrap";
+
 
 class UserManagement extends Component {
     constructor(props) {
@@ -71,38 +74,55 @@ class UserManagement extends Component {
 
         return (
             <Container fluid>
-                {this.state.showSuccess && <div className="success-message">User deleted successfully!</div>}
-                <Table striped bordered hover>
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Phone Number</th>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {this.state.userData.map((user) => (
-                            <tr key={user.id}>
-                                <td>{user.firstName}</td>
-                                <td>{user.emailAddress}</td>
-                                <td>{user.phoneNumber}</td>
-                                <td>
-                                    <Button variant="danger" onClick={() => this.handleDeleteUser(user.userID)}>Delete</Button>
-                                </td>
-                                <td>
-                                    <Button variant="danger" onClick={() => this.handleViewUser(user.userID)}>View</Button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </Table>
+                {this.state.showSuccess && (
+                    <div className="success-message">User deleted successfully!</div>
+                )}
+                <Card>
+                    <Card.Header>User Management</Card.Header>
+                    <Card.Body>
+                        <Table striped bordered hover>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Phone Number</th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {this.state.userData.map((user) => (
+                                    <tr key={user.id}>
+                                        <td>{user.firstName}</td>
+                                        <td>{user.emailAddress}</td>
+                                        <td>{user.phoneNumber}</td>
+                                        <td>
+                                            <Button
+                                                variant="danger"
+                                                onClick={() => this.handleDeleteUser(user.userID)}
+                                            >
+                                                Delete
+                                            </Button>
+                                        </td>
+                                        <td>
+                                            <Button
+                                                variant="danger"
+                                                onClick={() => this.handleViewUser(user.userID)}
+                                            >
+                                                View
+                                            </Button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </Table>
+                    </Card.Body>
+                </Card>
             </Container>
         );
     }
 }
-
+ 
 export default function UserManagementWithNavigation() {
     const navigate = useNavigate(); // Initialize navigate using useNavigate hook
     return <UserManagement navigate={navigate} />;
