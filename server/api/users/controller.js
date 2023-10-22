@@ -86,6 +86,13 @@ exports.getUserBiddingHistory = async (req, res) => {
     try {
         const biddingHistory = await prisma.biddingHistory.findMany({
             where: { accountID: parseInt(accountID) }, // Filter by the accountID
+            include: {
+                auction: {
+                    include: {
+                        car: true,
+                    },
+                },
+            },
         });
 
         res.json(biddingHistory);
@@ -102,7 +109,16 @@ exports.getUserSellingHistory = async (req, res) => {
         const sellingHistory = await prisma.sellingHistory.findMany({
             where: { accountID: parseInt(accountID) }, // Filter by the accountID
             include: {
-                order: true // Include all fields from the associated Orders table
+                account: true,
+                order: {
+                    include: {
+                        auction: {
+                            include: {
+                                car: true,
+                            }
+                        }
+                    }
+                }
             }
         });
 
