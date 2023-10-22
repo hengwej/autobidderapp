@@ -58,3 +58,8 @@
     font-weight: bold;
     margin-top: 5px;
 }
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
