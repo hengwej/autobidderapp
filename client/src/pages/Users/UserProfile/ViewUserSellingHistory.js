@@ -11,24 +11,20 @@ const ViewUserSellingHistory = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    const accountID = 9;
-    
-    // Fetch selling history based on the account identifier
-    axios.get(`http://localhost:5000/api/users/getUserSellingHistory/${accountID}`)
-      .then(sellingHistoryResponse => {
-        setSellingHistory(sellingHistoryResponse.data);
+    axios.post('http://localhost:5000/api/users/getUserSellingHistory', {}, { withCredentials: true })
+      .then(response => {
+        setSellingHistory(response.data);
       })
-      .catch(sellingHistoryError => {
-        console.error("Failed to fetch selling history:", sellingHistoryError);
+      .catch(error => {
+        console.error("Failed to fetch user profile:", error);
       });
-
   }, []);
 
   useEffect(() => {
     // Calculate the range of records to display for the current page
     const startIndex = (currentPage - 1) * recordsPerPage;
     const endIndex = startIndex + recordsPerPage;
-    
+
     // Set the displayed records based on the range
     setDisplayedHistory(sellingHistory.slice(startIndex, endIndex));
   }, [sellingHistory, currentPage]);
@@ -74,7 +70,7 @@ const ViewUserSellingHistory = () => {
                     <td>{sale.orderID}</td>
                     <td>
                       <div>
-                        <p>Order Completion Time: {new Date(sale.order.orderCompletionTime).toLocaleString({timeZone: 'Asia/Singapore' })}</p>
+                        <p>Order Completion Time: {new Date(sale.order.orderCompletionTime).toLocaleString({ timeZone: 'Asia/Singapore' })}</p>
                         <p>Order Status: {sale.order.orderStatus}</p>
                         <p>Bidder: {sale.account.username}</p>
                       </div>
@@ -102,7 +98,7 @@ const ViewUserSellingHistory = () => {
         </div>
       )}
     </div>
-  );  
+  );
 };
 
 export default ViewUserSellingHistory;

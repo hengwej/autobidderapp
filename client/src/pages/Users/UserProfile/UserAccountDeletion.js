@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from 'axios';
 import { Modal, Button } from 'react-bootstrap';
 import { useNavigate } from "react-router-dom";
-import './styles.css'; 
+import './styles.css';
 
 const UserAccountDeletion = ({ account }) => {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
@@ -16,7 +16,7 @@ const UserAccountDeletion = ({ account }) => {
 
   const handleDeleteAccount = () => {
     // Make an HTTP DELETE request to delete the account
-    axios.delete(`http://localhost:5000/api/accounts/deleteAccount/${account.accountID}`)
+    axios.delete(`http://localhost:5000/api/accounts/deleteAccount`)
       .then(response => {
         // Handle a successful deletion
         console.log("Account deleted successfully");
@@ -35,6 +35,7 @@ const UserAccountDeletion = ({ account }) => {
     // Close the confirmation modal
     setShowConfirmationModal(false);
   };
+
 
   const handleCloseConfirmation = () => {
     // Close the confirmation modal
