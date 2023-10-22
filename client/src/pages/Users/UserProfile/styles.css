@@ -1,0 +1,9 @@
+.UserProfile-button {
+    width: 100%;
+    margin: 10px auto;
+}
+
+.table-header-grey thead th {
+    background-color: #ccc; /* Set your desired shade of grey */
+    color: #000; /* Set the text color for table headers */
+  }
