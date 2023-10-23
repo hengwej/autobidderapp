@@ -5,7 +5,7 @@ const router = express.Router();
 const prisma = new PrismaClient();
 
 
-router.post('/allCar', async (req, res) => {
+router.get('/allCar', async (req, res) => {
     const allCars = await prisma.car.findMany();
     res.json(allCars);
 });
