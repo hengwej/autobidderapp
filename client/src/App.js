@@ -8,6 +8,8 @@ import SellCar from "./pages/Users/SellACar/sell_a_car";
 import ViewCarDetails from "./pages/Users/CarDetails/view_car_details";
 import Placebid from "./pages/Users/PlaceBid/placebid";
 import "./css/styles.css";
+import PaymentForm from './pages/Users/Payment/payment';
+import PaymentSuccess from "./pages/Users/Payment/paymentsuccess";
 import Login2FA from "./pages/Auth/Login2FA";
 import UserManagement from "./pages/Admin/ViewUsers/viewUsers";
 import ViewDetails from "./pages/Admin/ViewUsers/view_user_details";
@@ -15,7 +17,10 @@ import Requests from "./pages/Admin/Requests/requests";
 import ViewRequestDetails from "./pages/Admin/Requests/view_request_details";
 import UserProfile from "./pages/Users/UserProfile/UserProfile";
 import axios from "axios";
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
 
+const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PK);
 
 async function logout() {
     try {
@@ -31,6 +36,7 @@ async function logout() {
 
 
 function App() {
+
     return (
         <div className="App">
             <nav className="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
@@ -81,6 +87,11 @@ function App() {
                 <Route path="/viewUser/:userID" element={<ViewDetails />} />
                 <Route path="/requests" element={<Requests />} />
                 <Route path="/viewRequestDetails/:requestID" element={<ViewRequestDetails />} />
+                <Route path="/payment" element={
+                    <Elements stripe={stripePromise}>
+                        <PaymentForm/>
+                    </Elements>}/>
+                <Route path="/payment-success" element={<PaymentSuccess />} />
             </Routes>
         </div>
     );
