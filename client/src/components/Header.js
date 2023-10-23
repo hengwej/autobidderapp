@@ -5,7 +5,7 @@ const Header = ({ headerText }) => {
     const headerStyle = {
         textAlign: "center",
         background: `url('../../../assets/img/welcome.jpg')`,
-        backgroundSize:"cover", // Stretch the image to fill the header
+        backgroundSize: "cover", // Stretch the image to fill the header
         backgroundPosition: "center",
         padding: "100px", // Increase padding to increase the header size
         height: "300px", // Increase height to increase the header size
@@ -21,8 +21,6 @@ const Header = ({ headerText }) => {
     const h1Style = {
         color: "white",
         textShadow: "none", // Remove the text shadow
-
-
 
     };
 

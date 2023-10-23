@@ -1,18 +1,20 @@
 import React, { useState } from "react";
-import "../../../css/styles.css";
 import "./styles.css";
 
 function SellCar() {
     const [formData, setFormData] = useState({
+        vehicleNumber: "",
+        images: null,
+        highlights: "",
+        equipment: "",
+        modification: "",
+        known_flaws: "",
         make: "",
         model: "",
-        year: "",
-        mileage: "",
-        price: "",
-        known_flaws: "",
-        description: "",
-        modification: "", 
-        images: []
+        interiorColor: "",
+        exteriorColor: "",
+        startingBid: "",
+        reservePrice: ""
     });
 
     const handleInputChange = (event) => {
@@ -23,84 +25,136 @@ function SellCar() {
         });
     };
 
-    // const handleImageUpload = (event) => {
-    //     setFormData({
-    //         ...formData,
-    //         images: [...event.target.files]
-    //     });
-    // };
-    const [picture, setPicture] = useState(null);
-    const [imgData, setImgData] = useState(null);
-    // const [prevImg, setPrevImg] = useState(null);
-    
-
-    // const handleImageUpload = (event) => {
-    //     const files = event.target.files[0];
-    //     if (files && files.type.startsWith('image/')) {
-    //         console.log("picture: ", event.target.files);
-    //     setPicture(event.target.files[0]);
-    //     const reader = new FileReader();
-    //     reader.addEventListener("load", () => {
-    //         setImgData(reader.result);
-    //     });
-    //     reader.readAsDataURL(event.target.files[0]);
-    //     }
-    // };
-    const handleImageUpload = (index, event) => {
+    const handleImageUpload = (event) => {
         const file = event.target.files[0];
         if (file && file.type.startsWith('image/')) {
-            const newImages = [...formData.images];
-            newImages[index] = file;
             setFormData({
                 ...formData,
-                images: newImages
+                images: file,
             });
+        } else {
+            alert('Please upload a valid image file.');
         }
     };
+    
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        // Send formData to your server...
+        const data = new FormData();
+        Object.keys(formData).forEach(key => {
+            if (key !== 'images') {
+                data.append(key, formData[key]);
+            }
+        });
+        if (formData.images) {
+            data.append('images', formData.images);
+        }
+        try {
+            const response = await fetch('https://localhost:3000/sellcar', {
+                method: 'POST',
+                body: data,
+            });
+            const responseData = await response.json();
+            console.log(responseData);
+        } catch (error) {
+            console.error('Error:', error);
+        }
     };
 
     return (
         <div className="sellcar-page">
-            <h2 className="sellcar-title">List Your Car</h2>
+            <h2 className="sellCar-title">List Your Car</h2>
             <form onSubmit={handleSubmit}>
                 <div className="image-upload-container">
-                    {Array(5).fill(null).map((_, index) => (
-                        <label key={index} className="label-button">
-                            {formData.images[index] ? (
-                                <img
-                                    className="preview-car-image"
-                                    src={URL.createObjectURL(formData.images[index])}
-                                    alt={`Car Preview ${index + 1}`}
-                                />
-                            ) : (
-                                "+"
-                            )}
-                            <input
-                                id={`sellcar_image_${index}`}
-                                type="file"
-                                name="images"
-                                onChange={(event) => handleImageUpload(index, event)}
-                                className="hidden"
+                    <label className="label-button">
+                        {formData.images ? (
+                            <img
+                                className="preview-car-image"
+                                src={URL.createObjectURL(formData.images)}
+                                alt="Car Preview"
                             />
-                        </label>
-                    ))}
+                        ) : (
+                            "+"
+                        )}
+                        <input
+                            id="sellcar_image"
+                            type="file"
+                            name="images"
+                            onChange={handleImageUpload}
+                            className="hidden"
+                        />
+                    </label>
                 </div>
-                <h1></h1>
+                <br></br>
+                <h2 className="sellCar-title">Highlights</h2>
+                <div>
+                    <textarea
+                        id="sellcar_highlights"
+                        name="highlights"
+                        value={formData.highlights}
+                        onChange={handleInputChange}
+                        placeholder="Fuel Efficiency"
+                        className="sellCar-input-margin"
+                    ></textarea>
+                </div>
+                <h2 className="sellCar-title">Equipment</h2>
+                <div>
+                    <textarea
+                        id="sellcar_equipment"
+                        name="equipment"
+                        value={formData.equipment}
+                        onChange={handleInputChange}
+                        placeholder="Spare Tyre"
+                        className="sellCar-input-margin"
+                    ></textarea>
+                </div>
+                <h2 className="sellCar-title">Modification</h2>
+                <div>
+                    <textarea
+                        id="sellcar_modification"
+                        name="modification"
+                        value={formData.modification}
+                        onChange={handleInputChange}
+                        placeholder="Sound system, Tinted windows"
+                        className="sellCar-input-margin"
+                    ></textarea>
+                </div>
+                <h2 className="sellCar-title">Known Flaws</h2>
+                <div>
+                    <textarea
+                        id="sellcar_known_flaws"
+                        name="known_flaws"
+                        value={formData.known_flaws}
+                        onChange={handleInputChange}
+                        placeholder="Dent on rear bumber"
+                        className="sellCar-input-margin"
+                    ></textarea>
+                </div>
+                <h2 className="sellCar-title">Vehicle Number</h2>
                 <div>
                     <input
-                        id="sellcar_title"
+                        id="sellcar_vehicleNumber"
+                        type="text"
+                        name="vehicleNumber"
+                        value={formData.vehicleNumber}
+                        onChange={handleInputChange}
+                        placeholder="OMP4848M"
+                        className="sellCar-input-margin"
+                    />
+                </div>
+                <h2 className="sellCar-title">Make</h2>
+                <div>
+                    <input
+                        id="sellcar_make"
                         type="text"
                         name="make"
                         value={formData.make}
                         onChange={handleInputChange}
-                        placeholder="Make"
+                        placeholder="Rolls-Royce"
+                        className="sellCar-input-margin"
                     />
                 </div>
-                <h1></h1>
+                <h2 className="sellCar-title">Car Model</h2>
                 <div>
                     <input
                         id="sellcar_model"
@@ -108,73 +162,60 @@ function SellCar() {
                         name="model"
                         value={formData.model}
                         onChange={handleInputChange}
-                        placeholder="Car Model"
+                        placeholder="Silver Spur 1990"
+                        className="sellCar-input-margin"
                     />
                 </div>
-                <h1></h1>
+                <h2 className="sellCar-title">Car Interior Color</h2>
                 <div>
                     <input
-                        id="sellcar_year"
-                        type="number"  /* assuming year should be a number */
-                        name="year"
-                        value={formData.year}
+                        id="sellcar_interiorColor"
+                        type="text"
+                        name="interiorColor"
+                        value={formData.interiorColor}
                         onChange={handleInputChange}
-                        placeholder="Year"
+                        placeholder="Black Connolly Hides"
+                        className="sellCar-input-margin"
                     />
                 </div>
-                <h1></h1>
+                <h2 className="sellCar-title">Car Exterior Color</h2>
                 <div>
                     <input
-                        id="sellcar_mileage"
-                        type="number" /* assuming mileage should be a number */
-                        name="mileage"
-                        value={formData.mileage}
+                        id="sellcar_exteriorColor"
+                        type="text"
+                        name="exteriorColor"
+                        value={formData.exteriorColor}
                         onChange={handleInputChange}
-                        placeholder="Mileage"
+                        placeholder="Dark Blue Metallic"
+                        className="sellCar-input-margin"
                     />
                 </div>
-                <h1></h1>
+                <h2 className="sellCar-title">Starting Bid</h2>
                 <div>
                     <input
-                        id="sellcar_price"
-                        type="number" /* assuming price should be a number */
-                        name="price"
-                        value={formData.price}
+                        id="sellcar_startingBid"
+                        type="number"
+                        name="startingBid"
+                        value={formData.startingBid}
                         onChange={handleInputChange}
-                        placeholder="Price (SGD)"
+                        placeholder="42900"
+                        className="sellCar-input-margin"
                     />
                 </div>
-                <h1></h1>
+                <h2 className="sellCar-title">Reserve Price</h2>
                 <div>
-                    <textarea
-                        id="sellcar_known_flaws"
-                        name="known_flaws"
-                        value={formData.description}
+                    <input
+                        id="sellcar_reservePrice"
+                        type="number"
+                        name="reservePrice"
+                        value={formData.reservePrice}
                         onChange={handleInputChange}
-                        placeholder="Known Flaws:
-                        Dent on rear bumber"
-                    ></textarea>
-                </div>           
-                <div>
-                    <textarea
-                        id="sellcar_modification"
-                        name="modification"
-                        value={formData.description}
-                        onChange={handleInputChange}
-                        placeholder="Modification:
-                        None"
-                    ></textarea>
+                        placeholder="250000"
+                        className="sellCar-input-margin"
+                    />
                 </div>
-                <div>
-                    <textarea
-                        id="sellcar_description"
-                        name="description"
-                        value={formData.description}
-                        onChange={handleInputChange}
-                        placeholder="Description"
-                    ></textarea>
-                </div>
-                <button type="submit">List Your Car</button>
+                <br></br>
+                <button type="submit" className="list-your-car-button">List Your Car</button>
             </form>
         </div>
     );
