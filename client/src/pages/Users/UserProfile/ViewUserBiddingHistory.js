@@ -20,7 +20,6 @@ const ViewUserBiddingHistory = () => {
   const [sortingFilter, setSortingFilter] = useState(""); // Default no sorting filter
   const [bidStatusFilter, setBidStatusFilter] = useState(""); // Default no status filter
 
-
   useEffect(() => {
     axios.post('http://localhost:5000/api/users/getUserBiddingHistory', {}, { withCredentials: true })
       .then(response => {
@@ -58,7 +57,7 @@ const ViewUserBiddingHistory = () => {
       } else if (sortBy === "bidID") {
         return sortOrder === "asc" ? a.bidID - b.bidID : b.bidID - a.bidID;
       }
-      return 0;
+      return true;
     });
   
     // Calculate the number of pages
