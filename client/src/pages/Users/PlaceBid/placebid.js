@@ -4,6 +4,7 @@ import "./styles.css";
 import axios from 'axios';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { Modal, Button } from "react-bootstrap";
+import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js'; // Import Stripe components
 
 export default function PlaceBid({ carID, handleClose  }) {
     const [auctionData, setAuctionData] = useState({});
@@ -13,6 +14,13 @@ export default function PlaceBid({ carID, handleClose  }) {
     const [error, setError] = useState(null);
     const [currentHighestBid, setCurrentHighestBid] = useState(null);
     const [bidError, setBidError] = useState(null);
+
+    const stripe = useStripe();
+    const elements = useElements();
+    const [isProcessing, setIsProcessing] = useState(false);
+    const [paymentError, setPaymentError] = useState(null);
+    const [paymentSuccess, setPaymentSuccess] = useState(false); // New state variable for tracking payment success
+
 
     useEffect(() => {
         async function fetchData() {
@@ -38,6 +46,13 @@ export default function PlaceBid({ carID, handleClose  }) {
         fetchData();
     }, [carID]);
 
+    useEffect(() => {
+        if (paymentSuccess) {
+            alert('Payment successful! The page will now refresh.'); // Alert the user
+            window.location.reload(); // Refresh the page
+        }
+    }, [paymentSuccess]); // Dependency array
+
     const handleCloseBid = () => {
         setOpenedBid(false);
     }
@@ -45,29 +60,84 @@ export default function PlaceBid({ carID, handleClose  }) {
         setOpenedBid(true);
     }
 
-    const bidOnIt = () => {
+    const bidOnIt = async () => {
         if (bidValue < currentHighestBid) {
             setBidError("Your bid cannot be lower than the current highest bid. Please enter a higher bid.");
-            return; // Prevent the bid from being submitted
+            return;
         }
-        setBidError(null); // Clear any previous error
+        setBidError(null);
+        setIsProcessing(true);
 
-        axios.post(`http://127.0.0.1:5000/api/auctions/addBid`, { bidValue: bidValue, carID: carID }).then((res) => {
+        if (!stripe || !elements) {
+            // Stripe.js has not loaded yet. Make sure to disable
+            // form submission until Stripe.js has loaded.
+            return;
+        }
 
-            handleCloseBid();
-            handleClose();
+        const cardElement = elements.getElement(CardElement);
+
+        // Use your card Element with other Stripe.js APIs
+        const {error, paymentMethod} = await stripe.createPaymentMethod({
+            type: 'card',
+            card: cardElement,
         });
 
-        // Add to bidding history
-        //axios.post(`http://127.0.0.1:5000/api/biddingHistory/addBidHistory`, { bidValue: bidValue }).then((res) => {
-        //});
+        if (error) {
+            console.log('[error]', error);
+            setIsProcessing(false);
+            setPaymentError(error.message || 'Payment failed');
+        } else {
+            console.log('[PaymentMethod]', paymentMethod);
+            const response = await axios.post('/api/stripe/create-payment-intent', {
+                amount: bidValue * 100, // Convert to cents and use bidValue
+                currency: 'usd'
+            });
 
-    }
+            const clientSecret = response.data.clientSecret;
+
+            const {error: confirmError} = await stripe.confirmCardPayment(clientSecret, {
+                payment_method: paymentMethod.id
+            });
+
+            if (confirmError) {
+                console.log(confirmError.message);
+                setPaymentError(confirmError.message || 'Payment failed');
+                setIsProcessing(false);
+            } else {
+                console.log('Payment successful!');
+                // Record the bid in the database now that payment was successful
+                await axios.post(`http://127.0.0.1:5000/api/auctions/addBid`, { bidValue: bidValue, carID: carID });
+                // Close the modal and reset state
+                handleCloseBid();
+                handleClose();
+                setIsProcessing(false);
+                setPaymentSuccess(true);
+            }
+        }
+    };
 
     const onSubmit = (data) => {
         setBidValue(data.bid);
         setBidError(null);
         handleOpenBid();
+    };
+
+    const CARD_ELEMENT_OPTIONS = {
+        style: {
+            base: {
+                color: "#32325d",
+                fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+                fontSmoothing: "antialiased",
+                fontSize: "16px",
+                "::placeholder": {
+                    color: "#aab7c4"
+                }
+            },
+            invalid: {
+                color: "#fa755a",
+                iconColor: "#fa755a"
+            }
+        }
     };
 
     return (
@@ -87,8 +157,13 @@ export default function PlaceBid({ carID, handleClose  }) {
                     <Modal.Title>Are you sure you want to bid $<u style={{color: 'red'}}>{bidValue}</u>?</Modal.Title>
                 </Modal.Header>
                 <Modal.Body style={{ backgroundColor: 'lightyellow', width: 33 + 'em', position: 'relative', right: 1 + 'em', height: 10 + 'em' }}>
+                    <CardElement options={CARD_ELEMENT_OPTIONS} className="card-element"/> {/* Stripe form */}
+                    {paymentError && <div className="payment-error">{paymentError}</div>} {/* Display payment error */}
+                    {paymentSuccess && <p>Payment successful! The page will refresh shortly.</p>}
                     <Button variant="secondary" onClick={handleCloseBid} className="cancel_btn">Cancel</Button>
-                    <Button variant="success" onClick={bidOnIt} className="success_btn">Confirm</Button>
+                    <Button variant="success" onClick={bidOnIt} className="success_btn" disabled={isProcessing}>
+                        {isProcessing ? "Processing..." : "Confirm"}
+                    </Button>
                     {bidError && <p style={{ color: 'red' }}>{bidError}</p>}
                 </Modal.Body>
                 <Modal.Footer style={{ backgroundColor: 'lightyellow', width: 33 + 'em', position: 'relative', right: 1 + 'em', height: 5 + 'em' }}/>
