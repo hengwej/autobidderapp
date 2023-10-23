@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
-import { Table, Button, Container, Dropdown, Row, Col } from 'react-bootstrap';
+import { Table, Button, Container, Dropdown, Row, Col} from 'react-bootstrap';
 import './styles.css';
 
 const ViewUserSellingHistory = () => {
@@ -15,9 +15,6 @@ const ViewUserSellingHistory = () => {
   const [numPages, setNumPages] = useState(0);
 
   // Sorting and Filtering
-  const [sortBy, setSortBy] = useState("orderID"); // Default sort by orderID
-  const [sortOrder, setSortOrder] = useState("asc"); // Default sort order ascending
-  const [sortingFilter, setSortingFilter] = useState(""); // Default no sorting filter
   const [orderStatusFilter, setOrderStatusFilter] = useState(""); // Default no status filter
 
   useEffect(() => {
@@ -45,21 +42,7 @@ const ViewUserSellingHistory = () => {
     } else if (orderStatusFilter === "Incompleted Orders") {
       sortedSellingHistory = sortedSellingHistory.filter(sale => sale.order.orderStatus.toLowerCase() === "incompleted");
     }
-  
-    // Sort the filtered data
-    sortedSellingHistory.sort((a, b) => {
-      if (sortBy === "orderTimestamp") {
-        const timestampA = new Date(a.sale.order.orderCompletionTime).toLocaleString({ timeZone: 'Asia/Singapore' });
-        const timestampB = new Date(b.sale.order.orderCompletionTime).toLocaleString({ timeZone: 'Asia/Singapore' });
-        return sortOrder === "asc" ? new Date(timestampA) - new Date(timestampB) : new Date(timestampB) - new Date(timestampA);
-      } else if (sortBy === "amount") {
-        return sortOrder === "asc" ? a.sale.order.auction.currentHighestBid - b.sale.order.auction.currentHighestBid : b.sale.order.auction.currentHighestBid - a.sale.order.auction.currentHighestBid;
-      } else if (sortBy === "orderID") {
-        return sortOrder === "asc" ? a.sale.orderID - b.sale.orderID : b.sale.orderID - a.sale.orderID;
-      }
-      return 0;
-    });
-  
+
     // Calculate the number of pages
     const totalRecords = sortedSellingHistory.length;
     const numPages = Math.ceil(totalRecords / recordsPerPage);
@@ -71,7 +54,7 @@ const ViewUserSellingHistory = () => {
     
     // Set the displayed records based on the range
     setDisplayedHistory(sortedSellingHistory.slice(startIndex, endIndex));
-  }, [sellingHistory, currentPage, sortBy, sortOrder, orderStatusFilter]);
+  }, [sellingHistory, currentPage, orderStatusFilter]);
 
   const handleViewDetails = (saleID) => {
     if (expandedItem === saleID) {
@@ -115,20 +98,6 @@ const ViewUserSellingHistory = () => {
                 </Dropdown.Menu>
               </Dropdown>
             </Col>
-            <Col>
-              <Dropdown className="d-flex justify-content-end Filter-dropdown">
-                <Dropdown.Toggle variant="primary" size="sm" id="orderSortingFilterDropdown">
-                  Sort By: {sortingFilter || "None"}
-                </Dropdown.Toggle>
-              <Dropdown.Menu>
-                <Dropdown.Item onClick={() => {setSortingFilter("Oldest Order First"); setSortBy("orderTimestamp"); setSortOrder("asc"); setCurrentPage(1);}}>Oldest Order First</Dropdown.Item>
-                <Dropdown.Item onClick={() => {setSortingFilter("Newest Order First"); setSortBy("orderTimestamp"); setSortOrder("desc"); setCurrentPage(1);}}>Newest Order First</Dropdown.Item>
-                <Dropdown.Item onClick={() => {setSortingFilter("Lowest Amount First"); setSortBy("amount"); setSortOrder("asc"); setCurrentPage(1);}}>Lowest Amount First</Dropdown.Item>
-                <Dropdown.Item onClick={() => {setSortingFilter("Highest Amount First"); setSortBy("amount"); setSortOrder("desc"); setCurrentPage(1);}}>Highest Amount First</Dropdown.Item>
-                <Dropdown.Item onClick={() => {setSortingFilter("None"); setSortBy("orderID"); setSortOrder("asc"); setCurrentPage(1);}}>Clear Sorting Filter</Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
-          </Col>
         </Row> 
           <Table className="TableHeader-grey">
             <thead>
@@ -149,7 +118,7 @@ const ViewUserSellingHistory = () => {
                         {sale.order.orderStatus.toLowerCase() !== 'pending' ? (
                           <p><span>Completion Time:</span> {new Date(sale.order.orderCompletionTime).toLocaleString({ timeZone: 'Asia/Singapore' })}</p>
                         ) : (
-                        <p><span>Completion Time:</span> Not Available</p>
+                          <p><span>Completion Time:</span> Not Available</p>
                         )}
                         <p><span>Bidder:</span> {sale.order.account.username}</p>
                       </div>
@@ -162,7 +131,7 @@ const ViewUserSellingHistory = () => {
                     </td>
                     <td>
                       <Button variant="primary" size="sm" className="HistoryTable-button" onClick={() => handleViewDetails(sale.saleID)}>
-                        {expandedItem === sale.saleID ? 'View Less' : 'View More'}
+                        {expandedItem === sale?.saleID ? 'View Less' : 'View More'}
                       </Button>
                     </td>
                   </tr>
@@ -173,7 +142,7 @@ const ViewUserSellingHistory = () => {
           <div className="d-flex justify-content-center UserProfileDetails">
             <Button variant="primary" size="sm" className="Page-button" disabled={currentPage === 1} onClick={handlePreviousPage}>Previous</Button>
             <span className="page-number mx-4">{currentPage}</span>
-            <Button variant="primary" size="sm" className="Page-button" disabled={currentPage * recordsPerPage >= sellingHistory.length} onClick={handleNextPage}>Next</Button>
+            <Button variant="primary" size="sm" className="Page-button" disabled={currentPage >= numPages} onClick={handleNextPage}>Next</Button>
           </div>
         </div>
       )}
