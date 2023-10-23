@@ -31,8 +31,9 @@ function Login2FA() {
             });
 
             if (response.status === 200) {
-                console.log(response.data.accountType);
-                login({ accountType: response.data.accountType });
+                //console.log(response.data.accountType);
+                //login({ accountType: response.data.accountType });
+                login();
 
 
                 console.log('OTP verification successful!');

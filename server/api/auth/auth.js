@@ -188,6 +188,25 @@ router.post('/otp', async (req, res) => {
     }
 });
 
+router.get('/user', async (req, res) => {
+    const token = req.cookies.token;
+    if (!token) return res.status(401).json({ error: 'Not authenticated' });
+
+    try {
+        const payload = jwt.verify(token, process.env.JWT_SECRET);
+        const user = await prisma.account.findUnique({
+            where: { accountID: payload.accountID },
+            select: { accountType: true },
+        });
+
+        if (!user) return res.status(404).json({ error: 'User not found' });
+        return res.json(user);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Server error' });
+    }
+});
+
 
 router.post('/logout', (req, res) => {
     res.clearCookie('token', { path: '/', httpOnly: true, secure: true, sameSite: 'None' });
