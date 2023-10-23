@@ -7,9 +7,6 @@ import Login from "./pages/Auth/Login";
 import SellCar from "./pages/Users/SellACar/sell_a_car";
 import ViewCarDetails from "./pages/Users/CarDetails/view_car_details";
 import Placebid from "./pages/Users/PlaceBid/placebid";
-import "./css/styles.css";
-import PaymentForm from './pages/Users/Payment/payment';
-import PaymentSuccess from "./pages/Users/Payment/paymentsuccess";
 import Login2FA from "./pages/Auth/Login2FA";
 import UserManagement from "./pages/Admin/ViewUsers/viewUsers";
 import ViewDetails from "./pages/Admin/ViewUsers/view_user_details";
@@ -19,6 +16,7 @@ import UserProfile from "./pages/Users/UserProfile/UserProfile";
 import axios from "axios";
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
+import "./css/styles.css";
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PK);
 
@@ -80,18 +78,17 @@ function App() {
                 <Route path="/auth/login" element={<Login />} />
                 <Route path="/auth/confirmation" element={<Login2FA />} />
                 <Route path="/signup" element={<SignUp />} />
-                <Route path="/viewCarDetails/:carID" element={<ViewCarDetails />} />
-                <Route path="/placebid" element={<Placebid />} />
+                <Route path="/viewCarDetails/:carID" element={<Elements stripe={stripePromise}>
+                        <ViewCarDetails/>
+                    </Elements>} />
+                <Route path="/placebid" element={<Elements stripe={stripePromise}>
+                        <Placebid/>
+                    </Elements>} />
                 <Route path="/userManagement" element={<UserManagement />} />
                 <Route path="/userProfile" element={<UserProfile />} />
                 <Route path="/viewUser/:userID" element={<ViewDetails />} />
                 <Route path="/requests" element={<Requests />} />
                 <Route path="/viewRequestDetails/:requestID" element={<ViewRequestDetails />} />
-                <Route path="/payment" element={
-                    <Elements stripe={stripePromise}>
-                        <PaymentForm/>
-                    </Elements>}/>
-                <Route path="/payment-success" element={<PaymentSuccess />} />
             </Routes>
         </div>
     );

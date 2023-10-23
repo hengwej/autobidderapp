@@ -7,5 +7,4 @@ const controller = require('./controller');
 router.post('/create-payment-intent', controller.createPaymentIntent);
 
 // More routes can be added here as you expand your Stripe integration
-
 module.exports = router;
