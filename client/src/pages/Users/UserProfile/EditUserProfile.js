@@ -46,6 +46,7 @@ const EditUserProfile = ({ user, account }) => {
   // Function to show the confirmation modal
   const handleShowConfirmModal = () => {
     setShowConfirmModal(true);
+    setShowEditProfileModal(false);
   };
 
   // Function to handle saving profile
@@ -150,7 +151,7 @@ const EditUserProfile = ({ user, account }) => {
                 </div>
                 <Modal.Footer className="d-flex justify-content-center">
                   <Button variant="secondary" onClick={handleCloseEditProfile}>Cancel</Button>
-                  <Button variant="primary" type="submit">Save Changes</Button>
+                  <Button variant="primary" type="submit" className="UserProfileForm-button">Save Changes</Button>
                 </Modal.Footer>
               </Form>
             )}
@@ -161,18 +162,18 @@ const EditUserProfile = ({ user, account }) => {
         <Modal.Header closeButton>
           <Modal.Title>Confirm Changes</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body className="UserProfileDetails">
           <p>Are you sure you want to save the following changes?</p>
-          <p>Username: {newValues.username}</p>
-          <p>First Name: {newValues.firstName}</p>
-          <p>Last Name: {newValues.lastName}</p>
-          <p>Email: {newValues.emailAddress}</p>
-          <p>Address: {newValues.address}</p>
-          <p>Phone Number: {newValues.phoneNumber}</p>
+          <p><span>Username:</span> {newValues.username}</p>
+          <p><span>First Name:</span> {newValues.firstName}</p>
+          <p><span>Last Name:</span> {newValues.lastName}</p>
+          <p><span>Email:</span> {newValues.emailAddress}</p>
+          <p><span>Address:</span> {newValues.address}</p>
+          <p><span>Phone Number:</span> {newValues.phoneNumber}</p>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowConfirmModal(false)}>Cancel</Button>
-          <Button variant="primary" onClick={handleConfirmChanges}>Confirm</Button>
+          <Button variant="primary" className="UserProfileForm-button" onClick={handleConfirmChanges}>Confirm</Button>
         </Modal.Footer>
       </Modal>
       <Modal show={showSuccessModal} onHide={handleCloseSuccessModal}>
@@ -183,7 +184,7 @@ const EditUserProfile = ({ user, account }) => {
           <p>Profile eddited successfully! Close this message to apply the changes.</p>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" onClick={handleCloseSuccessModal}>Close</Button>
+          <Button variant="primary" className="UserProfileForm-button" onClick={handleCloseSuccessModal}>Close</Button>
         </Modal.Footer>
       </Modal>
     </div>

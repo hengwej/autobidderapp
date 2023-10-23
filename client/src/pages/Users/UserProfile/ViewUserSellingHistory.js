@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
-import { Table, Button } from 'react-bootstrap';
+import { Table, Button, Container } from 'react-bootstrap';
 import './styles.css';
 
 const ViewUserSellingHistory = () => {
   const [sellingHistory, setSellingHistory] = useState([]);
   const [displayedHistory, setDisplayedHistory] = useState([]);
   const [expandedItem, setExpandedItem] = useState(null);
-  const recordsPerPage = 5;
+  const recordsPerPage = 3;
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     axios.post('http://localhost:5000/api/users/getUserSellingHistory', {}, { withCredentials: true })
@@ -17,6 +18,9 @@ const ViewUserSellingHistory = () => {
       })
       .catch(error => {
         console.error("Failed to fetch user profile:", error);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, []);
 
@@ -29,12 +33,12 @@ const ViewUserSellingHistory = () => {
     setDisplayedHistory(sellingHistory.slice(startIndex, endIndex));
   }, [sellingHistory, currentPage]);
 
-  const handleViewDetails = (bidID) => {
-    if (expandedItem === bidID) {
+  const handleViewDetails = (saleID) => {
+    if (expandedItem === saleID) {
       // If the same row is clicked again, close it
       setExpandedItem(null);
     } else {
-      setExpandedItem(bidID);
+      setExpandedItem(saleID);
     }
   };
 
@@ -49,16 +53,18 @@ const ViewUserSellingHistory = () => {
   };
 
   return (
-    <div>
+    <Container fluid>
       <h3>Selling History</h3>
-      {sellingHistory.length === 0 ? (
-        <p>No records found</p>
+      {loading ? (
+        <p>Loading selling history...</p>
+      ) : sellingHistory.length === 0 ? (
+        <p>Error: No records found</p>
       ) : (
         <div>
-          <Table className="table-header-grey">
+          <Table className="TableHeader-grey">
             <thead>
               <tr>
-                <th>Order ID</th>
+                <th>ID</th>
                 <th>Details</th>
                 <th>Action</th>
               </tr>
@@ -69,20 +75,25 @@ const ViewUserSellingHistory = () => {
                   <tr>
                     <td>{sale.orderID}</td>
                     <td>
-                      <div>
-                        <p>Order Completion Time: {new Date(sale.order.orderCompletionTime).toLocaleString({ timeZone: 'Asia/Singapore' })}</p>
-                        <p>Order Status: {sale.order.orderStatus}</p>
-                        <p>Bidder: {sale.account.username}</p>
+                      <div className="UserProfileDetails">
+                        <p><span>Order Status:</span> {sale.order.orderStatus}</p>
+                        {sale.order.orderStatus.toLowerCase() !== 'pending' ? (
+                          <p><span>Completion Time:</span> {new Date(sale.order.orderCompletionTime).toLocaleString({ timeZone: 'Asia/Singapore' })}</p>
+                        ) : (
+                        <p><span>Completion Time:</span> Not Available</p>
+                        )}
+                        <p><span>Bidder:</span> {sale.order.account.username}</p>
                       </div>
                       {expandedItem === sale.saleID && (
-                        <div>
-                          <p>Car Details: {`${sale.order.auction.car.exteriorColor} ${sale.order.auction.car.make} ${sale.order.auction.car.model}`}</p>
+                        <div className="UserProfileDetails">
+                          <p><span>Amount:</span> ${sale.order.auction.currentHighestBid}</p>
+                          <p><span>Car Details:</span> {`${sale.order.auction.car.exteriorColor} ${sale.order.auction.car.make} ${sale.order.auction.car.model}`}</p>
                         </div>
                       )}
                     </td>
                     <td>
-                      <Button variant="primary" size="sm" onClick={() => handleViewDetails(sale.saleID)}>
-                        {expandedItem === sale.saleID ? 'View Less Details' : 'View All Details'}
+                      <Button variant="primary" size="sm" className="HistoryTable-button" onClick={() => handleViewDetails(sale.saleID)}>
+                        {expandedItem === sale.saleID ? 'View Less' : 'View More'}
                       </Button>
                     </td>
                   </tr>
@@ -90,14 +101,14 @@ const ViewUserSellingHistory = () => {
               ))}
             </tbody>
           </Table>
-          <div className="pagination d-flex justify-content-end">
-            <Button variant="primary" size="sm" disabled={currentPage === 1} onClick={handlePreviousPage}>Previous</Button>
-            <span className="page-number">{currentPage}</span>
-            <Button variant="primary" size="sm" disabled={currentPage * recordsPerPage >= sellingHistory.length} onClick={handleNextPage}>Next</Button>
+          <div className="d-flex justify-content-center UserProfileDetails">
+            <Button variant="primary" size="sm" className="Page-button" disabled={currentPage === 1} onClick={handlePreviousPage}>Previous</Button>
+            <span className="page-number mx-4">{currentPage}</span>
+            <Button variant="primary" size="sm" className="Page-button" disabled={currentPage * recordsPerPage >= sellingHistory.length} onClick={handleNextPage}>Next</Button>
           </div>
         </div>
       )}
-    </div>
+    </Container>
   );
 };
 
