@@ -14,16 +14,16 @@ const validator = require('validator');
 
 //asynchronous recaptcha backend logic
 async function verifyRecaptcha(token) { //takes the token arg from frontend
-    const secretKey = process.env.RECAPTCHA_SERVER_KEY;  
-    console.log("Server CAPTCHA key is:",process.env.RECAPTCHA_SERVER_KEY);
+    const secretKey = process.env.RECAPTCHA_SERVER_KEY;
+    console.log("Server CAPTCHA key is:", process.env.RECAPTCHA_SERVER_KEY);
     try {
         const response = await axios.post(`https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${token}`); //REMEMBER TO SWAP OUT TESTING KEY MR DARREN
         res.json(response.data); // this sends the response data back to the client
         console.log("RECAPTCHA successfully completed");
-      } catch (error) {
+    } catch (error) {
         res.status(500).send(error.toString());
-      }
-  }
+    }
+}
 
 
 
@@ -160,11 +160,21 @@ router.post('/otp', async (req, res) => {
 
         if (tempUser.otp !== otp) return res.status(401).json({ error: 'Invalid OTP' });
 
+        //get accountType from account table
+        const account = await prisma.account.findUnique({
+            where: { accountID: tempUser.accountID },
+        });
+
+        if (!account) return res.status(401).json({ error: 'Account not found' });
+
+
         // OTP is valid, create a new fully authenticated session token
         const payload = {
             accountID: tempUser.accountID,
-            accountType: tempUser.accountType,
+            accountType: account.accountType,
         };
+
+        console.log("Payload: ", payload);
 
         const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
         res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'None' });
