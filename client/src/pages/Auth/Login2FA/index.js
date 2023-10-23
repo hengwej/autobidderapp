@@ -4,12 +4,15 @@ import axios from 'axios';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../../utils/AuthProvider';
 
 
 function Login2FA() {
     const initialValues = {
         Code2FA: '',
     };
+
+    const { login } = useAuth();
 
     const navigate = useNavigate();
 
@@ -28,6 +31,11 @@ function Login2FA() {
             });
 
             if (response.status === 200) {
+                //console.log(response.data.accountType);
+                //login({ accountType: response.data.accountType });
+                login();
+
+
                 console.log('OTP verification successful!');
                 navigate('/');
             }
