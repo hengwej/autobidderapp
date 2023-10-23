@@ -17,8 +17,11 @@ import axios from "axios";
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import "./css/styles.css";
+import ProtectedRoute from "./components/ProtectedRoute";
+import { useAuth } from "./utils/AuthProvider";
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PK);
+
 
 async function logout() {
     try {
@@ -34,6 +37,7 @@ async function logout() {
 
 
 function App() {
+    const { user, logout } = useAuth();
 
     return (
         <div className="App">
@@ -41,33 +45,49 @@ function App() {
                 <div className="container px-4 px-lg-5">
                     <a className="navbar-brand" href="/" style={{ fontSize: 35 + 'px' }}>Auto Bid</a>
                     <ul className="navbar-nav ms-auto">
+
                         <li className="nav-item">
                             <Link className="nav-link" to="/">Auctions</Link>
                         </li>
                         <li className="nav-item">
                             <Link className="nav-link" to="/faq">FAQ</Link>
                         </li>
-                        <li className="nav-item">
-                            <Link className="nav-link" to="/sellCar">Sell a Car</Link>
-                        </li>
-                        <li className="nav-item">
-                            <Link className="nav-link" to="/auth/login">Login</Link>
-                        </li>
-                        <li className="nav-item">
-                            <Link className="nav-link" to="/signup">Sign Up</Link>
-                        </li>
-                        <li className="nav-item">
-                            <Link className="nav-link" to="/" onClick={logout}>Logout</Link>
-                        </li>
-                        <li className="nav-item">
-                            <Link className="nav-link" to="/userManagement">admin test users</Link>
-                        </li>
-                        <li className="nav-item">
-                            <Link className="nav-link" to="/Requests">admin requests</Link>
-                        </li>
-                        <li className="nav-item">
-                            <Link className="nav-link" to="/userProfile">User Profile (Testing)</Link>
-                        </li>
+                        {user && (user.accountType === 'admin' || user.accountType === 'bidder') && (
+                            <li className="nav-item">
+                                <Link className="nav-link" to="/sellCar">Sell a Car</Link>
+                            </li>
+                        )}
+                        {!user && (
+                            <li className="nav-item">
+                                <Link className="nav-link" to="/auth/login">Login</Link>
+                            </li>
+                        )}
+                        {!user && (
+                            <li className="nav-item">
+                                <Link className="nav-link" to="/signup">Sign Up</Link>
+                            </li>
+                        )}
+
+                        {user && (user.accountType === 'admin' || user.accountType === 'bidder') && (
+                            <li className="nav-item">
+                                <Link className="nav-link" to="/" onClick={logout}>Logout</Link>
+                            </li>
+                        )}
+                        {user && (user.accountType === 'admin') && (
+                            <li className="nav-item">
+                                <Link className="nav-link" to="/userManagement">admin test users</Link>
+                            </li>
+                        )}
+                        {user && (user.accountType === 'admin') && (
+                            <li className="nav-item">
+                                <Link className="nav-link" to="/Requests">admin requests</Link>
+                            </li>
+                        )}
+                        {user && (user.accountType === 'admin' || user.accountType === 'bidder') && (
+                            <li className="nav-item">
+                                <Link className="nav-link" to="/userProfile">User Profile (Testing)</Link>
+                            </li>
+                        )}
                     </ul>
                 </div>
             </nav>
@@ -84,7 +104,14 @@ function App() {
                 <Route path="/placebid" element={<Elements stripe={stripePromise}>
                         <Placebid/>
                     </Elements>} />
-                <Route path="/userManagement" element={<UserManagement />} />
+                <Route
+                    path="/userManagement"
+                    element={
+                        <ProtectedRoute allowedAccountTypes={['admin']}>
+                            <UserManagement />
+                        </ProtectedRoute>
+                    }
+                />
                 <Route path="/userProfile" element={<UserProfile />} />
                 <Route path="/viewUser/:userID" element={<ViewDetails />} />
                 <Route path="/requests" element={<Requests />} />
