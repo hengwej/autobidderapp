@@ -131,7 +131,7 @@ const ViewUserSellingHistory = () => {
                     </td>
                     <td>
                       <Button variant="primary" size="sm" className="HistoryTable-button" onClick={() => handleViewDetails(sale.saleID)}>
-                        {expandedItem === sale?.saleID ? 'View Less' : 'View More'}
+                        {expandedItem === sale.saleID ? 'View Less' : 'View More'}
                       </Button>
                     </td>
                   </tr>
