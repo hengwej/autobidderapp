@@ -28,8 +28,17 @@ export const AuthProvider = ({ children }) => {
         await fetchUser();
     };
 
-    const logout = () => {
+    const logout = async () => {
         // Add logic here to clear the token on the server, if necessary
+        try {
+            const response = await axios.post("http://localhost:5000/api/auth/logout", {}, {
+                withCredentials: true
+            });
+            console.log(response.data.message);
+            window.location.href = '/';
+        } catch (error) {
+            console.error("Failed to logout:", error);
+        }
         setUser(null);
     };
 
