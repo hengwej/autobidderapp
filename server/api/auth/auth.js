@@ -53,7 +53,7 @@ router.post('/signUp', async (req, res) => {
     try {
         const user = await prisma.user.create({ data: userData });
         accountData.userID = user.userID;
-        accountData.accountType = "Bidder";
+        accountData.accountType = "bidder";
         accountData.accountStatus = "Active";
         const hashedPassword = await bcrypt.hash(accountData.password, saltRounds);
         accountData.password = hashedPassword;
@@ -180,7 +180,7 @@ router.post('/otp', async (req, res) => {
         res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'None' });
         res.clearCookie('tempToken');
 
-        return res.json({ message: 'Logged in successfully.' });
+        return res.json({ accountType: account.accountType, message: 'Logged in successfully.' });
 
     } catch (error) {
         console.error(error);
