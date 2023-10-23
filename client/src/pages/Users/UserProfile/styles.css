@@ -1,9 +1,83 @@
 .UserProfile-button {
     width: 100%;
     margin: 10px auto;
+    background-color: #ff692d !important; /* Add !important to override Bootstrap */
+    border: none !important;
+    color: #ffffff;
 }
 
-.table-header-grey thead th {
-    background-color: #ccc; /* Set your desired shade of grey */
-    color: #000; /* Set the text color for table headers */
-  }
+.UserProfile-button:hover {
+  background-color: #ff4800 !important;
+}
+
+.UserProfileForm-button {
+  background-color: #ff692d !important;
+  border: none !important;
+  color: #ffffff;
+}
+
+.UserProfileForm-button:hover {
+background-color: #ff4800 !important;
+}
+
+.UserProfileDetails span {
+  font-weight: bold;
+}
+
+.TableHeader-grey thead th {
+    background-color: #cccccc;
+    color: #000000;
+    border-right: 1px solid #bcbaba;
+}
+
+.TableHeader-grey td {
+  border-right: 1px solid #d0cfcf;
+}
+
+.HistoryTable-button {
+  background-color: #ff692d !important;
+  border: none !important;
+  color: #ffffff;
+}
+
+.HistoryTable-button:hover {
+background-color: #ff4800 !important;
+}
+
+.Page-button {
+  background-color: #ff692d !important; 
+  border: none !important;
+  color: #ffffff;
+  width: 100px;
+}
+
+.Page-button:hover {
+background-color: #ff4800 !important;
+}
+
+.custom-container .container-fluid {
+  width: 600px;
+  height: 500px;
+  margin: 0 auto;
+}  
+
+.custom-nav .nav-item .nav-link.active {
+  background-color: #ff692d;
+  color: #ffffff;
+  border: none;
+}
+
+.custom-nav .nav-link:hover {
+  color: #ff692d;
+  border: none;
+}
+
+.custom-nav .nav-link {
+  color: #000000;
+  border-bottom:  1px solid #000000;
+}
+
+.custom-nav .nav-item .nav-link {
+  /* border-radius: 0; */
+  margin-bottom: 5%;
+}

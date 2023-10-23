@@ -4,7 +4,7 @@ import { Modal, Button } from 'react-bootstrap';
 import { useNavigate } from "react-router-dom";
 import './styles.css';
 
-const UserAccountDeletion = ({ account }) => {
+const UserAccountDeletion = () => {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   // Get the navigate function from the hook
@@ -62,7 +62,7 @@ const UserAccountDeletion = ({ account }) => {
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseConfirmation}>Cancel</Button>
-          <Button variant="danger" onClick={handleDeleteAccount}>Delete Account</Button>
+          <Button variant="danger" className="UserProfileForm-button" onClick={handleDeleteAccount}>Delete Account</Button>
         </Modal.Footer>
       </Modal>
       <Modal show={showSuccessModal} onHide={handleCloseSuccessModal}>
@@ -73,7 +73,7 @@ const UserAccountDeletion = ({ account }) => {
           <p>Account deleted successfully! Close this message to be redirected to Login.</p>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" onClick={handleCloseSuccessModal}>Close</Button>
+          <Button variant="primary" className="UserProfileForm-button" onClick={handleCloseSuccessModal}>Close</Button>
         </Modal.Footer>
       </Modal>
     </div>

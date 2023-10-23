@@ -13,11 +13,11 @@ const UserProfile = () => {
   };
 
   return (
-    <Container>
-      <Tab.Container activeKey={activeTab} onSelect={handleTabChange}>
+    <Container fluid className="custom-container">
+      <Tab.Container id="left-tabs-example" activeKey={activeTab} onSelect={handleTabChange}>
         <Row>
           <Col sm={3}>
-            <Nav variant="pills">
+            <Nav variant="pills" className="flex-column custom-nav">
               <Nav.Item>
                 <Nav.Link eventKey="profileDetails">Profile Details</Nav.Link>
               </Nav.Item>

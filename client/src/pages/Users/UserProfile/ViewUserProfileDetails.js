@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
-import { Container, Col, Row, Card, CardTitle } from 'react-bootstrap';
+import { Container, Col, Row, Card} from 'react-bootstrap';
 import './styles.css';
 import UserAccountDeletion from './UserAccountDeletion';
 import EditUserProfile from './EditUserProfile';
@@ -8,6 +8,7 @@ import EditUserProfile from './EditUserProfile';
 const ViewUserProfileDetails = () => {
   const [user, setUser] = useState(null);
   const [account, setAccount] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     axios.post('http://localhost:5000/api/users/getUserProfileDetails', {}, { withCredentials: true })
@@ -17,38 +18,42 @@ const ViewUserProfileDetails = () => {
       })
       .catch(error => {
         console.error("Failed to fetch user profile:", error);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, []);
 
   return (
-    <Container>
-      {user && account ? (
+    <Container fluid>
+      <h3>Profile Details</h3>
+      {loading ? (
+        <p>Loading user data...</p>
+      ) : user && account ? (
         <Card>
           <Row>
             <Col>
               <Card.Body>
-                <div>
-                  <CardTitle className="text-center">Profile Details</CardTitle>
-                  <p>Username: {account.username}</p>
-                  <p>First Name: {user.firstName}</p>
-                  <p>Last Name: {user.lastName}</p>
-                  <p>Email: {user.emailAddress}</p>
-                  <p>Address: {user.address}</p>
-                  <p>Phone Number: {user.phoneNumber}</p>
+                <div className="UserProfileDetails">
+                  <p><span>Username:</span> {account.username}</p>
+                  <p><span>First Name:</span> {user.firstName}</p>
+                  <p><span>Last Name:</span> {user.lastName}</p>
+                  <p><span>Email:</span> {user.emailAddress}</p>
+                  <p><span>Address:</span> {user.address}</p>
+                  <p><span>Phone Number:</span> {user.phoneNumber}</p>
                 </div>
               </Card.Body>
             </Col>
           </Row>
           <Row className="justify-content-center">
             <Col sm={5}>
-              {/* <Button variant="primary" onClick={handleEditUserDetails} className="UserProfile-button">Edit Profile</Button> */}
               <EditUserProfile account={account} user={user} />
-              <UserAccountDeletion account={account} />
+              <UserAccountDeletion />
             </Col>
           </Row>
         </Card>
       ) : (
-        <p>Loading user data...</p>
+        <p>Error: No records found.</p>
       )}
     </Container>
   );

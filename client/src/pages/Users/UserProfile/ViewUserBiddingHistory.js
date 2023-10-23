@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
-import { Table, Button } from 'react-bootstrap';
+import { Table, Button, Container } from 'react-bootstrap';
 import './styles.css';
 
 const ViewUserBiddingHistory = () => {
   const [biddingHistory, setBiddingHistory] = useState([]);
   const [displayedHistory, setDisplayedHistory] = useState([]);
   const [expandedItem, setExpandedItem] = useState(null);
-  const recordsPerPage = 5;
+  const recordsPerPage = 3;
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     axios.post('http://localhost:5000/api/users/getUserBiddingHistory', {}, { withCredentials: true })
@@ -17,6 +18,9 @@ const ViewUserBiddingHistory = () => {
       })
       .catch(error => {
         console.error("Failed to fetch user profile:", error);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, []);
 
@@ -49,16 +53,18 @@ const ViewUserBiddingHistory = () => {
   };
 
   return (
-    <div>
+    <Container fluid>
       <h3>Bidding History</h3>
-      {biddingHistory.length === 0 ? (
-        <p>No records found</p>
+      {loading ? (
+        <p>Loading bidding history...</p>
+      ) : biddingHistory.length === 0 ? (
+        <p>Error: No records found</p>
       ) : (
         <div>
-          <Table className="table-header-grey">
+          <Table className="TableHeader-grey">
             <thead>
               <tr>
-                <th>Bid ID</th>
+                <th>ID</th>
                 <th>Details</th>
                 <th>Action</th>
               </tr>
@@ -69,22 +75,22 @@ const ViewUserBiddingHistory = () => {
                   <tr>
                     <td>{bid.bidID}</td>
                     <td>
-                      <div>
-                        <p>Bid Time: {new Date(bid.bidTimestamp).toLocaleString({ timeZone: 'Asia/Singapore' })}</p>
-                        <p>Bid Status: {bid.bidStatus}</p>
-                        <p>Bid Amount: {bid.bidAmount}</p>
+                      <div className="UserProfileDetails">
+                        <p><span>Bid Status:</span> {bid.bidStatus}</p>
+                        <p><span>Bid Time:</span> {new Date(bid.bidTimestamp).toLocaleString({ timeZone: 'Asia/Singapore' })}</p>
+                        <p><span>Bid Amount:</span> ${bid.bidAmount}</p>
                       </div>
                       {expandedItem === bid.bidID && (
-                        <div>
-                          <p>Auction ID: {bid.auction.auctionID}</p>
-                          <p>Auction Status: {bid.auction.auctionStatus}</p>
-                          <p>Car Details: {`${bid.auction.car.exteriorColor} ${bid.auction.car.make} ${bid.auction.car.model}`}</p>
+                        <div className="UserProfileDetails">
+                          <p><span>Auction ID:</span> {bid.auction.auctionID}</p>
+                          <p><span>Auction Status:</span> {bid.auction.auctionStatus}</p>
+                          <p><span>Car Details:</span> {`${bid.auction.car.exteriorColor} ${bid.auction.car.make} ${bid.auction.car.model}`}</p>
                         </div>
                       )}
                     </td>
                     <td>
-                      <Button variant="primary" size="sm" onClick={() => handleViewDetails(bid.bidID)}>
-                        {expandedItem === bid.bidID ? 'View Less Details' : 'View All Details'}
+                      <Button variant="primary" size="sm" className="HistoryTable-button" onClick={() => handleViewDetails(bid.bidID)}>
+                        {expandedItem === bid.bidID ? 'View Less' : 'View More'}
                       </Button>
                     </td>
                   </tr>
@@ -92,14 +98,14 @@ const ViewUserBiddingHistory = () => {
               ))}
             </tbody>
           </Table>
-          <div className="pagination d-flex justify-content-end">
-            <Button variant="primary" size="sm" disabled={currentPage === 1} onClick={handlePreviousPage}>Previous</Button>
-            <span className="page-number">{currentPage}</span>
-            <Button variant="primary" size="sm" disabled={currentPage * recordsPerPage >= biddingHistory.length} onClick={handleNextPage}>Next</Button>
+          <div className="d-flex justify-content-center UserProfileDetails">
+            <Button variant="primary" size="sm" className="Page-button" disabled={currentPage === 1} onClick={handlePreviousPage}>Previous</Button>
+            <span className="page-number mx-4">{currentPage}</span>
+            <Button variant="primary" size="sm" className="Page-button" disabled={currentPage * recordsPerPage >= biddingHistory.length} onClick={handleNextPage}>Next</Button>
           </div>
         </div>
       )}
-    </div>
+    </Container>
   );
 };
 
