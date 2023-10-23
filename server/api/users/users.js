@@ -26,9 +26,24 @@ router.delete('/deleteAccount', async (req, res) => {
         const payload = jwt.verify(token, process.env.JWT_SECRET);
         const accountID = payload.accountID;
 
-        // Delete the account (and the associated user due to cascading)
+        // Retrieve the user's userID associated with the account
+        const account = await prisma.account.findUnique({
+            where: { accountID },
+            include: { user: true },
+        });
+
+        if (!account) {
+            return res.status(404).json({ error: 'Account not found' });
+        }
+
+        // Delete the account
         await prisma.account.delete({
             where: { accountID },
+        });
+
+        // Delete the user
+        await prisma.user.delete({
+            where: { userID: account.user.userID },
         });
 
         console.log("Account and associated user deleted successfully");
@@ -150,7 +165,7 @@ router.post('/getUserBiddingHistory', async (req, res) => {
     }
 });
 
-router.post('/getUserBiddingHistory', async (req, res) => {
+router.post('/getUserSellingHistory', async (req, res) => {
     const token = req.cookies.token;
     if (!token) return res.status(401).json({ error: 'Unauthorized' });
 
@@ -164,9 +179,9 @@ router.post('/getUserBiddingHistory', async (req, res) => {
                 accountID: payload.accountID, // Use accountID from token payload
             },
             include: {
-                account: true,
                 order: {
                     include: {
+                        account: true,
                         auction: {
                             include: {
                                 car: true,
