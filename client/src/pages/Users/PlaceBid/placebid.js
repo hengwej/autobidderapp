@@ -61,10 +61,6 @@ export default function PlaceBid({ carID, handleClose  }) {
     }
 
     const bidOnIt = async () => {
-        if (bidValue < currentHighestBid) {
-            setBidError("Your bid cannot be lower than the current highest bid. Please enter a higher bid.");
-            return;
-        }
         setBidError(null);
         setIsProcessing(true);
 
@@ -118,9 +114,16 @@ export default function PlaceBid({ carID, handleClose  }) {
 
     const onSubmit = (data) => {
         setBidValue(data.bid);
-        setBidError(null);
-        handleOpenBid();
+        if (data.bid < currentHighestBid) {
+            const errorMessage = "Your bid cannot be lower than the current highest bid. Please enter a higher bid.";
+            setBidError(errorMessage);
+            console.log(errorMessage); // Log to see if this part of code executes
+        } else {
+            setBidError(null);
+            handleOpenBid();
+        }
     };
+    
 
     const CARD_ELEMENT_OPTIONS = {
         style: {
@@ -147,6 +150,9 @@ export default function PlaceBid({ carID, handleClose  }) {
                     <label><b>Bidding Amount($):</b></label>&nbsp;
                     <Field type="number" id="bid" name="bid" style={{ width: 29.2 + 'em' }} /><br /><br />
                     <button className="btn btn-warning" type="submit" style={{ width: 29.2 + 'em' }}>Submit</button>
+                    {/* This should be somewhere appropriate in your return statement, where you want the error to show */}
+                    {bidError && <p style={{ color: 'red' }}>{bidError}</p>}
+
                 </Form>
             </Formik>
 
