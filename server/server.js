@@ -42,7 +42,8 @@ function checkRole(role) {
 }
 
 // Importing route handlers
-const carRoutes = require('./api/cars/cars');
+// const carRoutes = require('./api/cars/cars');
+const carRoutes = require('./api/cars/sellCar');
 const userRoutes = require('./api/users/users');
 const accountRoutes = require('./api/accounts');
 const authRoutes = require('./api/auth/auth');
