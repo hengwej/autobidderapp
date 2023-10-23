@@ -60,17 +60,17 @@ function App() {
                 </div>
             </nav>
             <Routes> {/* Use <Routes> instead of <Router> */}
-                    <Route path="/" element={<Homepage />} />
-                    <Route path="/faq" element={<FAQ />} />
-                    <Route path="/sellCar" element={<SellCar />} />
-                    <Route path="/auth/login" element={<Login />} />
-                    <Route path="/auth/confirmation" element={<Login2FA />} />
-                    <Route path="/logout" element={<Logout />} />
-                    <Route path="/signup" element={<SignUp />} />
-                    <Route path="/viewCarDetails/:carID" element={<ViewCarDetails />} />
-                    <Route path="/placebid" element={<Placebid />} />
-                    <Route path="/userManagement" element={<UserManagement />} />
-                    <Route path="/viewUser/:userID" element={<ViewDetails />} />
+                <Route path="/" element={<Homepage />} />
+                <Route path="/faq" element={<FAQ />} />
+                <Route path="/sellCar" element={<SellCar />} />
+                <Route path="/auth/login" element={<Login />} />
+                <Route path="/auth/confirmation" element={<Login2FA />} />
+                <Route path="/logout" element={<Logout />} />
+                <Route path="/signup" element={<SignUp />} />
+                <Route path="/viewCarDetails/:carID" element={<ViewCarDetails />} />
+                <Route path="/placebid" element={<Placebid />} />
+                <Route path="/userManagement" element={<UserManagement />} />
+                <Route path="/viewUser/:userID" element={<ViewDetails />} />
             </Routes>
         </div>
     );

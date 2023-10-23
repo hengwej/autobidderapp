@@ -1,5 +1,6 @@
 /* Example media query for smaller screens or zoomed in views */
 @media (max-width: 600px) {
+
     .sellCar-input-margin,
     .label-button {
         width: 100%;
@@ -14,20 +15,27 @@
     max-height: 300px;
     display: flex;
     text-align: center;
-    justify-content:center;
-    align-items:center;
+    justify-content: center;
+    align-items: center;
     font-size: 3rem;
-    background-color: #f0f0f0;  /* Adjust background color as needed */
-    border: 2px dashed #ccc;  /* Adjust border style as needed */
-    cursor: pointer;  /* Change cursor to pointer on hover */
-    position: relative;  /* New: set position to relative */
+    background-color: #f0f0f0;
+    /* Adjust background color as needed */
+    border: 2px dashed #ccc;
+    /* Adjust border style as needed */
+    cursor: pointer;
+    /* Change cursor to pointer on hover */
+    position: relative;
+    /* New: set position to relative */
 }
 
 .image-upload-container {
     display: flex;
-    justify-content: center; /* Center items horizontally */
-    flex-wrap: wrap; /* Allow items to wrap to next line if necessary */
-    gap: 3px; /* Optional: add some space between items */
+    justify-content: center;
+    /* Center items horizontally */
+    flex-wrap: wrap;
+    /* Allow items to wrap to next line if necessary */
+    gap: 3px;
+    /* Optional: add some space between items */
 }
 
 .preview-car-image {
@@ -36,12 +44,15 @@
     margin: 0 auto;
     height: 100%;
     max-height: 300px;
-    object-fit: contain  /* New: Resize the image to cover the container */
+    object-fit: contain
+        /* New: Resize the image to cover the container */
 }
 
 .hidden {
-    position: absolute;  /* New: set position to absolute */
-    opacity: 0;  /* New: set opacity to 0 instead of display:none */
+    position: absolute;
+    /* New: set position to absolute */
+    opacity: 0;
+    /* New: set opacity to 0 instead of display:none */
     top: 0;
     left: 0;
     width: 100%;
@@ -61,11 +72,13 @@
 }
 
 .sellCar-title {
-    font-size: 1rem; /* Adjust the font size as needed */
+    font-size: 1rem;
+    /* Adjust the font size as needed */
     font-weight: bold;
     /* margin-top: 0.5rem; */
     /* margin-bottom: 0.5rem;  */
-    color: #f5671f; /* Adjust the color as needed */
+    color: #f5671f;
+    /* Adjust the color as needed */
 }
 
 .sellCar-input-margin {
@@ -78,8 +91,10 @@
 .sellcar-page {
     overflow-y: auto;
     max-height: calc(100vh - 100px);
-    padding-top: 50px; /* Adjust as needed */
-    padding-bottom: 50px; /* Adjust as needed */
+    padding-top: 50px;
+    /* Adjust as needed */
+    padding-bottom: 50px;
+    /* Adjust as needed */
     width: 100%;
     max-width: 600px;
     margin: 0 auto;

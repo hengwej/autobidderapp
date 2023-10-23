@@ -36,7 +36,6 @@ function SellCar() {
             alert('Please upload a valid image file.');
         }
     };
-    
 
     const handleSubmit = async (event) => {
         event.preventDefault();
