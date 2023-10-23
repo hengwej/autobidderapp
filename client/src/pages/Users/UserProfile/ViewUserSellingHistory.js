@@ -1,15 +1,24 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
-import { Table, Button, Container } from 'react-bootstrap';
+import { Table, Button, Container, Dropdown, Row, Col } from 'react-bootstrap';
 import './styles.css';
 
 const ViewUserSellingHistory = () => {
   const [sellingHistory, setSellingHistory] = useState([]);
   const [displayedHistory, setDisplayedHistory] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Table Page
   const [expandedItem, setExpandedItem] = useState(null);
   const recordsPerPage = 3;
   const [currentPage, setCurrentPage] = useState(1);
-  const [loading, setLoading] = useState(true);
+  const [numPages, setNumPages] = useState(0);
+
+  // Sorting and Filtering
+  const [sortBy, setSortBy] = useState("orderID"); // Default sort by orderID
+  const [sortOrder, setSortOrder] = useState("asc"); // Default sort order ascending
+  const [sortingFilter, setSortingFilter] = useState(""); // Default no sorting filter
+  const [orderStatusFilter, setOrderStatusFilter] = useState(""); // Default no status filter
 
   useEffect(() => {
     axios.post('http://localhost:5000/api/users/getUserSellingHistory', {}, { withCredentials: true })
@@ -25,13 +34,44 @@ const ViewUserSellingHistory = () => {
   }, []);
 
   useEffect(() => {
+    // Create a copy of the sellingHistory to avoid modifying the original data
+    let sortedSellingHistory = [...sellingHistory];
+  
+    // Filter by order status
+    if (orderStatusFilter === "Completed Orders") {
+      sortedSellingHistory = sortedSellingHistory.filter(sale => sale.order.orderStatus.toLowerCase() === "completed");
+    } else if (orderStatusFilter === "Pending Orders") {
+      sortedSellingHistory = sortedSellingHistory.filter(sale => sale.order.orderStatus.toLowerCase() === "pending");
+    } else if (orderStatusFilter === "Incompleted Orders") {
+      sortedSellingHistory = sortedSellingHistory.filter(sale => sale.order.orderStatus.toLowerCase() === "incompleted");
+    }
+  
+    // Sort the filtered data
+    sortedSellingHistory.sort((a, b) => {
+      if (sortBy === "orderTimestamp") {
+        const timestampA = new Date(a.sale.order.orderCompletionTime).toLocaleString({ timeZone: 'Asia/Singapore' });
+        const timestampB = new Date(b.sale.order.orderCompletionTime).toLocaleString({ timeZone: 'Asia/Singapore' });
+        return sortOrder === "asc" ? new Date(timestampA) - new Date(timestampB) : new Date(timestampB) - new Date(timestampA);
+      } else if (sortBy === "amount") {
+        return sortOrder === "asc" ? a.sale.order.auction.currentHighestBid - b.sale.order.auction.currentHighestBid : b.sale.order.auction.currentHighestBid - a.sale.order.auction.currentHighestBid;
+      } else if (sortBy === "orderID") {
+        return sortOrder === "asc" ? a.sale.orderID - b.sale.orderID : b.sale.orderID - a.sale.orderID;
+      }
+      return 0;
+    });
+  
+    // Calculate the number of pages
+    const totalRecords = sortedSellingHistory.length;
+    const numPages = Math.ceil(totalRecords / recordsPerPage);
+    setNumPages(numPages);
+
     // Calculate the range of records to display for the current page
     const startIndex = (currentPage - 1) * recordsPerPage;
-    const endIndex = startIndex + recordsPerPage;
-
+    const endIndex = Math.min(startIndex + recordsPerPage, totalRecords);
+    
     // Set the displayed records based on the range
-    setDisplayedHistory(sellingHistory.slice(startIndex, endIndex));
-  }, [sellingHistory, currentPage]);
+    setDisplayedHistory(sortedSellingHistory.slice(startIndex, endIndex));
+  }, [sellingHistory, currentPage, sortBy, sortOrder, orderStatusFilter]);
 
   const handleViewDetails = (saleID) => {
     if (expandedItem === saleID) {
@@ -61,6 +101,35 @@ const ViewUserSellingHistory = () => {
         <p>Error: No records found</p>
       ) : (
         <div>
+          <Row>
+            <Col>
+              <Dropdown className="d-flex justify-content-start Filter-dropdown">
+                <Dropdown.Toggle variant="primary" size="sm" id="orderStatusFilterDropdown">
+                  Filter By: {orderStatusFilter || "None"}
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  <Dropdown.Item onClick={() => {setOrderStatusFilter("Completed Orders"); setCurrentPage(1);}}>Completed Orders</Dropdown.Item>
+                  <Dropdown.Item onClick={() => {setOrderStatusFilter("Pending Orders"); setCurrentPage(1);}}>Pending Orders</Dropdown.Item>
+                  <Dropdown.Item onClick={() => {setOrderStatusFilter("Incompleted Orders"); setCurrentPage(1);}}>Incompleted Orders</Dropdown.Item>
+                  <Dropdown.Item onClick={() => {setOrderStatusFilter(""); setCurrentPage(1);}}>Clear Status Filter</Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+            </Col>
+            <Col>
+              <Dropdown className="d-flex justify-content-end Filter-dropdown">
+                <Dropdown.Toggle variant="primary" size="sm" id="orderSortingFilterDropdown">
+                  Sort By: {sortingFilter || "None"}
+                </Dropdown.Toggle>
+              <Dropdown.Menu>
+                <Dropdown.Item onClick={() => {setSortingFilter("Oldest Order First"); setSortBy("orderTimestamp"); setSortOrder("asc"); setCurrentPage(1);}}>Oldest Order First</Dropdown.Item>
+                <Dropdown.Item onClick={() => {setSortingFilter("Newest Order First"); setSortBy("orderTimestamp"); setSortOrder("desc"); setCurrentPage(1);}}>Newest Order First</Dropdown.Item>
+                <Dropdown.Item onClick={() => {setSortingFilter("Lowest Amount First"); setSortBy("amount"); setSortOrder("asc"); setCurrentPage(1);}}>Lowest Amount First</Dropdown.Item>
+                <Dropdown.Item onClick={() => {setSortingFilter("Highest Amount First"); setSortBy("amount"); setSortOrder("desc"); setCurrentPage(1);}}>Highest Amount First</Dropdown.Item>
+                <Dropdown.Item onClick={() => {setSortingFilter("None"); setSortBy("orderID"); setSortOrder("asc"); setCurrentPage(1);}}>Clear Sorting Filter</Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+          </Col>
+        </Row> 
           <Table className="TableHeader-grey">
             <thead>
               <tr>

@@ -55,6 +55,12 @@ background-color: #ff4800 !important;
 background-color: #ff4800 !important;
 }
 
+.Filter-dropdown .btn-primary {
+  background-color: #ff692d !important; 
+  border: none !important;
+  color: #ffffff;
+}
+
 .custom-container .container-fluid {
   width: 600px;
   height: 500px;
