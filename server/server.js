@@ -51,6 +51,7 @@ const bidHistoryRoutes = require('./api/biddingHistory');
 const commentRoutes = require('./api/comments');
 const requestRoutes = require('./api/requests');
 const faqRoutes = require('./api/FAQ');
+const stripeRoutes = require('./api/stripe');
 
 // Setting up routes
 app.use('/api/cars', carRoutes);
@@ -62,6 +63,7 @@ app.use('/api/biddingHistory', bidHistoryRoutes);
 app.use('/api/comments', commentRoutes);
 app.use('/api/requests', requestRoutes);
 app.use('/api/FAQ', faqRoutes);
+app.use('/api/stripe', stripeRoutes);
 
 // Protected route example
 app.get('/some-protected-route', checkRole('admin'), (req, res) => {

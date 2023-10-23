@@ -1,0 +1,28 @@
+.payment-form {
+    width: 100vh;
+    height: 20vh;
+    margin: 0 auto; /* centers the form on the page */
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* optional: for some shadow */
+    background: white; /* or any other color */
+    border-radius: 8px; /* optional: if you want rounded corners */
+  }
+  
+  .card-element {
+    width: 100%;
+    padding: 10px 15px; /* or any other value to give some space inside the input */
+    margin-bottom: 20px; /* space between input and button */
+    border: 1px solid #ccc; /* or any other color */
+    border-radius: 4px; /* optional: if you want rounded corners */
+  }
+  
+  .payment-form button {
+    width: 100%;
+    padding: 10px;
+  }
+  
+  .payment-form button:disabled {
+    background-color: #cccccc;
+    color: #666666;
+  }
+  
