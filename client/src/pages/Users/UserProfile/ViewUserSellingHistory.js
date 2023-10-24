@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
-import { Table, Button, Container, Dropdown, Row, Col} from 'react-bootstrap';
+import { Table, Button, Container, Dropdown, Row, Col } from 'react-bootstrap';
 import './styles.css';
+import * as api from '../../../utils/UserProfileAPI';
 
 const ViewUserSellingHistory = () => {
   const [sellingHistory, setSellingHistory] = useState([]);
@@ -16,6 +17,24 @@ const ViewUserSellingHistory = () => {
 
   // Sorting and Filtering
   const [orderStatusFilter, setOrderStatusFilter] = useState(""); // Default no status filter
+
+  useEffect(() => {
+    async function fetchUserSellingHistory() {
+      try {
+        const response = await api.userSellingHistory();
+        if (response.status === 200) {
+          setSellingHistory(response.data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch user profile:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchUserSellingHistory();
+
+  }, []);
 
   useEffect(() => {
     axios.post('http://localhost:5000/api/users/getUserSellingHistory', {}, { withCredentials: true })
@@ -33,7 +52,7 @@ const ViewUserSellingHistory = () => {
   useEffect(() => {
     // Create a copy of the sellingHistory to avoid modifying the original data
     let sortedSellingHistory = [...sellingHistory];
-  
+
     // Filter by order status
     if (orderStatusFilter === "Completed Orders") {
       sortedSellingHistory = sortedSellingHistory.filter(sale => sale.order.orderStatus.toLowerCase() === "completed");
@@ -51,7 +70,7 @@ const ViewUserSellingHistory = () => {
     // Calculate the range of records to display for the current page
     const startIndex = (currentPage - 1) * recordsPerPage;
     const endIndex = Math.min(startIndex + recordsPerPage, totalRecords);
-    
+
     // Set the displayed records based on the range
     setDisplayedHistory(sortedSellingHistory.slice(startIndex, endIndex));
   }, [sellingHistory, currentPage, orderStatusFilter]);
@@ -91,14 +110,14 @@ const ViewUserSellingHistory = () => {
                   Filter By: {orderStatusFilter || "None"}
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                  <Dropdown.Item onClick={() => {setOrderStatusFilter("Completed Orders"); setCurrentPage(1);}}>Completed Orders</Dropdown.Item>
-                  <Dropdown.Item onClick={() => {setOrderStatusFilter("Pending Orders"); setCurrentPage(1);}}>Pending Orders</Dropdown.Item>
-                  <Dropdown.Item onClick={() => {setOrderStatusFilter("Incompleted Orders"); setCurrentPage(1);}}>Incompleted Orders</Dropdown.Item>
-                  <Dropdown.Item onClick={() => {setOrderStatusFilter(""); setCurrentPage(1);}}>Clear Status Filter</Dropdown.Item>
+                  <Dropdown.Item onClick={() => { setOrderStatusFilter("Completed Orders"); setCurrentPage(1); }}>Completed Orders</Dropdown.Item>
+                  <Dropdown.Item onClick={() => { setOrderStatusFilter("Pending Orders"); setCurrentPage(1); }}>Pending Orders</Dropdown.Item>
+                  <Dropdown.Item onClick={() => { setOrderStatusFilter("Incompleted Orders"); setCurrentPage(1); }}>Incompleted Orders</Dropdown.Item>
+                  <Dropdown.Item onClick={() => { setOrderStatusFilter(""); setCurrentPage(1); }}>Clear Status Filter</Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
             </Col>
-        </Row> 
+          </Row>
           <Table className="TableHeader-grey">
             <thead>
               <tr>

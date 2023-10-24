@@ -134,7 +134,7 @@ router.post('/login', async (req, res) => {
         // Send temporary token as a cookie
         res.cookie('tempToken', tempToken, { httpOnly: true, secure: true, sameSite: 'None' });
 
-        return res.json({ message: 'OTP sent successfully. Please check your email.' });
+        return res.status(200).json({ message: 'OTP sent successfully. Please check your email.' });
 
     } catch (error) {
         console.error(error);

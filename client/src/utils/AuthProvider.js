@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
+import * as api from './AuthAPI';
 
 const AuthContext = createContext(null);
 
@@ -8,9 +9,8 @@ export const AuthProvider = ({ children }) => {
 
     const fetchUser = async () => {
         try {
-            const response = await axios.get('http://localhost:5000/api/auth/user', {
-                withCredentials: true,
-            });
+            const response = await api.user();
+
             if (response.status === 200) {
                 setUser({ accountType: response.data.accountType });
             }
@@ -31,9 +31,7 @@ export const AuthProvider = ({ children }) => {
     const logout = async () => {
         // Add logic here to clear the token on the server, if necessary
         try {
-            const response = await axios.post("http://localhost:5000/api/auth/logout", {}, {
-                withCredentials: true
-            });
+            const response = await api.logout();
             console.log(response.data.message);
             window.location.href = '/';
         } catch (error) {
