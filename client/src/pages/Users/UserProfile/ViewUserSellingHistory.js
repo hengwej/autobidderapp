@@ -120,7 +120,7 @@ const ViewUserSellingHistory = () => {
                     <td>
                       <div className="UserProfileDetails">
                         <p><span>Order Status:</span> {sale.order.orderStatus}</p>
-                        {sale.order.orderStatus.toLowerCase() !== 'pending' ? (
+                        {sale.order.orderStatus.toLowerCase() !== 'pending' && sale.order.orderStatus.toLowerCase() !== 'incompleted' ? (
                           <p><span>Completion Time:</span> {new Date(sale.order.orderCompletionTime).toLocaleString({ timeZone: 'Asia/Singapore' })}</p>
                         ) : (
                           <p><span>Completion Time:</span> Not Available</p>
