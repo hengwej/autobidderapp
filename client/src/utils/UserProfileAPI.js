@@ -35,6 +35,20 @@ export const deleteUser = async () => {
     }
 };
 
+export const resetPassword = async (requestData) => {
+    try {
+        const response = await api.put("/api/users/resetPassword", requestData, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        return response;
+    } catch (error) {
+        console.error("Error Updating password:", error);
+        throw error;
+    }
+};
+
 export const biddingHistory = async () => {
     try {
         const response = await api.post("/api/users/getUserBiddingHistory", {
