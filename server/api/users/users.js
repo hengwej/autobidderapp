@@ -49,7 +49,7 @@ router.delete('/deleteAccount', async (req, res) => {
         console.log("Account and associated user deleted successfully");
 
         // Clear the authentication token cookie to log the user out
-        res.clearCookie('token');
+        res.clearCookie('token', { path: '/', httpOnly: true, secure: true, sameSite: 'None' });
 
         res.json({ message: 'Account deleted successfully, user logged out' });
     } catch (error) {
