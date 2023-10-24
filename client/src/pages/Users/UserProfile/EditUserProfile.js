@@ -4,6 +4,7 @@ import * as Yup from 'yup';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { Modal, Button } from 'react-bootstrap';
 import './styles.css';
+import * as api from '../../../utils/UserProfileAPI';
 
 const EditUserProfile = ({ user, account }) => {
   const [showEditProfileModal, setShowEditProfileModal] = useState(false);
@@ -65,6 +66,18 @@ const EditUserProfile = ({ user, account }) => {
     window.location.reload();
   };
 
+  const handleUpdate = async (requestData) => {
+    try {
+      const response = await api.updateUser(requestData);
+      if (response.status === 200) {
+        console.log("Profile edited successfully");
+        setShowSuccessModal(true);
+      }
+    } catch (error) {
+      console.error("Failed to edit profile:", error);
+    }
+  };
+
   // Function to handle user confirmation
   const handleConfirmChanges = () => {
     // Close the confirmation and edit profile modal
@@ -86,21 +99,7 @@ const EditUserProfile = ({ user, account }) => {
     };
 
     // Send an HTTP request to save the updated profile data in the database
-    axios
-      .put(`http://localhost:5000/api/users/updateUserProfileDetails`, requestData, {
-        withCredentials: true,
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-      .then(response => {
-        console.log("Profile edited successfully");
-        // Display the success message modal
-        setShowSuccessModal(true);
-      })
-      .catch(error => {
-        console.error("Failed to edit profile:", error);
-      });
+    handleUpdate(requestData);
   };
 
   return (

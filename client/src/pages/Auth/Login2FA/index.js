@@ -5,7 +5,7 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../utils/AuthProvider';
-
+import * as api from '../../../utils/AuthAPI';
 
 function Login2FA() {
     const initialValues = {
@@ -20,21 +20,11 @@ function Login2FA() {
     const onSubmit = async (data, { setSubmitting, setFieldError }) => {
 
         try {
-            const response = await axios.post('http://localhost:5000/api/auth/otp', {
-                otp: data.Code2FA,
-            }, {
-                withCredentials: true,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                }
-            });
+            const response = await api.otp(data.Code2FA);
 
             if (response.status === 200) {
-                //console.log(response.data.accountType);
-                //login({ accountType: response.data.accountType });
-                login();
 
+                login();
 
                 console.log('OTP verification successful!');
                 navigate('/');

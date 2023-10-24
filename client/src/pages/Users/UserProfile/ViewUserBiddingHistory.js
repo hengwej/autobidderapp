@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
-import { Table, Button, Container, Dropdown, Row, Col} from 'react-bootstrap';
+import { Table, Button, Container, Dropdown, Row, Col } from 'react-bootstrap';
 import './styles.css';
+import * as api from '../../../utils/UserProfileAPI';
 
 const ViewUserBiddingHistory = () => {
   const [biddingHistory, setBiddingHistory] = useState([]);
@@ -13,7 +14,7 @@ const ViewUserBiddingHistory = () => {
   const recordsPerPage = 3;
   const [currentPage, setCurrentPage] = useState(1);
   const [numPages, setNumPages] = useState(0);
-  
+
   // Sorting and Filtering
   const [sortBy, setSortBy] = useState("bidID"); // Default sort by bidID
   const [sortOrder, setSortOrder] = useState("asc"); // Default sort order ascending
@@ -21,22 +22,27 @@ const ViewUserBiddingHistory = () => {
   const [bidStatusFilter, setBidStatusFilter] = useState(""); // Default no status filter
 
   useEffect(() => {
-    axios.post('http://localhost:5000/api/users/getUserBiddingHistory', {}, { withCredentials: true })
-      .then(response => {
-        setBiddingHistory(response.data);
-      })
-      .catch(error => {
+    async function fetchBiddingHistory() {
+      try {
+        const response = await api.biddingHistory();
+        if (response.status === 200) {
+          setBiddingHistory(response.data);
+        }
+      } catch (error) {
         console.error("Failed to fetch user profile:", error);
-      })
-      .finally(() => {
+      } finally {
         setLoading(false);
-      });
+      }
+    }
+
+    fetchBiddingHistory();
+
   }, []);
 
   useEffect(() => {
     // Create a copy of the biddingHistory to avoid modifying the original data
     let sortedBiddingHistory = [...biddingHistory];
-  
+
     // Filter by bid status
     if (bidStatusFilter === "Active Bids") {
       sortedBiddingHistory = sortedBiddingHistory.filter(bid => bid.bidStatus.toLowerCase() === "active");
@@ -45,7 +51,7 @@ const ViewUserBiddingHistory = () => {
     } else if (bidStatusFilter === "Closed Bids") {
       sortedBiddingHistory = sortedBiddingHistory.filter(bid => bid.bidStatus.toLowerCase() === "closed");
     }
-  
+
     // Sort the filtered data
     sortedBiddingHistory.sort((a, b) => {
       if (sortBy === "bidTimestamp") {
@@ -59,7 +65,7 @@ const ViewUserBiddingHistory = () => {
       }
       return true;
     });
-  
+
     // Calculate the number of pages
     const totalRecords = sortedBiddingHistory.length;
     const numPages = Math.ceil(totalRecords / recordsPerPage);
@@ -68,7 +74,7 @@ const ViewUserBiddingHistory = () => {
     // Calculate the range of records to display for the current page
     const startIndex = (currentPage - 1) * recordsPerPage;
     const endIndex = Math.min(startIndex + recordsPerPage, totalRecords);
-    
+
     // Set the displayed records based on the range
     setDisplayedHistory(sortedBiddingHistory.slice(startIndex, endIndex));
   }, [biddingHistory, currentPage, sortBy, sortOrder, bidStatusFilter]);
@@ -108,10 +114,10 @@ const ViewUserBiddingHistory = () => {
                   Filter By: {bidStatusFilter || "None"}
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                  <Dropdown.Item onClick={() => {setBidStatusFilter("Active Bids"); setCurrentPage(1);}}>Active Bids</Dropdown.Item>
-                  <Dropdown.Item onClick={() => {setBidStatusFilter("Outbidded Bids"); setCurrentPage(1);}}>Outbidded Bids</Dropdown.Item>
-                  <Dropdown.Item onClick={() => {setBidStatusFilter("Closed Bids"); setCurrentPage(1);}}>Closed Bids</Dropdown.Item>
-                  <Dropdown.Item onClick={() => {setBidStatusFilter(""); setCurrentPage(1);}}>Clear Status Filter</Dropdown.Item>
+                  <Dropdown.Item onClick={() => { setBidStatusFilter("Active Bids"); setCurrentPage(1); }}>Active Bids</Dropdown.Item>
+                  <Dropdown.Item onClick={() => { setBidStatusFilter("Outbidded Bids"); setCurrentPage(1); }}>Outbidded Bids</Dropdown.Item>
+                  <Dropdown.Item onClick={() => { setBidStatusFilter("Closed Bids"); setCurrentPage(1); }}>Closed Bids</Dropdown.Item>
+                  <Dropdown.Item onClick={() => { setBidStatusFilter(""); setCurrentPage(1); }}>Clear Status Filter</Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
             </Col>
@@ -120,16 +126,16 @@ const ViewUserBiddingHistory = () => {
                 <Dropdown.Toggle variant="primary" size="sm" id="bidSortingFilterDropdown">
                   Sort By: {sortingFilter || "None"}
                 </Dropdown.Toggle>
-              <Dropdown.Menu>
-                <Dropdown.Item onClick={() => {setSortingFilter("Oldest Bid First"); setSortBy("bidTimestamp"); setSortOrder("asc"); setCurrentPage(1);}}>Oldest Bid First</Dropdown.Item>
-                <Dropdown.Item onClick={() => {setSortingFilter("Newest Bid First"); setSortBy("bidTimestamp"); setSortOrder("desc"); setCurrentPage(1);}}>Newest Bid First</Dropdown.Item>
-                <Dropdown.Item onClick={() => {setSortingFilter("Lowest Bid First"); setSortBy("bidAmount"); setSortOrder("asc"); setCurrentPage(1);}}>Lowest Bid First</Dropdown.Item>
-                <Dropdown.Item onClick={() => {setSortingFilter("Highest Bid First"); setSortBy("bidAmount"); setSortOrder("desc"); setCurrentPage(1);}}>Highest Bid First</Dropdown.Item>
-                <Dropdown.Item onClick={() => {setSortingFilter("None"); setSortBy("bidID"); setSortOrder("asc"); setCurrentPage(1);}}>Clear Sorting Filter</Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
-          </Col>
-        </Row> 
+                <Dropdown.Menu>
+                  <Dropdown.Item onClick={() => { setSortingFilter("Oldest Bid First"); setSortBy("bidTimestamp"); setSortOrder("asc"); setCurrentPage(1); }}>Oldest Bid First</Dropdown.Item>
+                  <Dropdown.Item onClick={() => { setSortingFilter("Newest Bid First"); setSortBy("bidTimestamp"); setSortOrder("desc"); setCurrentPage(1); }}>Newest Bid First</Dropdown.Item>
+                  <Dropdown.Item onClick={() => { setSortingFilter("Lowest Bid First"); setSortBy("bidAmount"); setSortOrder("asc"); setCurrentPage(1); }}>Lowest Bid First</Dropdown.Item>
+                  <Dropdown.Item onClick={() => { setSortingFilter("Highest Bid First"); setSortBy("bidAmount"); setSortOrder("desc"); setCurrentPage(1); }}>Highest Bid First</Dropdown.Item>
+                  <Dropdown.Item onClick={() => { setSortingFilter("None"); setSortBy("bidID"); setSortOrder("asc"); setCurrentPage(1); }}>Clear Sorting Filter</Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+            </Col>
+          </Row>
           <Table className="TableHeader-grey">
             <thead>
               <tr>
