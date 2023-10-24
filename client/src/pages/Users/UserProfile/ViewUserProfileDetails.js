@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
-import { Container, Col, Row, Card} from 'react-bootstrap';
+import { Container, Col, Row, Card } from 'react-bootstrap';
 import './styles.css';
 import UserAccountDeletion from './UserAccountDeletion';
 import EditUserProfile from './EditUserProfile';
+import * as api from '../../../utils/UserProfileAPI';
 
 const ViewUserProfileDetails = () => {
   const [user, setUser] = useState(null);
@@ -11,17 +12,22 @@ const ViewUserProfileDetails = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.post('http://localhost:5000/api/users/getUserProfileDetails', {}, { withCredentials: true })
-      .then(response => {
-        setUser(response.data.user);
-        setAccount(response.data.account);
-      })
-      .catch(error => {
+    async function fetchUserProfileDetails() {
+      try {
+        const response = await api.userProfileDetails();
+        if (response.status === 200) {
+          setUser(response.data.user);
+          setAccount(response.data.account);
+        }
+      } catch (error) {
         console.error("Failed to fetch user profile:", error);
-      })
-      .finally(() => {
+      } finally {
         setLoading(false);
-      });
+      }
+    }
+
+    fetchUserProfileDetails();
+
   }, []);
 
   return (

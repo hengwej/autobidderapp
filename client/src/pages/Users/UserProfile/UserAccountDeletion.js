@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Modal, Button } from 'react-bootstrap';
 import { useNavigate } from "react-router-dom";
 import './styles.css';
+import * as api from '../../../utils/UserProfileAPI';
 
 const UserAccountDeletion = () => {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
@@ -14,23 +15,30 @@ const UserAccountDeletion = () => {
     setShowConfirmationModal(true);
   };
 
-  const handleDeleteAccount = () => {
-    // Make an HTTP DELETE request to delete the account
-    axios.delete('http://localhost:5000/api/users/deleteAccount', { withCredentials: true })
-      .then(response => {
-        // Handle a successful deletion
-        console.log("Account deleted successfully");
-
-        // Display the success message modal
+  const handleUpdate = async (requestData) => {
+    try {
+      const response = await api.updateUser(requestData);
+      if (response.status === 200) {
+        console.log("Profile edited successfully");
         setShowSuccessModal(true);
+      }
+    } catch (error) {
+      console.error("Failed to edit profile:", error);
+    }
+  };
 
-        // Close the confirmation modal
-        setShowConfirmationModal(false);
-      })
-      .catch(error => {
-        // Handle any errors during the deletion process
-        console.error("Failed to delete account:", error);
-      });
+  const handleDeleteAccount = async () => {
+    // Make an HTTP DELETE request to delete the account
+    try {
+      const response = await api.deleteUser();
+      if (response.status === 200) {
+        console.log("Account deleted successfully");
+        setShowSuccessModal(true);
+      }
+
+    } catch (error) {
+      console.error("Failed to delete account:", error);
+    }
 
     // Close the confirmation modal
     setShowConfirmationModal(false);

@@ -2,8 +2,11 @@ import React from 'react'
 import './styles.css'
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
+import * as api from '../../../utils/AuthAPI';
+import { useNavigate } from 'react-router-dom';
 
 function SignUp() {
+    const navigate = useNavigate();
     const initialValues = {
         username: '',
         email: '',
@@ -29,20 +32,12 @@ function SignUp() {
         }
 
         try {
-            const response = await fetch("http://127.0.0.1:5000/api/auth/signup", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    accountData: accountData,
-                    userData: userData
-                })
-            });
+            const response = await api.signup(accountData, userData);
 
-            const data = await response.json();
-
-            console.log(data);
+            if (response.status === 200) {
+                console.log('Account created successfully!');
+                navigate('/auth/login');
+            }
 
 
         } catch (error) {
