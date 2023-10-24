@@ -14,7 +14,6 @@ import ViewDetails from "./pages/Admin/ViewUsers/view_user_details";
 import Requests from "./pages/Admin/Requests/requests";
 import ViewRequestDetails from "./pages/Admin/Requests/view_request_details";
 import UserProfile from "./pages/Users/UserProfile/UserProfile";
-import axios from "axios";
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import "./css/styles.css";
@@ -22,19 +21,6 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import { useAuth } from "./utils/AuthProvider";
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PK);
-
-
-async function logout() {
-    try {
-        const response = await axios.post("http://localhost:5000/api/auth/logout", {}, {
-            withCredentials: true
-        });
-        console.log(response.data.message);
-        window.location.href = '/auth/login';
-    } catch (error) {
-        console.error("Failed to logout:", error);
-    }
-}
 
 
 function App() {
@@ -100,11 +86,11 @@ function App() {
                 <Route path="/auth/confirmation" element={<Login2FA />} />
                 <Route path="/signup" element={<SignUp />} />
                 <Route path="/viewCarDetails/:carID" element={<Elements stripe={stripePromise}>
-                        <ViewCarDetails/>
-                    </Elements>} />
+                    <ViewCarDetails />
+                </Elements>} />
                 <Route path="/placebid" element={<Elements stripe={stripePromise}>
-                        <Placebid/>
-                    </Elements>} />
+                    <Placebid />
+                </Elements>} />
                 <Route
                     path="/userManagement"
                     element={

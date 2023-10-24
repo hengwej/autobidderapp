@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import axios from 'axios';
 import { Modal, Button } from 'react-bootstrap';
 import { useNavigate } from "react-router-dom";
 import './styles.css';
@@ -13,18 +12,6 @@ const UserAccountDeletion = () => {
 
   const showDeleteConfirmation = () => {
     setShowConfirmationModal(true);
-  };
-
-  const handleUpdate = async (requestData) => {
-    try {
-      const response = await api.updateUser(requestData);
-      if (response.status === 200) {
-        console.log("Profile edited successfully");
-        setShowSuccessModal(true);
-      }
-    } catch (error) {
-      console.error("Failed to edit profile:", error);
-    }
   };
 
   const handleDeleteAccount = async () => {
