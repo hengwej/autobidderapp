@@ -21,9 +21,9 @@ export const updateUser = async (requestData) => {
     }
 };
 
-export const deleteUser = async (requestData) => {
+export const deleteUser = async () => {
     try {
-        const response = await api.put("/api/users/updateUserProfileDetails", requestData, {
+        const response = await api.delete("/api/users/deleteAccount", {
             headers: {
                 'Content-Type': 'application/json'
             }
