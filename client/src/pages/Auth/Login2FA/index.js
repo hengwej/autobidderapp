@@ -1,6 +1,5 @@
 import React from 'react';
 import './styles.css';
-import axios from 'axios';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';

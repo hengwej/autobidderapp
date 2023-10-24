@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import axios from 'axios';
 import { Container, Col, Row, Card } from 'react-bootstrap';
 import './styles.css';
 import UserAccountDeletion from './UserAccountDeletion';

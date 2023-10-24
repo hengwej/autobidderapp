@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import axios from 'axios';
 import { Table, Button, Container, Dropdown, Row, Col } from 'react-bootstrap';
 import './styles.css';
 import * as api from '../../../utils/UserProfileAPI';
@@ -34,19 +33,6 @@ const ViewUserSellingHistory = () => {
 
     fetchUserSellingHistory();
 
-  }, []);
-
-  useEffect(() => {
-    axios.post('http://localhost:5000/api/users/getUserSellingHistory', {}, { withCredentials: true })
-      .then(response => {
-        setSellingHistory(response.data);
-      })
-      .catch(error => {
-        console.error("Failed to fetch user profile:", error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
   }, []);
 
   useEffect(() => {
