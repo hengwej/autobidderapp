@@ -39,6 +39,32 @@ tr:nth-child(even) {
 
 hr.solid {
     border-top: 5px solid black;
+    width: 40em;
+}
+
+hr.dotted {
+    border-top: 5px dotted black;
+    position: relative;
+    bottom: 400px;
+    width: 100%;
+}
+
+.lefthr {
+    position: relative;
+    right: 380px;
+}
+
+.righthr {
+    position: relative;
+    left: 390px;
+    bottom: 88px;
+}
+
+.hrspan {
+    position: relative;
+    bottom: 448px;
+    left: 350px;
+    font-size: 35px;
 }
 
 .inputComment {
@@ -48,12 +74,28 @@ hr.solid {
     color: black;
 }
 
+.comments {
+    position: relative;
+    bottom: 460px;
+}
+
 .carDetailUl {
     color: black;
 }
 
 .wrapper {
-    margin-top: 700px;
+    margin-top: 800px;
+}
+
+.carDetailOne {
+    position: relative;
+    right: 340px;
+}
+
+.carDetailTwo {
+    position: relative;
+    left: 410px;
+    bottom: 800px;
 }
 
 .carImages {

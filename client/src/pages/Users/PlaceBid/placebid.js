@@ -108,8 +108,15 @@ export default function PlaceBid({ carID, handleClose  }) {
                 handleClose();
                 setIsProcessing(false);
                 setPaymentSuccess(true);
+
+                // Reload the page
+                window.location.reload();
             }
         }
+
+        // Add to bidding history
+        axios.post(`http://127.0.0.1:5000/api/biddingHistory/addBidHistory`, { bidValue: bidValue, status: "ongoing", auctionID: auctionID }, { withCredentials: true }).then((res) => {
+        });
     };
 
     const onSubmit = (data) => {
