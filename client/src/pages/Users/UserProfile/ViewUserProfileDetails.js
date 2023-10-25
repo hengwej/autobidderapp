@@ -3,6 +3,7 @@ import { Container, Col, Row, Card } from 'react-bootstrap';
 import './styles.css';
 import UserAccountDeletion from './UserAccountDeletion';
 import EditUserProfile from './EditUserProfile';
+import ResetPassword from './ResetPassword';
 import * as api from '../../../utils/UserProfileAPI';
 
 const ViewUserProfileDetails = () => {
@@ -53,6 +54,7 @@ const ViewUserProfileDetails = () => {
           <Row className="justify-content-center">
             <Col sm={5}>
               <EditUserProfile account={account} user={user} />
+              <ResetPassword />
               <UserAccountDeletion />
             </Col>
           </Row>
