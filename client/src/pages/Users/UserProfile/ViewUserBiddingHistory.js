@@ -28,7 +28,7 @@ const ViewUserBiddingHistory = () => {
           setBiddingHistory(response.data);
         }
       } catch (error) {
-        console.error("Failed to fetch user profile:", error);
+        console.error("Failed to fetch user bidding history:", error);
       } finally {
         setLoading(false);
       }
