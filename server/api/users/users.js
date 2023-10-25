@@ -301,6 +301,34 @@ router.put('/resetPassword', async (req, res) => {
     }
 });
 
+router.post('/getUserSellCarRequests', async (req, res) => {
+    const token = req.cookies.token;
+    if (!token) return res.status(401).json({ error: 'Unauthorized' });
+
+    try {
+        //Verify token
+        const payload = jwt.verify(token, process.env.JWT_SECRET);
+
+        //Find account associated with the token by accountID
+        const carRequests = await prisma.request.findMany({
+            where: {
+                accountID: payload.accountID, // Use accountID from token payload
+            }
+        });
+
+        //Return selling history
+        res.json(carRequests);
+
+    } catch (error) {
+        if (error.name === 'TokenExpiredError') {
+            return res.status(401).json({ error: 'Token has expired' });
+        }
+
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 
 
 

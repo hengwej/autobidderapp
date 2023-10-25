@@ -90,3 +90,17 @@ export const userSellingHistory = async () => {
         throw error;
     }
 };
+
+export const userSellCarRequests = async () => {
+    try {
+        const response = await api.post("/api/users/getUserSellCarRequests", {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        return response;
+    } catch (error) {
+        console.error("Error Updating profile:", error);
+        throw error;
+    }
+};
