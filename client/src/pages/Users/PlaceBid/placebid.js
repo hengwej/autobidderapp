@@ -14,6 +14,7 @@ export default function PlaceBid({ carID, handleClose  }) {
     const [error, setError] = useState(null);
     const [currentHighestBid, setCurrentHighestBid] = useState(null);
     const [bidError, setBidError] = useState(null);
+    const [auctionID, setAuctionID] = useState(null);
 
     const stripe = useStripe();
     const elements = useElements();
@@ -30,6 +31,7 @@ export default function PlaceBid({ carID, handleClose  }) {
                 const auction = data.find((auction) => carID === auction.carID);
 
                 setCurrentHighestBid(auction.currentHighestBid);
+                setAuctionID(auction.auctionID);
                 setAuctionData(data);
                 setLoading(false);
 
@@ -102,7 +104,7 @@ export default function PlaceBid({ carID, handleClose  }) {
             } else {
                 console.log('Payment successful!');
                 // Record the bid in the database now that payment was successful
-                await axios.post(`http://127.0.0.1:5000/api/auctions/addBid`, { bidValue: bidValue, carID: carID });
+                await axios.post(`http://127.0.0.1:5000/api/auctions/addBid`, { bidValue: bidValue }, { withCredentials: true });
                 // Close the modal and reset state
                 handleCloseBid();
                 handleClose();

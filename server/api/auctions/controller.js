@@ -13,22 +13,3 @@ exports.addAuction = async (req, res) => {
     });
     res.json(newAuction);
 };
-
-exports.addBid = async (req, res) => {
-    const newBid = req.body;
-    try {
-        const addBid = await prisma.auction.updateMany({
-            where: {
-                carID: newBid.carID,
-            },
-            data: {
-                currentHighestBid: newBid.bidValue,
-            },
-        });
-
-        res.json(addBid);
-    } catch (error) {
-        console.log(error);
-        res.status(404).json({ error: "Bid not found." });
-    }
-};

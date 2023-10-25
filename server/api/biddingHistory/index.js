@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const controller = require('./controller');
+const jwt = require('jsonwebtoken');
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
 
 router.get('/allBidHistory', controller.allBidHistory);
 
@@ -55,10 +58,6 @@ router.post('/addBidHistory', async (req, res) => {
             res.json(newBiddingHistory);
         }
 
-        //Return JSON object
-        //Return bidding history
-        res.json(biddingHistory);
-
     } catch (error) {
         if (error.name === 'TokenExpiredError') {
             return res.status(401).json({ error: 'Token has expired' });
@@ -67,6 +66,23 @@ router.post('/addBidHistory', async (req, res) => {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
+});
+
+router.post('/updateBidHistoryToEnd', async (req, res) => {
+
+    const endBidHistory  = req.body;
+
+    const updateEndBiddingHistory = await prisma.biddingHistory.updateMany({
+        where: {
+            auctionID: endBidHistory.auctionID,
+        },
+        data: {
+            bidStatus: endBidHistory.status,
+        },
+    });
+
+    res.json(updateEndBiddingHistory);
+  
 });
 
 module.exports = router;
