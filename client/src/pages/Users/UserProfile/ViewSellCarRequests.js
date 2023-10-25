@@ -197,7 +197,7 @@ const ViewSellCarRequests = () => {
                 </Modal.Header>
                 <Modal.Body>
                     {selectedImage && (
-                        <img src={URL.createObjectURL(new Blob([new Uint8Array(selectedImage.data)]))} alt="Car Image" style={{ maxWidth: '100%' }}/>
+                        <img src={URL.createObjectURL(new Blob([new Uint8Array(selectedImage.data)]))} alt="Car" style={{ maxWidth: '100%' }}/>
                     )}
                 </Modal.Body>
             </Modal>
