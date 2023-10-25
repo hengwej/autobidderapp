@@ -25,7 +25,7 @@ const ViewUserSellingHistory = () => {
           setSellingHistory(response.data);
         }
       } catch (error) {
-        console.error("Failed to fetch user profile:", error);
+        console.error("Failed to fetch selling history:", error);
       } finally {
         setLoading(false);
       }
