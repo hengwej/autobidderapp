@@ -65,3 +65,91 @@ exports.deleteRequest = async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 };
+
+const processedRequests = new Set();
+
+// New controller function for approving a request
+exports.approveRequest = async (req, res) => {
+    try {
+        const requestID = parseInt(req.params.requestID);
+
+        if (isNaN(requestID)) {
+            return res.status(400).json({ error: 'Invalid request ID' });
+        }
+
+        // Check if the request has already been processed
+        if (processedRequests.has(requestID)) {
+            return res.status(400).json({ error: 'Request has already been processed' });
+        }
+
+        // Check if the request exists before approval
+        const existingRequest = await prisma.request.findUnique({
+            where: { requestID: requestID },
+        });
+
+        if (!existingRequest) {
+            return res.status(404).json({ error: 'Request not found' });
+        }
+
+        // Calculate endDate as 1 week (7 days) later from the startDate
+        const startDate = new Date(); // Set the start date to the current timestamp
+        const endDate = new Date(startDate);
+        endDate.setDate(endDate.getDate() + 7); // Add 7 days to the start date to get the end date
+        console.log('existingRequest:', existingRequest);
+        console.log('req.user:', req.user);
+        const accountID = existingRequest.accountID; // Fetch accountID from existingRequest
+
+        const hardcodedAccountID = 25;
+
+        // Create a new car record in the car table using the request data
+        const newCar = await prisma.car.create({
+            data: {
+                vehicleNumber: existingRequest.vehicleNumber,
+                carImage: existingRequest.carImage,
+                highlights: existingRequest.highlights,
+                equipment: existingRequest.equipment,
+                modifications: existingRequest.modifications,
+                make: existingRequest.make,
+                model: existingRequest.model,
+                interiorColor: existingRequest.interiorColor,
+                exteriorColor: existingRequest.exteriorColor,
+                startingBid: existingRequest.startingBid,
+                reservePrice: existingRequest.reservePrice,
+                accountID: existingRequest.accountID,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            },
+        });
+
+        const newAuction = await prisma.auction.create({
+            data: {
+                auctionStatus: 'OPENED',
+                startDate: startDate,
+                endDate: endDate,
+                currentHighestBid: 0,
+                auctionCreationTime: new Date(),
+                accountID: existingRequest.accountID,
+                auctionCreator: {
+                    connect: { accountID: hardcodedAccountID },
+                },
+                car: {
+                    connect: { carID: newCar.carID },
+                },
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            },
+        });
+
+        // Mark the request as processed
+        processedRequests.add(requestID);
+
+        await prisma.request.delete({
+            where: { requestID: requestID },
+        });
+
+        res.json({ message: 'Request approved, car added to the car table, and auction opened' });
+    } catch (error) {
+        console.error('Error approving request:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};

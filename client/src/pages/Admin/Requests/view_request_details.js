@@ -9,7 +9,7 @@ export default function ViewRequestDetails() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [carImageSrc, setCarImageSrc] = useState(null);
-    const [showSuccess, setShowSuccess] = useState(false);
+    const [successMessage, setSuccessMessage] = useState("");
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -30,9 +30,31 @@ export default function ViewRequestDetails() {
             });
     }, [requestID]);
 
-    const handleApprove = () => {
-        // Implement the logic to approve the request here
-    };
+ const handleApprove = () => {
+    axios.post(`http://127.0.0.1:5000/api/requests/approveRequest/${requestID}`)
+        .then((response) => {
+            setSuccessMessage("Request approved successfully");
+            console.log('Request approved successfully:', response.data);
+        })
+        .catch((error) => {
+            // Display the error message or handle the error as needed
+            console.error('Error while approving request:', error);
+            if (error.response) {
+                // The request was made, but the server responded with an error.
+                // You can access the response status and data.
+                console.error('Status:', error.response.status);
+                console.error('Data:', error.response.data);
+            } else if (error.request) {
+                // The request was made, but no response was received (e.g., network error).
+                console.error('Request:', error.request);
+            } else {
+                // Something happened in setting up the request that triggered the error.
+                console.error('Error:', error.message);
+            }
+        });
+};
+
+
     const handleReject = () => {
         // Display a confirmation dialog
         const shouldDelete = window.confirm("Are you sure you want to reject this request?");
@@ -42,26 +64,26 @@ export default function ViewRequestDetails() {
             axios.delete(`http://127.0.0.1:5000/api/requests/deleteRequest/${requestID}`)
                 .then((response) => {
                     // Handle success, show a message, and refresh the page.
+                    setSuccessMessage("Request rejected successfully");
                     console.log('Request rejected successfully:', response.data);
-                    setShowSuccess(true);
                 })
                 .catch((error) => {
-                    // Handle error, display an error message.
-                    console.error('Error rejecting request:', error);
+                    setError(error);
                 });
         }
     };
 
+
     useEffect(() => {
         // Automatically refresh the page after deletion
-        if (showSuccess) {
+        if (successMessage) {
             const timer = setTimeout(() => {
-                setShowSuccess(false);
-                navigate("/Requests"); // Redirect to another page or the same page to refresh
-            }, 2000); // Refresh the page after 2 seconds
+                setSuccessMessage("");
+                navigate("/Requests");
+            }, 2000);
             return () => clearTimeout(timer);
         }
-    }, [showSuccess, navigate]);
+    }, [successMessage, navigate]);
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error.message}</div>;
@@ -123,9 +145,9 @@ export default function ViewRequestDetails() {
                             </tr>
                         </tbody>
                     </Table>
-                    {showSuccess && (
+                    {successMessage && (
                         <Alert variant="success" style={{ marginTop: "10px" }}>
-                            Request rejected successfully.
+                            {successMessage}
                         </Alert>
                     )}
                     <div style={{ marginTop: "10px" }}>
