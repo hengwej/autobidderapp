@@ -6,10 +6,12 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Header from "../../../components/Header";
 import { Link } from "react-router-dom";
+import axios from 'axios';
 
 export default class Home extends Component {
     constructor(props) {
         super(props);
+        this.countdownInterval = null;
         this.state = {
             carData: [], // Initialize an empty array to store car data
             timeLeft: {},
@@ -26,17 +28,20 @@ export default class Home extends Component {
 
             const auctionResponse = await fetch("http://127.0.0.1:5000/api/auctions/allAuction");
             const retrieveAuctionData = await auctionResponse.json();
-            this.setState({ auctionData: retrieveAuctionData, loading: false });
 
+            this.setState({ auctionData: retrieveAuctionData, loading: false });
+  
             // Initialize timers for each car
             const initialTimers = {};
-            retrieveAuctionData.forEach((auctionDate) => {
-                const auction = retrieveAuctionData.find((auctionDate) => data.carID === auctionDate.carID);
+            retrieveAuctionData.forEach((auctionItem) => {
+                const auction = retrieveAuctionData.find((auctionItem) => data.carID === auctionItem.carID);
+                
                 if (auction) {
-                    initialTimers[auctionDate.carID] = this.calculateTimeLeft(
+                    initialTimers[auctionItem.carID] = this.calculateTimeLeft(
                         new Date(auction.startDate),
-                        new Date(auction.endDate)
-                    );
+                        new Date(auction.endDate),
+                        auctionItem.auctionID
+                    );;
                 }
             });
             this.setState({ timeLeft: initialTimers });
@@ -48,7 +53,7 @@ export default class Home extends Component {
         }
     }
 
-    calculateTimeLeft = (startDate, endDate) => {
+    calculateTimeLeft = (startDate, endDate, auctionID) => {
         const auctionStartDate = new Date(startDate);
         const auctionEndDate = new Date(endDate);
         const currentDate = new Date();
@@ -64,6 +69,16 @@ export default class Home extends Component {
             };
         }
 
+        if (difference <= 0 && auctionID) {
+            // Update to bidding status to end
+            axios.post(`http://127.0.0.1:5000/api/biddingHistory/updateBidHistoryToEnd`, { status: "Ended", auctionID: auctionID }).then((res) => {
+            });
+
+            // Update to auction status to closed
+            axios.post(`http://127.0.0.1:5000/api/auctions/updateAuctionToClose`, { status: "CLOSED", auctionID: auctionID }).then((res) => {
+            });
+        }
+
         return timeLeft;
     };
 
@@ -71,20 +86,27 @@ export default class Home extends Component {
         this.countdownInterval = setInterval(() => {
             const { auctionData, timeLeft } = this.state;
             const updatedTimers = { ...timeLeft };
-
+            
             auctionData.forEach((auction) => {
-                const timer = this.calculateTimeLeft(auction.startDate, auction.endDate);
+                const timer = this.calculateTimeLeft(auction.startDate, auction.endDate, auction.auctionID);
                 updatedTimers[auction.carID] = timer;
             });
 
             this.setState({ timeLeft: updatedTimers });
+            clearInterval(this.countdownInterval);
         }, 1000);
     };
 
     render() {
-        const { timeLeft } = this.state;
+        const { carData, timeLeft } = this.state;
         if (this.state.loading) return <div>Loading...</div>;
         if (this.state.error) return <div>Error: {this.state.error.message}</div>;
+
+        // Filter out cars whose timers have not ended
+        const activeCars = carData.filter((car) => {
+            const timer = timeLeft[car.carID];
+            return timer && timer.days >= 0;
+        });
 
         return (
             <div>
@@ -100,7 +122,7 @@ export default class Home extends Component {
 
                 <Container fluid> {/* Use a fluid container for a full-width layout */}
                     <Row>
-                        {this.state.carData.map((car) => (
+                        {activeCars.map((car) => (
                             <Col lg={4} key={car.carID}> {/* Use lg for larger column widths */}
                                 <Link to={`/viewCarDetails/${car.carID}`} style={{ textDecoration: "none" }}> {/* Specify the target route */}
                                     <Card style={{ height: 400 + 'px' }}>
