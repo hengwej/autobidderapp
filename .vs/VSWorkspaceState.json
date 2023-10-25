@@ -5,11 +5,11 @@
     "\\client\\src",
     "\\client\\src\\pages",
     "\\client\\src\\pages\\Users",
-    "\\client\\src\\pages\\Users\\UserProfile",
+    "\\client\\src\\pages\\Users\\SellACar",
+    "\\client\\src\\utils",
     "\\server",
     "\\server\\api",
-    "\\server\\api\\auth",
-    "\\server\\api\\users"
+    "\\server\\api\\stripe"
   ],
   "PreviewInSolutionExplorer": false
 }
