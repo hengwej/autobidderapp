@@ -18,7 +18,7 @@ router.post('/addBid', async (req, res) => {
         //Verify token
         const payload = jwt.verify(token, process.env.JWT_SECRET);
 
-        const { newBid } = req.body;
+        const  newBid = req.body;
         try {
             const addBid = await prisma.auction.updateMany({
                 where: {
