@@ -30,7 +30,7 @@ router.post('/addBidHistory', async (req, res) => {
             },
         });
 
-        const { newBidHistory } = req.body;
+        const newBidHistory = req.body;
 
         if (existingBiddingHistory) {
             // If a record with the accountID exists, update it
