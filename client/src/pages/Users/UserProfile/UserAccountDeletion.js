@@ -55,7 +55,7 @@ const UserAccountDeletion = () => {
         <Modal.Body>
           <p>Are you sure you want to delete your account? This action cannot be undone.</p>
         </Modal.Body>
-        <Modal.Footer>
+        <Modal.Footer className="d-flex justify-content-center">
           <Button variant="secondary" onClick={handleCloseConfirmation}>Cancel</Button>
           <Button variant="danger" className="UserProfileForm-button" onClick={handleDeleteAccount}>Delete Account</Button>
         </Modal.Footer>
