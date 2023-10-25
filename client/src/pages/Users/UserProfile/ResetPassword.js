@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import './styles.css';
 import * as api from '../../../utils/UserProfileAPI';
 
-const ResetPassword = ({ }) => {
+const ResetPassword = () => {
   const [showResetPasswordModal, setShowResetPasswordModal] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
