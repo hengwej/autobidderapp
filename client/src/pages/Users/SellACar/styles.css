@@ -100,3 +100,32 @@
     margin: 0 auto;
     z-index: 1;
 }
+
+.success {
+    color: green;
+    margin-bottom: 10px;
+}
+
+.error {
+    color: red;
+    margin-bottom: 10px;
+}
+
+.list-your-car-button.loading {
+    background-color: #f0ad4e;
+    /* Bootstrap's warning color */
+}
+
+.list-your-car-button.success {
+    background-color: #5cb85c;
+    /* Bootstrap's success color */
+}
+
+.list-your-car-button.error {
+    background-color: #d9534f;
+    /* Bootstrap's danger color */
+}
+
+.list-your-car-button.failure {
+    background-color: #d9534f;  /* Bootstrap's danger color */
+}
