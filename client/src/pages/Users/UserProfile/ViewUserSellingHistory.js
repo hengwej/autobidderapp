@@ -44,8 +44,6 @@ const ViewUserSellingHistory = () => {
       sortedSellingHistory = sortedSellingHistory.filter(sale => sale.order.orderStatus.toLowerCase() === "completed");
     } else if (orderStatusFilter === "Pending Orders") {
       sortedSellingHistory = sortedSellingHistory.filter(sale => sale.order.orderStatus.toLowerCase() === "pending");
-    } else if (orderStatusFilter === "Incompleted Orders") {
-      sortedSellingHistory = sortedSellingHistory.filter(sale => sale.order.orderStatus.toLowerCase() === "incompleted");
     }
 
     // Calculate the number of pages
@@ -98,7 +96,6 @@ const ViewUserSellingHistory = () => {
                 <Dropdown.Menu>
                   <Dropdown.Item onClick={() => { setOrderStatusFilter("Completed Orders"); setCurrentPage(1); }}>Completed Orders</Dropdown.Item>
                   <Dropdown.Item onClick={() => { setOrderStatusFilter("Pending Orders"); setCurrentPage(1); }}>Pending Orders</Dropdown.Item>
-                  <Dropdown.Item onClick={() => { setOrderStatusFilter("Incompleted Orders"); setCurrentPage(1); }}>Incompleted Orders</Dropdown.Item>
                   <Dropdown.Item onClick={() => { setOrderStatusFilter(""); setCurrentPage(1); }}>Clear Status Filter</Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
@@ -120,7 +117,7 @@ const ViewUserSellingHistory = () => {
                     <td>
                       <div className="UserProfileDetails">
                         <p><span>Order Status:</span> {sale.order.orderStatus}</p>
-                        {sale.order.orderStatus.toLowerCase() !== 'pending' && sale.order.orderStatus.toLowerCase() !== 'incompleted' ? (
+                        {sale.order.orderStatus.toLowerCase() !== 'pending' ? (
                           <p><span>Completion Time:</span> {new Date(sale.order.orderCompletionTime).toLocaleString({ timeZone: 'Asia/Singapore' })}</p>
                         ) : (
                           <p><span>Completion Time:</span> Not Available</p>

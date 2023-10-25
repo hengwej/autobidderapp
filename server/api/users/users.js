@@ -3,6 +3,8 @@ const { PrismaClient } = require('@prisma/client');
 const jwt = require('jsonwebtoken');
 const router = express.Router();
 const prisma = new PrismaClient();
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 
 
@@ -250,6 +252,51 @@ router.put('/updateUserProfileDetails', async (req, res) => {
         }
 
         console.error("Error updating user and account data:", error);
+        res.status(500).json({ error: 'Internal server error', details: error });
+    }
+});
+
+router.put('/resetPassword', async (req, res) => {
+    const { password } = req.body;
+    const token = req.cookies.token;
+
+    if (!token) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    try {
+        // Verify the token and extract the account ID
+        const payload = jwt.verify(token, process.env.JWT_SECRET);
+        const accountID = payload.accountID;
+
+        // Find the account associated with the given account ID
+        const account = await prisma.account.findUnique({
+            where: { accountID },
+        });
+
+        if (!account) {
+            return res.status(404).json({ error: 'Account not found' });
+        }
+
+        // Hash the new password
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+        // Update the account password with the hashed password
+        const updatedAccount = await prisma.account.update({
+            where: { accountID },
+            data: { password: hashedPassword },
+        });
+
+        // Clear the authentication token cookie to log the user out
+        res.clearCookie('token', { path: '/', httpOnly: true, secure: true, sameSite: 'None' });
+
+        res.json({ updatedAccount, message: 'Password updated successfully, user logged out' });
+    } catch (error) {
+        if (error.name === 'TokenExpiredError') {
+            return res.status(401).json({ error: 'Token has expired' });
+        }
+
+        console.error("Error resetting password:", error);
         res.status(500).json({ error: 'Internal server error', details: error });
     }
 });
