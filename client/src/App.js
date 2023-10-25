@@ -4,7 +4,6 @@ import Homepage from "./pages/General/Homepage";
 import FAQ from "./pages/General/FAQ";
 import SignUp from "./pages/Auth/SignUp";
 import Login from "./pages/Auth/Login";
-// import SellCar from "./pages/Users/SellACar/sell_a_car";
 import SellCar from "./pages/Users/SellACar/sellcar";
 import ViewCarDetails from "./pages/Users/CarDetails/view_car_details";
 import Placebid from "./pages/Users/PlaceBid/placebid";

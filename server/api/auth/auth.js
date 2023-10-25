@@ -25,8 +25,6 @@ async function verifyRecaptcha(token) { //takes the token arg from frontend
     }
 }
 
-
-
 // Middleware to validate JWT token
 const authenticateToken = (req, res, next) => {
     const token = req.cookies.token;
@@ -39,17 +37,12 @@ const authenticateToken = (req, res, next) => {
     });
 };
 
-
-
-
 router.post('/signUp', async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
-
     const { userData, accountData } = req.body;
-
     try {
         const user = await prisma.user.create({ data: userData });
         accountData.userID = user.userID;
@@ -58,7 +51,6 @@ router.post('/signUp', async (req, res) => {
         const hashedPassword = await bcrypt.hash(accountData.password, saltRounds);
         accountData.password = hashedPassword;
         const account = await prisma.account.create({ data: accountData });
-
         res.json({ message: 'Signup successful!', user, account });
     } catch (error) {
         console.error("Error processing signup:", error);
