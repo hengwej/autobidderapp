@@ -35,8 +35,7 @@ exports.viewRequestDetails = async (req, res) => {
 };
 
 
-// Create a new controller function for deleting a request
-exports.deleteRequest = async (req, res) => {
+exports.rejectRequest = async (req, res) => {
     try {
         const requestID = parseInt(req.params.requestID);
 
@@ -44,7 +43,12 @@ exports.deleteRequest = async (req, res) => {
             return res.status(400).json({ error: 'Invalid request ID' });
         }
 
-        // Check if the request exists before deletion
+        // Check if the request has already been processed
+        if (processedRequests.has(requestID)) {
+            return res.status(400).json({ error: 'Request has already been processed' });
+        }
+
+        // Check if the request exists before rejection
         const existingRequest = await prisma.request.findUnique({
             where: { requestID: requestID },
         });
@@ -53,15 +57,20 @@ exports.deleteRequest = async (req, res) => {
             return res.status(404).json({ error: 'Request not found' });
         }
 
-        // Perform the deletion of the request
-        await prisma.request.delete({
+        // Update the request status to 'rejected'
+        await prisma.request.update({
             where: { requestID: requestID },
+            data: {
+                requestStatus: 'Rejected',
+            },
         });
 
-        // Return a success message
-        res.json({ message: 'Request deleted successfully' });
+        // Mark the request as processed
+        processedRequests.add(requestID);
+
+        res.json({ message: 'Request rejected successfully' });
     } catch (error) {
-        console.error('Error deleting request:', error);
+        console.error('Error rejecting request:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 };
@@ -109,6 +118,7 @@ exports.approveRequest = async (req, res) => {
                 highlights: existingRequest.highlights,
                 equipment: existingRequest.equipment,
                 modifications: existingRequest.modifications,
+                knownFlaws: existingRequest.knownFlaws,
                 make: existingRequest.make,
                 model: existingRequest.model,
                 interiorColor: existingRequest.interiorColor,
