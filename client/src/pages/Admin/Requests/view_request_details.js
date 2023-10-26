@@ -61,7 +61,7 @@ export default function ViewRequestDetails() {
 
         if (shouldDelete) {
             // Send an API request to delete the request when the "Reject" button is clicked.
-            axios.delete(`http://127.0.0.1:5000/api/requests/deleteRequest/${requestID}`)
+            axios.delete(`http://127.0.0.1:5000/api/requests/rejectRequest/${requestID}`)
                 .then((response) => {
                     // Handle success, show a message, and refresh the page.
                     setSuccessMessage("Request rejected successfully");
