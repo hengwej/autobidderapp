@@ -4,12 +4,13 @@
     "\\client",
     "\\client\\src",
     "\\client\\src\\pages",
-    "\\client\\src\\pages\\Users",
-    "\\client\\src\\pages\\Users\\SellACar",
-    "\\client\\src\\utils",
+    "\\client\\src\\pages\\Admin",
+    "\\client\\src\\pages\\Admin\\Requests",
     "\\server",
     "\\server\\api",
-    "\\server\\api\\stripe"
+    "\\server\\api\\middleware",
+    "\\server\\api\\requests",
+    "\\server\\prisma"
   ],
   "PreviewInSolutionExplorer": false
 }
