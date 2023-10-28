@@ -1,0 +1,61 @@
+.main-container {
+    background-color: #ffffff;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-container {
+    margin-bottom: 2rem;
+}
+
+.navbar-brand {
+    font-size: 25px;
+    color: black;
+    display: block;
+    margin-bottom: 1rem;
+}
+
+.contact-info-container,
+.feedback-container {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.contact-info {
+    color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.icon-container {
+    margin-right: 10px;
+}
+
+.fas {
+    font-size: 20px;
+    color: #333;
+}
+
+.faq-container h2 {
+    margin-bottom: 1rem;
+}
+
+.faq-container table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 2rem;
+}
+
+.faq-container th,
+.faq-container td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.faq-container th {
+    background-color: #f0f0f0;
+}

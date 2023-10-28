@@ -4,7 +4,6 @@ import Homepage from "./pages/General/Homepage";
 import FAQ from "./pages/General/FAQ";
 import SignUp from "./pages/Auth/SignUp";
 import Login from "./pages/Auth/Login";
-// import SellCar from "./pages/Users/SellACar/sell_a_car";
 import SellCar from "./pages/Users/SellACar/sellcar";
 import ViewCarDetails from "./pages/Users/CarDetails/view_car_details";
 import Placebid from "./pages/Users/PlaceBid/placebid";
@@ -28,7 +27,7 @@ function App() {
 
     return (
         <div className="App">
-            <nav className="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+            <nav className="navbar navbar-expand-lg navbar-light" id="mainNav">
                 <div className="container px-4 px-lg-5">
                     <a className="navbar-brand" href="/" style={{ fontSize: 35 + 'px' }}>Auto Bid</a>
                     <ul className="navbar-nav ms-auto">
