@@ -110,17 +110,7 @@ export default class Home extends Component {
 
         return (
             <div>
-                <a
-                    style={{ margin: "20px 20px 0", fontSize: "25px", color: "white" }}
-                    className="navbar-brand"
-                    href="#page-top"
-                >
-                    Auctions
-                </a>
-
-                <Header headerText="Welcome" />
-
-                <Container fluid> {/* Use a fluid container for a full-width layout */}
+                <Container>
                     <Row>
                         {activeCars.map((car) => (
                             <Col lg={4} key={car.carID}> {/* Use lg for larger column widths */}

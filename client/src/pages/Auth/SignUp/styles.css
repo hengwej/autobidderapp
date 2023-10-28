@@ -1,4 +1,15 @@
 /* Style for the Formik form */
+h3 {
+    text-align: center;
+    padding-bottom: 20px;
+}
+
+.signUpPage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .signUpPage form {
     width: 500px;
     /* Fixed width for the form */
