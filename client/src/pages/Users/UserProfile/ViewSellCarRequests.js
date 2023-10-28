@@ -110,7 +110,7 @@ const ViewSellCarRequests = () => {
       {loading ? (
         <p>Loading sell car requests...</p>
       ) : sellCarRequests.length === 0 ? (
-        <p>Error: No records found</p>
+        <p>No records found</p>
       ) : (
         <div>
             <Row>

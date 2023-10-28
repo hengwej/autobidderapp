@@ -60,7 +60,7 @@ const ViewUserProfileDetails = () => {
           </Row>
         </Card>
       ) : (
-        <p>Error: No records found.</p>
+        <p>No records found.</p>
       )}
     </Container>
   );
