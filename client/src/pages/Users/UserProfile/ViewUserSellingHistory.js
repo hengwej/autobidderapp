@@ -84,7 +84,7 @@ const ViewUserSellingHistory = () => {
       {loading ? (
         <p>Loading selling history...</p>
       ) : sellingHistory.length === 0 ? (
-        <p>Error: No records found</p>
+        <p>No records found</p>
       ) : (
         <div>
           <Row>
@@ -118,7 +118,7 @@ const ViewUserSellingHistory = () => {
                       <div className="UserProfileDetails">
                         <p><span>Order Status:</span> {sale.order.orderStatus}</p>
                         {sale.order.orderStatus.toLowerCase() !== 'pending' ? (
-                          <p><span>Completion Time:</span> {new Date(sale.order.orderCompletionTime).toLocaleString({ timeZone: 'Asia/Singapore' })}</p>
+                          <p><span>Completion Time:</span> {new Date(sale.order.updatedAt).toLocaleString({ timeZone: 'Asia/Singapore' })}</p>
                         ) : (
                           <p><span>Completion Time:</span> Not Available</p>
                         )}
