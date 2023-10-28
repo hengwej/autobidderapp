@@ -5,6 +5,7 @@ import axios from 'axios';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { Modal, Button } from "react-bootstrap";
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js'; // Import Stripe components
+import  * as api from "../../../utils/bidAPI.js"
 
 export default function PlaceBid({ carID, handleClose  }) {
     const [auctionData, setAuctionData] = useState({});
@@ -102,7 +103,8 @@ export default function PlaceBid({ carID, handleClose  }) {
             } else {
                 console.log('Payment successful!');
                 // Record the bid in the database now that payment was successful
-                await axios.post(`http://127.0.0.1:5000/api/auctions/addBid`, { bidValue: bidValue, carID: carID });
+                //await axios.post(`http://127.0.0.1:5000/api/auctions/addBid`, { bidValue: bidValue, carID: carID },{withCredentials:true});
+                await api.addBid(bidValue, carID);
                 // Close the modal and reset state
                 handleCloseBid();
                 handleClose();
