@@ -15,6 +15,7 @@ export default function PlaceBid({ carID, handleClose  }) {
     const [error, setError] = useState(null);
     const [currentHighestBid, setCurrentHighestBid] = useState(null);
     const [bidError, setBidError] = useState(null);
+    const [auctionID, setAuctionID] = useState(null);
 
     const stripe = useStripe();
     const elements = useElements();
@@ -31,6 +32,7 @@ export default function PlaceBid({ carID, handleClose  }) {
                 const auction = data.find((auction) => carID === auction.carID);
 
                 setCurrentHighestBid(auction.currentHighestBid);
+                setAuctionID(auction.auctionID);
                 setAuctionData(data);
                 setLoading(false);
 
@@ -110,8 +112,15 @@ export default function PlaceBid({ carID, handleClose  }) {
                 handleClose();
                 setIsProcessing(false);
                 setPaymentSuccess(true);
+
+                // Reload the page
+                window.location.reload();
             }
         }
+
+        // Add to bidding history
+        axios.post(`http://127.0.0.1:5000/api/biddingHistory/addBidHistory`, { bidValue: bidValue, status: "ongoing", auctionID: auctionData.auctionID }, { withCredentials: true }).then((res) => {
+        });
     };
 
     const onSubmit = (data) => {
