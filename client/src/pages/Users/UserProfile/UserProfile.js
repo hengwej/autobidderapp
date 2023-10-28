@@ -14,7 +14,7 @@ const UserProfile = () => {
   };
 
   return (
-    <Container fluid className="custom-container">
+    <Container className="custom-container">
       <Tab.Container id="left-tabs-example" activeKey={activeTab} onSelect={handleTabChange}>
         <Row>
           <Col sm={3}>

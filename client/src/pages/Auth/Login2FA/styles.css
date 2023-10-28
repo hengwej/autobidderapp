@@ -1,3 +1,8 @@
+.login2FAPage {
+    display: flex;
+    justify-content: center;
+}
+
 /* Style for the Formik form */
 .login2FAPage form {
     width: 500px;
