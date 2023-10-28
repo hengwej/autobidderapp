@@ -5,6 +5,7 @@ import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../utils/AuthProvider';
 import * as api from '../../../utils/AuthAPI';
+import { Container } from 'react-bootstrap';
 
 function Login2FA() {
     const initialValues = {
@@ -42,18 +43,20 @@ function Login2FA() {
     });
 
     return (
-        <div className='login2FAPage'>
+        <Container>
             <h3>OTP Confirmation</h3>
-            <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
-                <Form>
-                    <label>OTP Code: </label>
-                    <Field id="inputCode2FA" type="text" name="Code2FA" placeholder="OTP" autoComplete="off" />
-                    <ErrorMessage className="error-message" name="Code2FA" component="span" />
+            <div className='login2FAPage'>
+                <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
+                    <Form>
+                        <label>OTP Code: </label>
+                        <Field id="inputCode2FA" type="text" name="Code2FA" placeholder="OTP" autoComplete="off" />
+                        <ErrorMessage className="error-message" name="Code2FA" component="span" />
 
-                    <button type="submit">Confirm</button>
-                </Form>
-            </Formik>
-        </div>
+                        <button type="submit">Confirm</button>
+                    </Form>
+                </Formik>
+            </div>
+        </Container>
     );
 }
 

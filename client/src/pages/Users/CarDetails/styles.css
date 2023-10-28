@@ -1,23 +1,50 @@
 table {
-    font-family: arial, sans-serif;
-    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+    border-collapse: separate;
+    border-spacing: 0;
     width: 100%;
-    background-color: white;
+    background-color: #ffffff;
     margin-top: 20px;
-    border: 2px solid black;
-    height: 200px;
-}
-
-td, th {
-    border: 1px solid white;
-    text-align: left;
-    padding: 8px;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    height: 100%;
     color: black;
 }
 
-tr:nth-child(even) {
-    background-color: #dddddd;
+.side-table {}
+
+th {
+    font-weight: bold;
+    padding: 12px 15px;
+    border-bottom: 2px solid orange;
+    text-align: left;
+    background-color: #afaeae;
+    color: white;
 }
+
+td {
+    padding: 12px 15px;
+    border-bottom: 1px solid orange;
+    text-align: left;
+    background-color: #f0f0f0;
+    color: black;
+}
+
+.carImages {
+    width: 700px;
+    height: 480px;
+}
+
+.flex-container {
+    display: flex;
+    align-items: stretch;
+    /* Stretch children to match the height of the tallest child */
+    gap: 1rem;
+}
+
+
+
+
 
 .timer {
     background-color: white;
@@ -84,21 +111,10 @@ hr.dotted {
 }
 
 .wrapper {
-    margin-top: 800px;
-}
-
-.carDetailOne {
-    position: relative;
-    right: 340px;
-}
-
-.carDetailTwo {
-    position: relative;
-    left: 410px;
-    bottom: 800px;
-}
-
-.carImages {
-    width: 700px;
-    height: 480px;
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+    background-color: white;
+    padding: 2rem;
+    border-radius: 10px;
 }
