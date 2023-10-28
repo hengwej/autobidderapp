@@ -103,7 +103,7 @@ const ViewUserBiddingHistory = () => {
       {loading ? (
         <p>Loading bidding history...</p>
       ) : biddingHistory.length === 0 ? (
-        <p>Error: No records found</p>
+        <p>No records found</p>
       ) : (
         <div>
           <Row>

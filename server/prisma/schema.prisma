@@ -68,6 +68,7 @@ model Auction {
     endDate             DateTime
     currentHighestBid   Float
     auctionCreationTime DateTime
+    accountID           Int              @map("accountID")
     auctionCreatorID    Int              @map("auctionCreatorID")
     carID               Int              @map("carID")
     createdAt           DateTime         @default(now())
