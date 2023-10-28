@@ -22,12 +22,12 @@ const EditUserProfile = ({ user, account }) => {
   const [newValues, setNewValues] = useState({ ...initialValues });
 
   const validationSchema = Yup.object().shape({
-    username: Yup.string().required("You must enter a username"),
-    emailAddress: Yup.string().email("Invalid email").required("You must enter an email"),
-    firstName: Yup.string().required("You must enter a first name"),
-    lastName: Yup.string().required("You must enter a last name"),
-    address: Yup.string().required("You must enter an address"),
-    phoneNumber: Yup.string().required("You must enter a phone number")
+    username: Yup.string().required("You must enter a username."),
+    emailAddress: Yup.string().email("Invalid email.").required("You must enter an email."),
+    firstName: Yup.string().required("You must enter a first name."),
+    lastName: Yup.string().required("You must enter a last name."),
+    address: Yup.string().required("You must enter an address."),
+    phoneNumber: Yup.string().required("You must enter a phone number.")
   });
 
 
@@ -112,37 +112,37 @@ const EditUserProfile = ({ user, account }) => {
           <Formik initialValues={newValues} validationSchema={validationSchema} onSubmit={handleSaveProfile}>
             {() => (
               <Form>
-                <div className="form-group">
+                <div className="UserProfileForm">
                   <label htmlFor="editUsername">Username:</label>
                   <Field id="editUsername" type="text" name="username" placeholder="Username" className="form-control" />
                   <ErrorMessage className="error-message" name="username" component="span" />
                 </div>
 
-                <div className="form-group">
+                <div className="UserProfileForm">
                   <label htmlFor="editFirstName">First Name:</label>
                   <Field id="editFirstName" type="text" name="firstName" placeholder="First Name" className="form-control" />
                   <ErrorMessage className="error-message" name="firstName" component="span" />
                 </div>
 
-                <div className="form-group">
+                <div className="UserProfileForm">
                   <label htmlFor="editLastName">Last Name:</label>
                   <Field id="editLastName" type="text" name="lastName" placeholder="Last Name" className="form-control" />
                   <ErrorMessage className="error-message" name="lastName" component="span" />
                 </div>
 
-                <div className="form-group">
+                <div className="UserProfileForm">
                   <label htmlFor="editEmail">Email:</label>
                   <Field id="editEmail" type="email" name="emailAddress" placeholder="Email" className="form-control" />
                   <ErrorMessage className="error-message" name="emailAddress" component="span" />
                 </div>
 
-                <div className="form-group">
+                <div className="UserProfileForm">
                   <label htmlFor="editAddress">Address:</label>
                   <Field id="editAddress" type="text" name="address" placeholder="Address" className="form-control" />
                   <ErrorMessage className="error-message" name="address" component="span" />
                 </div>
 
-                <div className="form-group">
+                <div className="UserProfileForm">
                   <label htmlFor="editPhoneNumber">Phone Number:</label>
                   <Field id="editPhoneNumber" type="text" name="phoneNumber" placeholder="Phone Number" className="form-control" />
                   <ErrorMessage className="error-message" name="phoneNumber" component="span" />
@@ -169,7 +169,7 @@ const EditUserProfile = ({ user, account }) => {
           <p><span>Address:</span> {newValues.address}</p>
           <p><span>Phone Number:</span> {newValues.phoneNumber}</p>
         </Modal.Body>
-        <Modal.Footer>
+        <Modal.Footer className="d-flex justify-content-center">
           <Button variant="secondary" onClick={() => setShowConfirmModal(false)}>Cancel</Button>
           <Button variant="primary" className="UserProfileForm-button" onClick={handleConfirmChanges}>Confirm</Button>
         </Modal.Footer>

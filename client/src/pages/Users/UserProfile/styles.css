@@ -62,7 +62,7 @@ background-color: #ff4800 !important;
 }
 
 .custom-container .container-fluid {
-  width: 600px;
+  width: 700px;
   height: 500px;
   margin: 0 auto;
 }  
@@ -92,6 +92,11 @@ background-color: #ff4800 !important;
   color: #ee0505;
 }
 
-.form-group {
+.UserProfileForm {
   margin-bottom: 10px;
+}
+
+.UserProfileForm label {
+  margin-bottom: 2px;
+  font-weight: bold;
 }

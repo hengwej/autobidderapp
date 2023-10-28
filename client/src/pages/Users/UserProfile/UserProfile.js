@@ -3,6 +3,7 @@ import { Nav, Tab, Container, Row, Col } from 'react-bootstrap';
 import ViewUserProfileDetails from './ViewUserProfileDetails';
 import ViewUserSellingHistory from './ViewUserSellingHistory';
 import ViewUserBiddingHistory from './ViewUserBiddingHistory';
+import ViewSellCarRequests from './ViewSellCarRequests';
 import './styles.css';
 
 const UserProfile = () => {
@@ -13,7 +14,7 @@ const UserProfile = () => {
   };
 
   return (
-    <Container fluid className="custom-container">
+    <Container className="custom-container">
       <Tab.Container id="left-tabs-example" activeKey={activeTab} onSelect={handleTabChange}>
         <Row>
           <Col sm={3}>
@@ -27,6 +28,9 @@ const UserProfile = () => {
               <Nav.Item>
                 <Nav.Link eventKey="sellingHistory">Selling History</Nav.Link>
               </Nav.Item>
+              <Nav.Item>
+                <Nav.Link eventKey="carRequests">Sell Car Requests</Nav.Link>
+              </Nav.Item>
             </Nav>
           </Col>
           <Col sm={9}>
@@ -39,6 +43,9 @@ const UserProfile = () => {
               </Tab.Pane>
               <Tab.Pane eventKey="sellingHistory">
                 {activeTab === "sellingHistory" && <ViewUserSellingHistory />}
+              </Tab.Pane>
+              <Tab.Pane eventKey="carRequests">
+                {activeTab === "carRequests" && <ViewSellCarRequests />}
               </Tab.Pane>
             </Tab.Content>
           </Col>

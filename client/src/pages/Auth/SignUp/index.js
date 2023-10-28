@@ -4,6 +4,7 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import * as api from '../../../utils/AuthAPI';
 import { useNavigate } from 'react-router-dom';
+import { Container } from 'react-bootstrap';
 
 function SignUp() {
     const navigate = useNavigate();
@@ -59,36 +60,38 @@ function SignUp() {
     });
 
     return (
-        <div className='signUpPage'>
+        <Container>
             <h3>Sign Up</h3>
-            <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
-                <Form>
-                    <label>Username: </label>
-                    <Field id="inputSignUpUsername" type="text" name="username" placeholder="Username" />
-                    <ErrorMessage className="error-message" name="username" component="span" />
-                    <label>Email: </label>
-                    <Field id="inputSignUpEmail" type="email" name="emailAddress" placeholder="Email" />
-                    <ErrorMessage className="error-message" name="emailAddress" component="span" />
-                    <label>Password: </label>
-                    <Field id="inputSignUpPassword" type="password" name="password" placeholder="Password" />
-                    <ErrorMessage className="error-message" name="password" component="span" />
-                    <label>First Name: </label>
-                    <Field id="inputSignUpFirstName" type="text" name="firstName" placeholder="First Name" />
-                    <ErrorMessage className="error-message" name="firstName" component="span" />
-                    <label>Last Name: </label>
-                    <Field id="inputSignUpLastName" type="text" name="lastName" placeholder="Last Name" />
-                    <ErrorMessage className="error-message" name="lastName" component="span" />
-                    <label>Address: </label>
-                    <Field id="inputSignUpAddress" type="text" name="address" placeholder="Address" />
-                    <ErrorMessage className="error-message" name="address" component="span" />
-                    <label>Phone Number: </label>
-                    <Field id="inputSignUpPhoneNumber" type="text" name="phoneNumber" placeholder="Phone Number" />
-                    <ErrorMessage className="error-message" name="phoneNumber" component="span" />
+            <div className='signUpPage'>
+                <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
+                    <Form>
+                        <label>Username: </label>
+                        <Field id="inputSignUpUsername" type="text" name="username" placeholder="Username" />
+                        <ErrorMessage className="error-message" name="username" component="span" />
+                        <label>Email: </label>
+                        <Field id="inputSignUpEmail" type="email" name="emailAddress" placeholder="Email" />
+                        <ErrorMessage className="error-message" name="emailAddress" component="span" />
+                        <label>Password: </label>
+                        <Field id="inputSignUpPassword" type="password" name="password" placeholder="Password" />
+                        <ErrorMessage className="error-message" name="password" component="span" />
+                        <label>First Name: </label>
+                        <Field id="inputSignUpFirstName" type="text" name="firstName" placeholder="First Name" />
+                        <ErrorMessage className="error-message" name="firstName" component="span" />
+                        <label>Last Name: </label>
+                        <Field id="inputSignUpLastName" type="text" name="lastName" placeholder="Last Name" />
+                        <ErrorMessage className="error-message" name="lastName" component="span" />
+                        <label>Address: </label>
+                        <Field id="inputSignUpAddress" type="text" name="address" placeholder="Address" />
+                        <ErrorMessage className="error-message" name="address" component="span" />
+                        <label>Phone Number: </label>
+                        <Field id="inputSignUpPhoneNumber" type="text" name="phoneNumber" placeholder="Phone Number" />
+                        <ErrorMessage className="error-message" name="phoneNumber" component="span" />
 
-                    <button type="submit">Sign Up</button>
-                </Form>
-            </Formik>
-        </div>
+                        <button type="submit">Sign Up</button>
+                    </Form>
+                </Formik>
+            </div>
+        </Container>
     )
 }
 

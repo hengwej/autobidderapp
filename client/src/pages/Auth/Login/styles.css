@@ -1,3 +1,9 @@
+.loginPage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 /* Style for the Formik form */
 .loginPage form {
     width: 500px;
@@ -62,4 +68,4 @@
 button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
-  }
+}

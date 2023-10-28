@@ -99,3 +99,66 @@
     justify-content: center;
     align-items: center;
 }
+
+
+
+
+
+/* Custom CSS file (e.g., styles.css) */
+
+/* Container Styling */
+.container {
+    padding: 2rem;
+}
+
+/* Row Styling */
+.row {
+    margin: 0 -15px;
+}
+
+/* Column Styling */
+.col-lg-4 {
+    padding: 15px;
+    /* Adjust padding around each column */
+}
+
+/* Card Styling */
+.card {
+    border: none;
+    /* Remove border */
+    border-radius: 10px;
+    /* Rounded corners */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    /* Simple box shadow */
+    transition: transform 0.3s ease-in-out;
+    /* Transition for hover effect */
+}
+
+.card:hover {
+    transform: scale(1.05);
+    /* Slightly enlarge cards on hover */
+}
+
+.card-img {
+    border-radius: 10px 10px 0 0;
+    /* Rounded corners at the top */
+    object-fit: cover;
+    /* Cover entire area without stretching */
+    height: 200px;
+    /* Set a fixed height */
+}
+
+.card-title,
+.card-text {
+    color: #ffffff;
+    /* Dark text color */
+}
+
+/* Custom class for the auction timer */
+.bar-bg {
+    background-color: rgba(255, 142, 96);
+    /* Light background color */
+    padding: 10px;
+    border-radius: 5px;
+    /* Slight rounded corners */
+}

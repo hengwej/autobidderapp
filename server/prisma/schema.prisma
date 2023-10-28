@@ -70,6 +70,7 @@ model Auction {
     auctionCreationTime DateTime
     accountID           Int              @map("accountID")
     auctionCreatorID    Int              @map("auctionCreatorID")
+    accountID           Int              @map("accountID")
     carID               Int              @map("carID")
     createdAt           DateTime         @default(now())
     updatedAt           DateTime         @default(now()) @updatedAt

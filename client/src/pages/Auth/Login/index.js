@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import React, { useRef, useState } from 'react';
 import ReCAPTCHA from "react-google-recaptcha";
 import * as api from '../../../utils/AuthAPI';
+import { Container } from 'react-bootstrap';
 
 function Login() {
     const initialValues = {
@@ -48,34 +49,36 @@ function Login() {
     });
 
     return (
-        <div className='loginPage'>
+        <Container>
             <h3>Login</h3>
-            <Formik
-                initialValues={initialValues}
-                onSubmit={onSubmit}
-                validationSchema={validationSchema}
-            >
-                {({ isSubmitting, isValid, values }) => (
-                    <Form>
-                        <label>Username: </label>
-                        <Field id="inputLoginUsername" type="text" name="username" placeholder="Username" />
-                        <ErrorMessage className="error-message" name="username" component="span" />
-                        <label>Password: </label>
-                        <Field id="inputLoginPassword" type="password" name="password" placeholder="Password" />
-                        <ErrorMessage className="error-message" name="password" component="span" />
-                        <ErrorMessage className="error-message" name="login-error" component="span" />
-                        <ReCAPTCHA
-                            ref={recaptchaRef}
-                            sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" // change to .env, temporary testing key, please swap out later              
-                            onChange={(value) => console.log("Captcha value:", value)} //value will be parsed into backend as "token"
-                        />
-                        <button type="submit" disabled={isSubmitting || !isValid || !values.username || values.password.length < 8}>
-                            Login
-                        </button>
-                    </Form>
-                )}
-            </Formik>
-        </div>
+            <div className='loginPage'>
+                <Formik
+                    initialValues={initialValues}
+                    onSubmit={onSubmit}
+                    validationSchema={validationSchema}
+                >
+                    {({ isSubmitting, isValid, values }) => (
+                        <Form>
+                            <label>Username: </label>
+                            <Field id="inputLoginUsername" type="text" name="username" placeholder="Username" />
+                            <ErrorMessage className="error-message" name="username" component="span" />
+                            <label>Password: </label>
+                            <Field id="inputLoginPassword" type="password" name="password" placeholder="Password" />
+                            <ErrorMessage className="error-message" name="password" component="span" />
+                            <ErrorMessage className="error-message" name="login-error" component="span" />
+                            <ReCAPTCHA
+                                ref={recaptchaRef}
+                                sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" // change to .env, temporary testing key, please swap out later              
+                                onChange={(value) => console.log("Captcha value:", value)} //value will be parsed into backend as "token"
+                            />
+                            <button type="submit" disabled={isSubmitting || !isValid || !values.username || values.password.length < 8}>
+                                Login
+                            </button>
+                        </Form>
+                    )}
+                </Formik>
+            </div>
+        </Container>
     );
 }
 

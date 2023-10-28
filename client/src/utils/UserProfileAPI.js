@@ -35,6 +35,20 @@ export const deleteUser = async () => {
     }
 };
 
+export const resetPassword = async (requestData) => {
+    try {
+        const response = await api.put("/api/users/resetPassword", requestData, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        return response;
+    } catch (error) {
+        console.error("Error Updating password:", error);
+        throw error;
+    }
+};
+
 export const biddingHistory = async () => {
     try {
         const response = await api.post("/api/users/getUserBiddingHistory", {
@@ -66,6 +80,20 @@ export const userProfileDetails = async () => {
 export const userSellingHistory = async () => {
     try {
         const response = await api.post("/api/users/getUserSellingHistory", {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        return response;
+    } catch (error) {
+        console.error("Error Updating profile:", error);
+        throw error;
+    }
+};
+
+export const userSellCarRequests = async () => {
+    try {
+        const response = await api.post("/api/users/getUserSellCarRequests", {
             headers: {
                 'Content-Type': 'application/json'
             }
