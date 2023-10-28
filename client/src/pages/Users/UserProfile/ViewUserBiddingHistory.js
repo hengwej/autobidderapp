@@ -47,8 +47,8 @@ const ViewUserBiddingHistory = () => {
       sortedBiddingHistory = sortedBiddingHistory.filter(bid => bid.bidStatus.toLowerCase() === "active");
     } else if (bidStatusFilter === "Outbidded Bids") {
       sortedBiddingHistory = sortedBiddingHistory.filter(bid => bid.bidStatus.toLowerCase() === "outbidded");
-    } else if (bidStatusFilter === "Closed Bids") {
-      sortedBiddingHistory = sortedBiddingHistory.filter(bid => bid.bidStatus.toLowerCase() === "closed");
+    } else if (bidStatusFilter === "Ended Bids") {
+      sortedBiddingHistory = sortedBiddingHistory.filter(bid => bid.bidStatus.toLowerCase() === "ended");
     }
 
     // Sort the filtered data
@@ -115,7 +115,7 @@ const ViewUserBiddingHistory = () => {
                 <Dropdown.Menu>
                   <Dropdown.Item onClick={() => { setBidStatusFilter("Active Bids"); setCurrentPage(1); }}>Active Bids</Dropdown.Item>
                   <Dropdown.Item onClick={() => { setBidStatusFilter("Outbidded Bids"); setCurrentPage(1); }}>Outbidded Bids</Dropdown.Item>
-                  <Dropdown.Item onClick={() => { setBidStatusFilter("Closed Bids"); setCurrentPage(1); }}>Closed Bids</Dropdown.Item>
+                  <Dropdown.Item onClick={() => { setBidStatusFilter("Ended Bids"); setCurrentPage(1); }}>Ended Bids</Dropdown.Item>
                   <Dropdown.Item onClick={() => { setBidStatusFilter(""); setCurrentPage(1); }}>Clear Status Filter</Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
