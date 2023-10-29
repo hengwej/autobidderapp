@@ -21,7 +21,7 @@ export default class Home extends Component {
 
     async componentDidMount() {
         try {
-            const response = await fetch("http://127.0.0.1:5000/api/cars/sellCar");
+            const response = await fetch("http://127.0.0.1:5000/api/cars/allCar");
             const data = await response.json();
 
             this.setState({ carData: data, loading: false });
