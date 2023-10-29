@@ -4,3 +4,7 @@
     font-size: 16px; /* Change font size */
     font-weight: bold; /* Add bold text */
 }
+.dropdown-container {
+   
+    display: inline-block; /* Add display property */
+}
