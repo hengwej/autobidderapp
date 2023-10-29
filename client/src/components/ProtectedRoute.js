@@ -4,7 +4,12 @@ import { Navigate } from 'react-router-dom';
 import { useAuth } from '../utils/AuthProvider';
 
 const ProtectedRoute = ({ children, allowedAccountTypes = [] }) => {
-    const { user } = useAuth();
+    const { user, loading } = useAuth();
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
 
     if (!user) {
         // User is not authenticated, redirect to login page
