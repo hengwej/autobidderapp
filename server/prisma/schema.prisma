@@ -32,8 +32,8 @@ model Account {
     user           User?            @relation(fields: [userID], references: [userID], onDelete: Cascade)
     cars           Car[]
     auctions       Auction[]        @relation("AccountToAuction")
+    bidder         Auction[]        @relation("BidderAccountToAuction")
     comments       Comment[]
-    orders         Orders[]         @relation("AccountToOrders")
     bidderAccount  Orders[]         @relation("BidderAccountToOrders")
     sellingHistory SellingHistory[]
     biddingHistory BiddingHistory[]
@@ -68,10 +68,12 @@ model Auction {
     endDate             DateTime
     currentHighestBid   Float
     auctionCreationTime DateTime
+    accountID           Int              @map("accountID")
     auctionCreatorID    Int              @map("auctionCreatorID")
     carID               Int              @map("carID")
     createdAt           DateTime         @default(now())
     updatedAt           DateTime         @default(now()) @updatedAt
+    account             Account          @relation("BidderAccountToAuction", fields: [accountID], references: [accountID], onDelete: Cascade)
     auctionCreator      Account          @relation("AccountToAuction", fields: [auctionCreatorID], references: [accountID], onDelete: Cascade)
     car                 Car              @relation(fields: [carID], references: [carID], onDelete: Cascade)
     comments            Comment[]
@@ -93,17 +95,10 @@ model Comment {
 model Orders {
     orderID             Int              @id @default(autoincrement())
     orderStatus         String
-    paymentDeadline     DateTime
-    deliveryType        String
-    shippingAddress     String?
-    orderCreationTime   DateTime
-    orderCompletionTime DateTime?
-    orderCreatorID      Int              @map("orderCreatorID")
     auctionID           Int              @map("auctionID")
     accountID           Int              @map("accountID")
     createdAt           DateTime         @default(now())
     updatedAt           DateTime         @default(now()) @updatedAt
-    orderCreator        Account          @relation("AccountToOrders", fields: [orderCreatorID], references: [accountID], onDelete: Cascade)
     account             Account          @relation("BidderAccountToOrders", fields: [accountID], references: [accountID], onDelete: Cascade)
     auction             Auction          @relation(fields: [auctionID], references: [auctionID], onDelete: Cascade)
     sellingHistory      SellingHistory[]
