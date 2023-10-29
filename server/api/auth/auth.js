@@ -130,6 +130,11 @@ router.post('/login', async (req, res) => {
         // Send temporary token as a cookie
         res.cookie('tempToken', tempToken, { httpOnly: true, secure: true, sameSite: 'None' });
 
+        // Generate CSRF token
+        const csrfToken = generateCSRFToken();
+
+        res.cookie('csrfToken', csrfToken, { httpOnly: true, secure: true, sameSite: 'Strict' });
+
         return res.status(200).json({ message: 'OTP sent successfully. Please check your email.' });
 
     } catch (error) {
@@ -192,7 +197,7 @@ router.post('/otp', async (req, res) => {
 
 router.get('/user', async (req, res) => {
     const token = req.cookies.token;
-    if (!token) return res.status(401).json({ error: 'Not authenticated' });
+    if (!token) return res.status(200).json({ message: 'Not authenticated' });
 
     try {
         const payload = jwt.verify(token, process.env.JWT_SECRET);
@@ -202,7 +207,7 @@ router.get('/user', async (req, res) => {
         });
 
         if (!user) return res.status(404).json({ error: 'User not found' });
-        return res.json(user);
+        return res.status(200).json(user);
     } catch (error) {
         console.error(error);
         return res.status(500).json({ error: 'Server error' });
@@ -212,6 +217,7 @@ router.get('/user', async (req, res) => {
 
 router.post('/logout', (req, res) => {
     res.clearCookie('token', { path: '/', httpOnly: true, secure: true, sameSite: 'None' });
+    res.clearCookie('csrfToken', { path: '/', httpOnly: true, secure: true, sameSite: 'Strict' });
     res.json({ message: "Logged out successfully." });
 });
 
