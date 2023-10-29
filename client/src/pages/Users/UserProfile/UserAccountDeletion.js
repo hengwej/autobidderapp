@@ -3,10 +3,16 @@ import { Modal, Button } from 'react-bootstrap';
 import { useNavigate } from "react-router-dom";
 import './styles.css';
 import * as api from '../../../utils/UserProfileAPI';
+import { useAuth } from '../../../utils/AuthProvider';
 
 const UserAccountDeletion = () => {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+
+  // CSRF Token
+  const { csrfToken } = useAuth();
+
+
   // Get the navigate function from the hook
   const navigate = useNavigate();
 
@@ -15,21 +21,26 @@ const UserAccountDeletion = () => {
   };
 
   const handleDeleteAccount = async () => {
-    // Make an HTTP DELETE request to delete the account
-    try {
-      const response = await api.deleteUser();
-      if (response.status === 200) {
-        console.log("Account deleted successfully");
-        setShowSuccessModal(true);
-      }
-
-    } catch (error) {
-      console.error("Failed to delete account:", error);
+    while (!csrfToken) {
+      // Wait until csrfToken becomes available for 1 second
+      await new Promise((resolve) => setTimeout(resolve, 1000));
     }
 
     // Close the confirmation modal
     setShowConfirmationModal(false);
+
+    // Make an HTTPS DELETE request to delete the account
+    try {
+      const response = await api.deleteUser(csrfToken);
+      if (response.status === 200) {
+        console.log("Account deleted successfully");
+        setShowSuccessModal(true);
+      }
+    } catch (error) {
+      console.error("Failed to delete account:", error);
+    }
   };
+
 
 
   const handleCloseConfirmation = () => {
