@@ -5,16 +5,18 @@ import UserAccountDeletion from './UserAccountDeletion';
 import EditUserProfile from './EditUserProfile';
 import ResetPassword from './ResetPassword';
 import * as api from '../../../utils/UserProfileAPI';
+import { useAuth } from '../../../utils/AuthProvider';
 
 const ViewUserProfileDetails = () => {
   const [user, setUser] = useState(null);
   const [account, setAccount] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { csrfToken } = useAuth();
 
   useEffect(() => {
     async function fetchUserProfileDetails() {
       try {
-        const response = await api.userProfileDetails();
+        const response = await api.userProfileDetails(csrfToken);
         if (response.status === 200) {
           setUser(response.data.user);
           setAccount(response.data.account);
@@ -26,9 +28,11 @@ const ViewUserProfileDetails = () => {
       }
     }
 
-    fetchUserProfileDetails();
+    if (csrfToken) {
+      fetchUserProfileDetails();
+    }
 
-  }, []);
+  }, [csrfToken]);
 
   return (
     <Container fluid>

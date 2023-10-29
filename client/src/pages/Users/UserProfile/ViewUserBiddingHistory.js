@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Table, Button, Container, Dropdown, Row, Col } from 'react-bootstrap';
 import './styles.css';
 import * as api from '../../../utils/UserProfileAPI';
+import { useAuth } from '../../../utils/AuthProvider';
 
 const ViewUserBiddingHistory = () => {
   const [biddingHistory, setBiddingHistory] = useState([]);
@@ -20,10 +21,13 @@ const ViewUserBiddingHistory = () => {
   const [sortingFilter, setSortingFilter] = useState(""); // Default no sorting filter
   const [bidStatusFilter, setBidStatusFilter] = useState(""); // Default no status filter
 
+  // CSRF Token
+  const { csrfToken } = useAuth();
+
   useEffect(() => {
     async function fetchBiddingHistory() {
       try {
-        const response = await api.biddingHistory();
+        const response = await api.biddingHistory(csrfToken);
         if (response.status === 200) {
           setBiddingHistory(response.data);
         }
@@ -36,7 +40,7 @@ const ViewUserBiddingHistory = () => {
 
     fetchBiddingHistory();
 
-  }, []);
+  }, [csrfToken]);
 
   useEffect(() => {
     // Create a copy of the biddingHistory to avoid modifying the original data
