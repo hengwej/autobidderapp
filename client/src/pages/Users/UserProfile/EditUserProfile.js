@@ -4,11 +4,15 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { Modal, Button } from 'react-bootstrap';
 import './styles.css';
 import * as api from '../../../utils/UserProfileAPI';
+import { useAuth } from '../../../utils/AuthProvider';
 
 const EditUserProfile = ({ user, account }) => {
   const [showEditProfileModal, setShowEditProfileModal] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+
+  // CSRF Token
+  const { csrfToken } = useAuth();
 
   const initialValues = {
     username: account.username || '',
@@ -66,8 +70,13 @@ const EditUserProfile = ({ user, account }) => {
   };
 
   const handleUpdate = async (requestData) => {
+    while (!csrfToken) {
+      // Wait until csrfToken becomes available for 1 second
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+
     try {
-      const response = await api.updateUser(requestData);
+      const response = await api.updateUser(requestData, csrfToken);
       if (response.status === 200) {
         console.log("Profile edited successfully");
         setShowSuccessModal(true);

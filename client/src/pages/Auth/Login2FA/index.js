@@ -20,11 +20,11 @@ function Login2FA() {
     const onSubmit = async (data, { setSubmitting, setFieldError }) => {
 
         try {
-            const response = await api.otp(data.Code2FA);
+            const response = await login(data.Code2FA);
+
+            console.log(response);
 
             if (response.status === 200) {
-
-                login();
 
                 console.log('OTP verification successful!');
                 navigate('/');
