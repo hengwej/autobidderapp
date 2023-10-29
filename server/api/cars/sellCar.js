@@ -14,6 +14,7 @@ const jwt = require('jsonwebtoken');
 const fs = require('fs').promises;
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+const { DateTime } = require('luxon');
 
 router.use(cookieParser());
 
@@ -97,8 +98,23 @@ const handleImageProcessing = async (file) => {
     const sanitizedFilename = sanitizeFilename(file.originalname);
     const inputPath = file.path;
     const outputPath = path.join(__dirname, '..', '..', 'processed_car_images', sanitizedFilename);
+    const extension = path.extname(sanitizedFilename).toLowerCase();
+    if (!extension || !['.jpg', '.png'].includes(extension)) {
+        throw new Error('Invalid file type. Only jpg and png image files are allowed.');
+    }
+    const mimeTypeExtension = file.mimetype.split('/')[1];
+    if (!mimeTypeExtension || !['jpeg', 'png'].includes(mimeTypeExtension)) {
+        throw new Error('Invalid file type. Only jpg and png image files are allowed.');
+    }
+    if (!file.mimetype || !['image/jpeg', 'image/png'].includes(file.mimetype)) {
+        throw new Error('Invalid file type. Only jpg and png image files are allowed.');
+    }
     // Resize image to width of 600px and compress it
-    await sharp(inputPath).resize({ width: 600 }).jpeg({ quality: 80 }).toFile(outputPath);
+    await sharp(inputPath)
+        .resize({ width: 600 })
+        .jpeg({ quality: 80 })
+        .withMetadata({ clone: false })  // Strip metadata
+        .toFile(outputPath);
     const fileBuffer = await fs.readFile(outputPath);
     return fileBuffer;
 };
@@ -108,12 +124,12 @@ const upload = multer({
     dest: path.join(__dirname, '..', '..', 'uploads'),
     limits: { fileSize: 1000000 }, // limit file size to 1MB
     fileFilter(req, file, cb) {
-        if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+        if (!file.originalname.match(/\.(jpg|png)$/)) {
             return cb(new Error('Please upload an image'));
         }
-        const allowedMimes = ['image/jpeg', 'image/pjpeg', 'image/png'];
+        const allowedMimes = ['image/jpeg', 'image/png'];
         if (!allowedMimes.includes(file.mimetype)) {
-            return cb(new Error('Invalid file type. Only jpg, jpeg, and png image files are allowed.'));
+            return cb(new Error('Invalid file type. Only jpg and png image files are allowed.'));
         }
         cb(null, true);
     },
@@ -173,7 +189,6 @@ router.post('/sellCar',
             error.validation = errors.array();
             return next(error);
         }
-
         const token = req.cookies.token;
         if (!token) {
             const error = new Error('Unauthorized');
@@ -183,7 +198,6 @@ router.post('/sellCar',
         try {
             //Verify token
             const payload = jwt.verify(token, process.env.JWT_SECRET);
-
             // declare req body
             const {
                 vehicleNumber,
@@ -198,30 +212,25 @@ router.post('/sellCar',
                 startingBid,
                 reservePrice,
             } = req.body;
-
             // Check for duplicate vehicleNumber
-            const existingCar = await prisma.car.findFirst({
+            const existingCar = await prisma.request.findFirst({
                 where: {
-                    vehicleNumber: vehicleNumber,  // Use vehicleNumber from req.body
+                    vehicleNumber: vehicleNumber  // Use vehicleNumber from req.body
                 },
+                select: {
+                    vehicleNumber: true  // Select only the vehicleNumber field
+                }
             });
-            // If a car with the same vehicleNumber is found, respond with an error
-            // if (existingCar) {
-            //     return res.status(400).json({ error: 'A car with this vehicle number already exists' });
-            // }
-            // If a car with the same vehicleNumber is found, respond with an error
             if (existingCar) {
                 const error = new Error('A car with this vehicle number already exists');
                 error.statusCode = 400;
                 return next(error);
             }
-
             const startingBidFloat = parseFloat(startingBid);
             const reservePriceFloat = parseFloat(reservePrice);
-
             // process image
             const processedImage = await handleImageProcessing(req.file);
-            const car = await prisma.car.create({
+            const request = await prisma.request.create({
                 data: {
                     vehicleNumber,
                     carImage: processedImage,
@@ -241,11 +250,13 @@ router.post('/sellCar',
                             accountID: payload.accountID,
                         },
                     },
+                    requestStatus: "Pending",
+                    submissionTime: DateTime.now().setZone('Asia/Singapore').toISO(),
                 },
             });
             //Return JSON object
             //Return bidding history
-            res.status(200).json({ message: 'Car successfully listed', car });
+            res.status(200).json({ message: 'Car listing successfully requested. ', request });
         } catch (error) {
             if (error.name === 'TokenExpiredError') {
                 return res.status(401).json({ error: 'Token has expired' });

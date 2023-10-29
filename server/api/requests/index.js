@@ -4,5 +4,7 @@ const controller = require('./controller');
 
 router.get('/getAllRequests', controller.getAllRequests);
 router.get('/viewRequestDetails/:requestID', controller.viewRequestDetails); // New route for viewing a single request
-router.delete('/deleteRequest/:requestID', controller.deleteRequest); // Use DELETE for deletion
+router.delete('/rejectRequest/:requestID', controller.rejectRequest); // Use DELETE for deletion
+router.post('/approveRequest/:requestID', controller.approveRequest); //approve button
+
 module.exports = router;
