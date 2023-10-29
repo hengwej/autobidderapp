@@ -161,7 +161,7 @@ const ViewSellCarRequests = () => {
                     <td>
                       <div className="UserProfileDetails">
                         <p><span>Request Status:</span> {request.requestStatus}</p>
-                        <p><span>Submission Time:</span> {new Date(request.requestSubmissionTime).toLocaleString({ timeZone: 'Asia/Singapore' })}</p>
+                        <p><span>Submission Time:</span> {Date(request.requestSubmissionTime).toLocaleString({ timeZone: 'Asia/Singapore' })}</p>
                         <p><span>Vehicle Number:</span> {request.vehicleNumber}</p>
                         <p><span>Car Details:</span> {`${request.exteriorColor} ${request.make} ${request.model}`}</p>
                       </div>
