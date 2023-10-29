@@ -13,7 +13,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({
   origin: 'http://localhost:3000',  // Adjust this to your frontend's origin
-  credentials: true  // This allows the API to accept cookies
+  credentials: true,  // This allows the API to accept cookies
+  allowedHeaders: ['Content-Type', 'X-CSRF-Token']
 }));
 app.use(cookieParser());
 

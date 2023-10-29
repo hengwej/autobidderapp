@@ -25,6 +25,10 @@ async function verifyRecaptcha(token) { //takes the token arg from frontend
     }
 }
 
+function generateCSRFToken() {
+    return crypto.randomBytes(64).toString('hex');
+}
+
 // Middleware to validate JWT token
 const authenticateToken = (req, res, next) => {
     const token = req.cookies.token;
@@ -159,7 +163,6 @@ router.post('/otp', async (req, res) => {
 
         if (!account) return res.status(401).json({ error: 'Account not found' });
 
-
         // OTP is valid, create a new fully authenticated session token
         const payload = {
             accountID: tempUser.accountID,
@@ -169,10 +172,17 @@ router.post('/otp', async (req, res) => {
         console.log("Payload: ", payload);
 
         const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+        // Generate CSRF token
+        const csrfToken = generateCSRFToken();
+
+        res.cookie('csrfToken', csrfToken, { httpOnly: true, secure: true, sameSite: 'Strict' });
+
+        // Store the CSRF token in a secure, HttpOnly cookie
         res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'None' });
         res.clearCookie('tempToken');
 
-        return res.json({ accountType: account.accountType, message: 'Logged in successfully.' });
+        return res.status(200).json({ accountType: account.accountType, csrfToken: csrfToken, message: 'Logged in successfully.' });
 
     } catch (error) {
         console.error(error);
@@ -204,6 +214,13 @@ router.post('/logout', (req, res) => {
     res.clearCookie('token', { path: '/', httpOnly: true, secure: true, sameSite: 'None' });
     res.json({ message: "Logged out successfully." });
 });
+
+router.post('/refreshCSRFToken', (req, res) => {
+    const csrfToken = generateCSRFToken();
+    res.cookie('csrfToken', csrfToken, { httpOnly: true, secure: true, sameSite: 'Strict' });
+    res.json({ csrfToken: csrfToken });
+});
+
 
 
 module.exports = router;
