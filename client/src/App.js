@@ -27,7 +27,7 @@ function App() {
 
     return (
         <div className="App">
-            <nav className="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+            <nav className="navbar navbar-expand-lg navbar-light" id="mainNav">
                 <div className="container px-4 px-lg-5">
                     <a className="navbar-brand" href="/" style={{ fontSize: 35 + 'px' }}>Auto Bid</a>
                     <ul className="navbar-nav ms-auto">

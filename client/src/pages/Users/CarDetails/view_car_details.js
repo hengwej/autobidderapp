@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import "./styles.css";
-import { Modal, Button } from "react-bootstrap";
+import { Modal, Button, Container } from "react-bootstrap";
 import Placebid from "../PlaceBid/placebid";
 import { useParams } from "react-router-dom";
-import axios from 'axios';
+import { useAuth } from "../../../utils/AuthProvider";
 
 export default function ViewCarDetails() {
     const { carID } = useParams();
@@ -18,6 +18,7 @@ export default function ViewCarDetails() {
     const [carCommentData, setCarCommentData] = useState(null);
     const [accountID, setAccountID] = useState(null);
     const [userName, setUserName] = useState(null);
+    const { user } = useAuth();
     let countdownInterval;
 
     const handlePlaceBidClose = () => {
@@ -51,16 +52,16 @@ export default function ViewCarDetails() {
                 setCurrentHighestBid(auction.currentHighestBid);
                 setAuctionStartDate(auction.startDate);
                 setAuctionEndDate(auction.endDate);
-                
-                //const commentResponse = await fetch("http://127.0.0.1:5000/api/comments/allComment");
-                //const commentData = await commentResponse.json();
-                //const comment = commentData.find((comment) => auction.auctionID === comment.auctionID);
-                //setCarCommentData(comment.details);
-                
-                //const accountResponse = await fetch("http://127.0.0.1:5000/api/accounts/allAccount");
-                //const accountData = await accountResponse.json();
-                //const account = accountData.find((account) => comment.accountID === account.accountID);
-                //setUserName(account.username);
+
+                const commentResponse = await fetch("http://127.0.0.1:5000/api/comments/allComment");
+                const commentData = await commentResponse.json();
+                const comment = commentData.find((comment) => auction.auctionID === comment.auctionID);
+                setCarCommentData(comment.details);
+
+                const accountResponse = await fetch("http://127.0.0.1:5000/api/accounts/allAccount");
+                const accountData = await accountResponse.json();
+                const account = accountData.find((account) => comment.accountID === account.accountID);
+                setUserName(account.username);
 
             } catch (error) {
                 console.error("Error fetching data:", error);
@@ -69,7 +70,7 @@ export default function ViewCarDetails() {
         }
 
         fetchData();
-    }, [ carID ]);
+    }, [carID]);
 
     useEffect(() => {
         if (carData && carData.createdAt) {
@@ -129,14 +130,43 @@ export default function ViewCarDetails() {
     //}
 
     return (
-        <div className="wrapper">
-            <div className="carDetailOne">
-                <div key={carData.carID}>
-                    <label className="cardetails_label">{carData.make}&nbsp;{carData.model}</label><br />
-                    {carData && carData.carImage && carData.carImage.data && (
-                        <img src={URL.createObjectURL(new File([new Blob([new Uint8Array(carData.carImage.data)])], { type: 'image/jpeg' }))} className="carImages" />
-                    )}
+        <Container>
+            <div className="wrapper">
+                <div className="flex-container">
+                    <div key={carData.carID}>
+                        <label className="cardetails_label">{carData.make}&nbsp;{carData.model}</label><br />
+                        <div className="carDetails">
+                            {carData && carData.carImage && carData.carImage.data && (
+                                <img src={URL.createObjectURL(new File([new Blob([new Uint8Array(carData.carImage.data)])], { type: 'image/jpeg' }))} className="carImages" />
+                            )}
+                        </div>
+                    </div>
+
+                    <table className="side-table" key={carData.carID}>
+                        <tr>
+                            <th style={{ width: 180 + 'px', borderRight: "2px solid black" }}>Vehicle Number</th>
+                            <td style={{ width: 500 + 'px' }}>{carData.vehicleNumber}</td>
+                        </tr>
+                        <tr>
+                            <th style={{ width: 180 + 'px', borderRight: "2px solid black" }}>Make</th>
+                            <td>{carData.make}</td>
+                        </tr>
+                        <tr>
+                            <th style={{ borderRight: "2px solid black" }}>Model</th>
+                            <td>{carData.model}</td>
+                        </tr>
+                        <tr>
+                            <th style={{ borderRight: "2px solid black" }}>Interior Color</th>
+                            <td>{carData.interiorColor}</td>
+                        </tr>
+                        <tr>
+                            <th style={{ borderRight: "2px solid black" }}>Exterior Color</th>
+                            <td>{carData.exteriorColor}</td>
+                        </tr>
+                    </table>
                 </div>
+
+
 
                 <div className="timer">
                     <b>Time Left:</b>{" "}
@@ -149,9 +179,14 @@ export default function ViewCarDetails() {
                     <span>{currentHighestBid}</span>
                 </div>
 
-                <Button variant="warning" onClick={handlePlaceBidShow} style={{ marginLeft: 585 + 'px', padding: 8 + 'px' }}>
-                    Place Bid
-                </Button>
+                {user && (user.accountType === 'admin' || user.accountType === 'bidder') && (
+                    <Button variant="warning" onClick={handlePlaceBidShow} style={{ marginLeft: 585 + 'px', padding: 8 + 'px' }}>
+                        Place Bid
+                    </Button>
+                )}
+
+
+
                 <Modal show={showPlaceBidModal} onHide={handlePlaceBidClose}>
                     <Modal.Header closeButton>
                         <Modal.Title>Place Bid</Modal.Title>
@@ -166,31 +201,8 @@ export default function ViewCarDetails() {
                     </Modal.Footer>
                 </Modal>
 
-                <table key={carData.carID}>
-                    <tr>
-                        <th style={{ width: 180 + 'px', borderRight: "2px solid black" }}>Vehicle Number</th>
-                        <td style={{ width: 500 + 'px' }}>{carData.vehicleNumber}</td>
-                    </tr>
-                    <tr>
-                        <th style={{ width: 180 + 'px', borderRight: "2px solid black" }}>Make</th>
-                        <td>{carData.make}</td>
-                    </tr>
-                    <tr>
-                        <th style={{ borderRight: "2px solid black" }}>Model</th>
-                        <td>{carData.model}</td>
-                    </tr>
-                    <tr>
-                        <th style={{ borderRight: "2px solid black" }}>Interior Color</th>
-                        <td>{carData.interiorColor}</td>
-                    </tr>
-                    <tr>
-                        <th style={{ borderRight: "2px solid black" }}>Exterior Color</th>
-                        <td>{carData.exteriorColor}</td>
-                    </tr>
-                </table>
-            </div>
 
-            <div className="carDetailTwo">
+
                 <div key={carData.carID}>
                     <div>
                         <label className="cardetails_label" style={{ marginTop: 30 + 'px' }}>Highlights</label>
@@ -248,27 +260,9 @@ export default function ViewCarDetails() {
                         </ul>
                     </div>
                 </div>
+
+
             </div>
-
-            {/*<div className="lefthr">*/}
-            {/*    <hr className="dotted" />*/}
-            {/*</div>*/}
-            {/*<span className="hrspan">~</span>*/}
-            {/*<div className="righthr">*/}
-            {/*    <hr className="dotted" />*/}
-            {/*</div>*/}
-
-            {/*<div className="comments">*/}
-            {/*    <label className="cardetails_label">Comments</label><br />*/}
-            {/*    <input type="text" id="comment" name="comment" size="70" className="inputComment" ref={commentInputRef} />*/}
-            {/*    <Button variant="info" style={{ marginLeft: 20 + 'px', marginBottom: 6 + 'px', padding: 8 + 'px', width: 100 + 'px' }} onClick={addComment}>*/}
-            {/*        Add*/}
-            {/*    </Button>*/}
-            {/*    <div>*/}
-            {/*        {userName} <br />*/}
-            {/*        {carCommentData}*/}
-            {/*    </div>*/}
-            {/*</div>*/}
-        </div>
+        </Container>
     );
 }
