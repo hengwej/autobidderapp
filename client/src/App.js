@@ -81,8 +81,20 @@ function App() {
                 <Route path="/" element={<Homepage />} />
                 <Route path="/faq" element={<FAQ />} />
                 <Route path="/sellCar" element={<SellCar />} />
-                <Route path="/auth/login" element={<Login />} />
-                <Route path="/auth/confirmation" element={<Login2FA />} />
+                <Route
+                    path="/auth/login"
+                    element={
+                        <Login />
+                    }
+                />
+                <Route
+                    path="/auth/confirmation"
+                    element={
+                        <ProtectedRoute allowedAccountTypes={['preOTP']}>
+                            <Login2FA />
+                        </ProtectedRoute>
+                    }
+                />
                 <Route path="/signup" element={<SignUp />} />
                 <Route path="/viewCarDetails/:carID" element={<Elements stripe={stripePromise}>
                     <ViewCarDetails />

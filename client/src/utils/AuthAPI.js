@@ -34,10 +34,15 @@ export const login = async (username, password) => {
     }
 };
 
-export const otp = async (otp) => {
+export const otp = async (otp, csrfToken) => {
     try {
         const response = await api.post("/api/auth/otp", {
-            otp: otp,
+            otp: otp
+        }, {
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': csrfToken,
+            }
         });
         return response;
     } catch (error) {

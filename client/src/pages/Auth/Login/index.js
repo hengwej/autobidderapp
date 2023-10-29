@@ -4,8 +4,8 @@ import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 import React, { useRef, useState } from 'react';
 import ReCAPTCHA from "react-google-recaptcha";
-import * as api from '../../../utils/AuthAPI';
 import { Container } from 'react-bootstrap';
+import { useAuth } from '../../../utils/AuthProvider';
 
 function Login() {
     const initialValues = {
@@ -13,9 +13,14 @@ function Login() {
         password: ''
     };
 
+    const { login, user } = useAuth();
     const navigate = useNavigate();
     const recaptchaRef = useRef();
     const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+
+    if (user) {
+        navigate('/');
+    }
 
     const onSubmit = async (data, { setSubmitting, setFieldError }) => {
         setIsButtonDisabled(true);
@@ -27,10 +32,10 @@ function Login() {
         } else {
             try {
 
-                const response = await api.login(username, password);
+                const response = await login(username, password);
 
                 if (response.status === 200) {
-                    document.cookie = `token=${response.data.token}; HttpOnly; Secure; SameSite=None`;
+                    console.log('Login successful!');
                     navigate('/auth/confirmation');
                 }
             } catch (error) {
