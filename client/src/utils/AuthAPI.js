@@ -34,10 +34,15 @@ export const login = async (username, password) => {
     }
 };
 
-export const otp = async (otp) => {
+export const otp = async (otp, csrfToken) => {
     try {
         const response = await api.post("/api/auth/otp", {
-            otp: otp,
+            otp: otp
+        }, {
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': csrfToken,
+            }
         });
         return response;
     } catch (error) {
@@ -46,15 +51,21 @@ export const otp = async (otp) => {
     }
 }
 
-export const logout = async () => {
+export const logout = async (csrfToken) => {
     try {
-        const response = await api.post("/api/auth/logout");
+        // Send a POST request to the /logout endpoint
+        const response = await api.post("/api/auth/logout", {}, {
+            headers: {
+                'X-CSRF-Token': csrfToken,
+            }
+        });
         return response;
     } catch (error) {
+        // Log any errors to the console
         console.error("Error logging out:", error);
         throw error;
     }
-}
+};
 
 export const user = async () => {
     try {
@@ -62,6 +73,16 @@ export const user = async () => {
         return response;
     } catch (error) {
         console.error("Error logging existing user in:", error);
+        throw error;
+    }
+}
+
+export const refreshCSRFToken = async () => {
+    try {
+        const response = await api.post("/api/auth/refreshCSRFToken");
+        return response;
+    } catch (error) {
+        console.error("Error refreshing CSRF token:", error);
         throw error;
     }
 }
