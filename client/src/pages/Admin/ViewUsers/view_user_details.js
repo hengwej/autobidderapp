@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import { Card,Container } from "react-bootstrap";
-
-
+import { Card, Container } from "react-bootstrap";
 
 export default function ViewUserDetails() {
     const { userID } = useParams();
@@ -31,16 +29,17 @@ export default function ViewUserDetails() {
 
     return (
         <Container>
-        <Card>
-            <Card.Header>View User Details</Card.Header>
-            <Card.Body>
-                <div>
-                    <p>Name: {user.firstName} {user.lastName}</p>
-                    <p>Email: {user.emailAddress}</p>
-                    <p>Phone Number: {user.phoneNumber}</p>
-                    <p>Address: {user.address}</p>
-                </div>
-            </Card.Body>
+            <Card>
+                <Card.Header style={{ fontWeight: "bold" }}>View User Details</Card.Header>
+                <Card.Body>
+                    <div>
+                        <p><b>First Name:</b> {user.firstName}</p>
+                        <p><b>Last Name:</b> {user.lastName}</p>
+                        <p><b>Email:</b> {user.emailAddress}</p>
+                        <p><b>Phone Number:</b> {user.phoneNumber}</p>
+                        <p><b>Address:</b> {user.address}</p>
+                    </div>
+                </Card.Body>
             </Card>
         </Container>
     );
