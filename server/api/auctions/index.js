@@ -22,10 +22,11 @@ router.post('/addBid', async (req, res) => {
         try {
             const addBid = await prisma.auction.updateMany({
                 where: {
-                    accountID: payload.accountID,
+                    carID: newBid.carID,
                 },
                 data: {
                     currentHighestBid: newBid.bidValue,
+                    accountID: payload.accountID,
                 },
             });
 
@@ -34,8 +35,6 @@ router.post('/addBid', async (req, res) => {
             console.log(error);
             res.status(404).json({ error: "Bid not found." });
         }
-
-        res.json(comment);
 
     } catch (error) {
         if (error.name === 'TokenExpiredError') {
