@@ -146,17 +146,24 @@ export default function ViewRequestDetails() {
                             </tr>
                         </tbody>
                     </Table>
-                    {successMessage && (
-                        <Alert variant="success" style={{ marginTop: "10px" }}>
-                            {successMessage}
-                        </Alert>
-                    )}
-                    <div style={{ marginTop: "10px" }}>
-                        <Button variant="success" onClick={handleApprove}>Approve</Button>
-                        <span style={{ margin: "10px" }}></span>
-                        <Button variant="danger" onClick={handleReject}>Reject</Button>
+                        {successMessage && (
+                            <Alert variant="success" style={{ marginTop: "10px" }}>
+                                {successMessage}
+                            </Alert>
+                        )}
+                        {request.requestStatus !== "Rejected" && (
+                            <div style={{ marginTop: "10px" }}>
+                                <Button variant="success" onClick={handleApprove}>Approve</Button>
+                                <span style={{ margin: "10px" }}></span>
+                                <Button variant="danger" onClick={handleReject}>Reject</Button>
+                            </div>
+                        )}
+                        {request.requestStatus === "Rejected" && (
+                            <Alert variant="danger" style={{ marginTop: "10px" }}>
+                                This request has been rejected by admin.
+                            </Alert>
+                        )}
                     </div>
-                </div>
             </Card.Body>
             </Card>
         </Container>
