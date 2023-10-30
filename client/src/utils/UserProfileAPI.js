@@ -7,11 +7,12 @@ const api = axios.create({
     withCredentials: true,
 });
 
-export const updateUser = async (requestData) => {
+export const updateUser = async (requestData, csrfToken) => {
     try {
         const response = await api.put("/api/users/updateUserProfileDetails", requestData, {
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': csrfToken,
             }
         });
         return response;
@@ -21,25 +22,27 @@ export const updateUser = async (requestData) => {
     }
 };
 
-export const deleteUser = async () => {
+export const deleteUser = async (csrfToken) => {
     try {
-        const response = await api.delete("/api/users/deleteAccount", {
+        const response = await api.delete("/api/users/deleteAccount", {}, {
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': csrfToken,
             }
         });
         return response;
     } catch (error) {
-        console.error("Error Updating profile:", error);
+        console.error("Error Deleting profile:", error);
         throw error;
     }
 };
 
-export const resetPassword = async (requestData) => {
+export const resetPassword = async (requestData, csrfToken) => {
     try {
         const response = await api.put("/api/users/resetPassword", requestData, {
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': csrfToken,
             }
         });
         return response;
@@ -49,58 +52,63 @@ export const resetPassword = async (requestData) => {
     }
 };
 
-export const biddingHistory = async () => {
+export const biddingHistory = async (csrfToken) => {
     try {
-        const response = await api.post("/api/users/getUserBiddingHistory", {
+        const response = await api.post("/api/users/getUserBiddingHistory", {}, {
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': csrfToken,
             }
         });
         return response;
     } catch (error) {
-        console.error("Error Updating profile:", error);
+        console.error("Error getting Bidding History profile:", error);
         throw error;
     }
 };
 
-export const userProfileDetails = async () => {
+export const userProfileDetails = async (csrfToken) => {
     try {
-        const response = await api.post("/api/users/getUserProfileDetails", {
+        const response = await api.post("/api/users/getUserProfileDetails", {}, {
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': csrfToken,
             }
         });
+
         return response;
     } catch (error) {
-        console.error("Error Updating profile:", error);
+        console.error("Error getting User Profile:", error);
         throw error;
     }
 };
 
-export const userSellingHistory = async () => {
+export const userSellingHistory = async (csrfToken) => {
     try {
-        const response = await api.post("/api/users/getUserSellingHistory", {
+        const response = await api.post("/api/users/getUserSellingHistory", {}, {
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': csrfToken,
             }
         });
         return response;
     } catch (error) {
-        console.error("Error Updating profile:", error);
+        console.error("Error getting Selling History:", error);
         throw error;
     }
 };
 
-export const userSellCarRequests = async () => {
+export const userSellCarRequests = async (csrfToken) => {
     try {
-        const response = await api.post("/api/users/getUserSellCarRequests", {
+        const response = await api.post("/api/users/getUserSellCarRequests", {}, {
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': csrfToken,
             }
         });
         return response;
     } catch (error) {
-        console.error("Error Updating profile:", error);
+        console.error("Error getting User Sell Car Requests:", error);
         throw error;
     }
 };
