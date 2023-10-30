@@ -8,7 +8,9 @@ const prisma = new PrismaClient();
 router.get('/allBidHistory', controller.allBidHistory);
 
 router.post('/addBidHistory', async (req, res) => {
+    console.log("access bid history");
     const token = req.cookies.token;
+    console.log("token bid hist " + token);
     if (!token) return res.status(401).json({ error: 'Unauthorized' });
 
     try {
