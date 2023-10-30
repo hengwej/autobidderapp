@@ -15,7 +15,7 @@ export default function PlaceBid({ carID, handleClose  }) {
     const [error, setError] = useState(null);
     const [currentHighestBid, setCurrentHighestBid] = useState(null);
     const [bidError, setBidError] = useState(null);
-    const [auctionID, setAuctionID] = useState(null);
+    const [auctionID, setAuctionID] = useState(null)
 
     const stripe = useStripe();
     const elements = useElements();
@@ -47,7 +47,7 @@ export default function PlaceBid({ carID, handleClose  }) {
         }
 
         fetchData();
-    }, [carID]);
+    }, [carID, auctionID]);
 
     useEffect(() => {
         if (paymentSuccess) {
@@ -107,6 +107,12 @@ export default function PlaceBid({ carID, handleClose  }) {
                 // Record the bid in the database now that payment was successful
                 //await axios.post(`http://127.0.0.1:5000/api/auctions/addBid`, { bidValue: bidValue, carID: carID },{withCredentials:true});
                 await api.addBid(bidValue, carID);
+                // Create or Update a record the order table everytime a new bid is placed 
+                const orderData = { orderStatus: 'Pending', auctionID: auctionID };
+                await api.addOrder(orderData);
+                // Create a record in the selling history table once a new order is made (for the seller to track)
+                const sellingHistoryData = { auctionID: auctionID };
+                await api.addSellingHistory(sellingHistoryData);
                 // Close the modal and reset state
                 handleCloseBid();
                 handleClose();

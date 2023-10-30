@@ -23,3 +23,45 @@ export const addBid = async (bidValue, carID) => {
         throw error;
     }
 };
+
+export const addOrder = async (requestData) => {
+    try {
+        const response = await api.put("/api/auctions/addOrder", requestData, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        return response;
+    } catch (error) {
+        console.error("Error Updating Order:", error);
+        throw error;
+    }
+};
+
+export const updateOrderStatus = async (requestData) => {
+    try {
+        const response = await api.put("/api/auctions/completeOrder", requestData, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        return response;
+    } catch (error) {
+        console.error("Error Updating Order:", error);
+        throw error;
+    }
+};
+
+export const addSellingHistory = async (requestData) => {
+    try {
+        const response = await api.post("/api/auctions/addSellingHistory", requestData, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        return response;
+    } catch (error) {
+        console.error("Error Adding History:", error);
+        throw error;
+    }
+};

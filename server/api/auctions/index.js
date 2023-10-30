@@ -63,4 +63,129 @@ router.post('/updateAuctionToClose', async (req, res) => {
     
 });
 
+router.put('/addOrder', async (req, res) => {
+    const token = req.cookies.token;
+    const { orderStatus, auctionID } = req.body;
+
+    if (!token) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    try {
+        // Verify the token and extract the account ID
+        const payload = jwt.verify(token, process.env.JWT_SECRET);
+        const accountID = payload.accountID;
+
+        // Check if there is an existing order with the same auction ID
+        const existingOrder = await prisma.orders.findFirst({
+            where: { auctionID: auctionID },
+        });
+
+        if (existingOrder) {
+            // An existing order with the same auction ID is found.
+            // Update that order with the new accountID
+            const updatedOrder = await prisma.orders.update({
+                where: { orderID: existingOrder.orderID },
+                data: { accountID: accountID },
+            });
+
+            res.json(updatedOrder);
+            
+        } else {
+            // No existing order found, create a new order.
+            const newOrder = await prisma.orders.create({
+                data: {
+                    orderStatus: orderStatus,
+                    auctionID: auctionID,
+                    accountID: accountID,
+                },
+            });
+
+            res.json(newOrder);
+        }
+    } catch (error) {
+        if (error.name === 'TokenExpiredError') {
+            return res.status(401).json({ error: 'Token has expired' });
+        }
+
+        console.error("Error updating order data:", error);
+        res.status(500).json({ error: 'Internal server error', details: error });
+    }
+});
+
+router.put('/completeOrder', async (req, res) => {
+    
+    const { orderStatus, auctionID } = req.body;
+
+    try {
+        const updateOrder = await prisma.orders.findFirst({
+            where: { auctionID: auctionID },
+        });
+
+        if (updateOrder) {
+            // An existing order with the same auction ID is found.
+            // Update that order stauts with the new order status
+            const updatedOrder = await prisma.orders.update({
+                where: { orderID: updateOrder.orderID },
+                data: { orderStatus: orderStatus },
+            });
+
+            res.json(updatedOrder);
+        } else {
+            // Order doesn't exists, do nothing
+            res.json({ message: 'Order do not exists' });
+        }
+    } catch (error) {
+
+        console.error("Error updating order data:", error);
+        res.status(500).json({ error: 'Internal server error', details: error });
+    }    
+});
+
+router.post('/addSellingHistory', async (req, res) => {
+    const { auctionID } = req.body;
+
+    try {
+        // Check if there is an existing order with the same auction ID
+        const existingOrder = await prisma.orders.findFirst({
+            where: { auctionID: { equals: auctionID } },
+            include: { 
+                auction: {
+                    include: {
+                        car: true
+                    },
+                }
+            },
+        });
+
+        if (existingOrder) {
+            // Check if a selling history already exists for this order
+            const existingSellingHistory = await prisma.sellingHistory.findFirst({
+                where: { orderID: existingOrder.orderID }
+            });
+
+            if (!existingSellingHistory) {
+                // No existing selling history found, create a new one
+                const sellingHistory = await prisma.sellingHistory.create({
+                    data: { 
+                        orderID: existingOrder.orderID,
+                        accountID: existingOrder.auction.car.accountID,
+                    },
+                });
+
+                res.json(sellingHistory);
+            } else {
+                // Selling history already exists, do nothing
+                res.json({ message: 'Selling history already exists for this order.' });
+            }
+        } else {
+            res.status(404).json({ error: 'Order not found' });
+        }
+            
+    } catch (error) {
+        console.error("Error creating history record:", error);
+        res.status(500).json({ error: 'Internal server error', details: error });
+    }
+});
+
 module.exports = router;
