@@ -39,7 +39,7 @@ class Requests extends Component {
         if (this.state.error) return <div>Error: {this.state.error.message}</div>;
 
         return (
-            <Container fluid className="request-page">
+            <Container className="request-page">
                 <Row>
                     <Col>
                         <div className="dropdown-container">
@@ -54,6 +54,8 @@ class Requests extends Component {
                                 <Dropdown.Menu>
                                     <Dropdown.Item onClick={() => this.filterRequests("")}>All Requests</Dropdown.Item>
                                     <Dropdown.Item onClick={() => this.filterRequests("Rejected")}>Rejected Requests</Dropdown.Item>
+                                    <Dropdown.Item onClick={() => this.filterRequests("Pending")}>Pending Requests</Dropdown.Item>
+
                                 </Dropdown.Menu>
                             </Dropdown>
                         </div>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import { Card } from "react-bootstrap";
+import { Card,Container } from "react-bootstrap";
 
 
 
@@ -30,6 +30,7 @@ export default function ViewUserDetails() {
     if (!user) return <div>User not found</div>;
 
     return (
+        <Container>
         <Card>
             <Card.Header>View User Details</Card.Header>
             <Card.Body>
@@ -40,6 +41,7 @@ export default function ViewUserDetails() {
                     <p>Address: {user.address}</p>
                 </div>
             </Card.Body>
-        </Card>
+            </Card>
+        </Container>
     );
 }
