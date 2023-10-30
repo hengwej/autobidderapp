@@ -5,14 +5,19 @@ import { Modal, Button } from 'react-bootstrap';
 import { useNavigate } from "react-router-dom";
 import './styles.css';
 import * as api from '../../../utils/UserProfileAPI';
+import { useAuth } from '../../../utils/AuthProvider';
 
 const ResetPassword = () => {
   const [showResetPasswordModal, setShowResetPasswordModal] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+
+  // CSRF Token
+  const { csrfToken } = useAuth();
+
   // Define state variables for the form
   const [newPassword, setNewPassword] = useState(""); // New password
-  
+
   // Get the navigate function from the hook
   const navigate = useNavigate();
 
@@ -53,14 +58,19 @@ const ResetPassword = () => {
   const handleCloseSuccessModal = () => {
     // Close the success message modal
     setShowSuccessModal(false);
-    
+
     // Redirect to the login page
     navigate('/auth/login');
   };
 
   const handleReset = async (requestData) => {
+    while (!csrfToken) {
+      // Wait until csrfToken becomes available for 1 second
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+
     try {
-      const response = await api.resetPassword(requestData);
+      const response = await api.resetPassword(requestData, csrfToken);
       if (response.status === 200) {
         console.log("Password Reset successful");
         setShowSuccessModal(true);
@@ -79,7 +89,7 @@ const ResetPassword = () => {
     // Set the new password in the state variable
     setNewPassword(data);
 
-    const requestData = {password: newPassword.password};
+    const requestData = { password: newPassword.password };
 
     // Send an HTTP request to save the updated password in the database
     handleReset(requestData);
