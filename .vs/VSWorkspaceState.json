@@ -1,16 +1,15 @@
 {
   "ExpandedNodes": [
     "",
-    "\\client",
-    "\\client\\src",
-    "\\client\\src\\pages",
-    "\\client\\src\\pages\\General",
-    "\\client\\src\\pages\\General\\FAQ",
-    "\\client\\src\\pages\\Users",
-    "\\client\\src\\pages\\Users\\UserProfile",
     "\\server",
-    "\\server\\processed_car_images"
+    "\\server\\api",
+    "\\server\\api\\comments",
+    "\\server\\api\\FAQ",
+    "\\server\\api\\middleware",
+    "\\server\\api\\requests",
+    "\\server\\prisma",
+    "\\server\\prisma\\migrations",
+    "\\server\\uploads"
   ],
-  "SelectedNode": "\\server\\processed_car_images",
   "PreviewInSolutionExplorer": false
 }
