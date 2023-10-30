@@ -80,9 +80,11 @@ class Requests extends Component {
                                                 <tr key={request.requestID}>
                                                     <td>{request.requestID}</td>
                                                     <td>{request.requestStatus}</td>
-                                                    <td>{new Date(request.requestSubmissionTime).toLocaleString('en-US', { hour12: false })}</td>
+                                                    <td>{Date(request.requestSubmissionTime).toLocaleString('en-US', { timeZone: 'Asia/Singapore' })}</td>
                                                     <td>{request.vehicleNumber}</td>
                                                     <td>
+                                                       
+
                                                         <Button
                                                             style={{ backgroundColor: "#ff692d", border: "none" }}
                                                             onClick={() => this.handleViewDetails(request.requestID)}
