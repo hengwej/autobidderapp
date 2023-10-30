@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button, Container, Dropdown, Row, Col } from 'react-bootstrap';
+import { Table, Button, Container, Dropdown, Row, Col, Modal } from 'react-bootstrap';
 import './styles.css';
 import * as api from '../../../utils/UserProfileAPI';
 import { useAuth } from '../../../utils/AuthProvider';
@@ -8,6 +8,10 @@ const ViewUserSellingHistory = () => {
   const [sellingHistory, setSellingHistory] = useState([]);
   const [displayedHistory, setDisplayedHistory] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // Image Display
+  const [showImageModal, setShowImageModal] = useState(false); // State to control the image modal
+  const [selectedImage, setSelectedImage] = useState(null); // State to store the selected image
 
   // Table Page
   const [expandedItem, setExpandedItem] = useState(null);
@@ -82,6 +86,11 @@ const ViewUserSellingHistory = () => {
     }
   };
 
+  const handleViewImage = (imageData) => {
+    setSelectedImage(imageData);
+    setShowImageModal(true);
+  };
+
   return (
     <Container fluid>
       <h3>Selling History</h3>
@@ -110,6 +119,7 @@ const ViewUserSellingHistory = () => {
               <tr>
                 <th>ID</th>
                 <th>Details</th>
+                <th>Image</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -122,9 +132,9 @@ const ViewUserSellingHistory = () => {
                       <div className="UserProfileDetails">
                         <p><span>Order Status:</span> {sale.order.orderStatus}</p>
                         {sale.order.orderStatus.toLowerCase() !== 'pending' ? (
-                          <p><span>Completion Time:</span> {new Date(sale.order.updatedAt).toLocaleString({ timeZone: 'Asia/Singapore' })}</p>
+                          <p><span>Completed On:</span> {new Date(sale.order.updatedAt).toLocaleString({ timeZone: 'Asia/Singapore' })}</p>
                         ) : (
-                          <p><span>Completion Time:</span> Not Available</p>
+                          <p><span>Completed On:</span> Not Available</p>
                         )}
                         <p><span>Bidder:</span> {sale.order.account.username}</p>
                       </div>
@@ -134,6 +144,9 @@ const ViewUserSellingHistory = () => {
                           <p><span>Car Details:</span> {`${sale.order.auction.car.exteriorColor} ${sale.order.auction.car.make} ${sale.order.auction.car.model}`}</p>
                         </div>
                       )}
+                    </td>
+                    <td>
+                      <Button variant="primary" size="sm" className="HistoryTable-button" onClick={() => handleViewImage(sale.order.auction.car.carImage)}>View Image</Button>
                     </td>
                     <td>
                       <Button variant="primary" size="sm" className="HistoryTable-button" onClick={() => handleViewDetails(sale.saleID)}>
@@ -150,6 +163,16 @@ const ViewUserSellingHistory = () => {
             <span className="page-number mx-4">{currentPage}</span>
             <Button variant="primary" size="sm" className="Page-button" disabled={currentPage >= numPages} onClick={handleNextPage}>Next</Button>
           </div>
+          <Modal show={showImageModal} onHide={() => setShowImageModal(false)}>
+            <Modal.Header closeButton>
+              <Modal.Title>Car Image</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              {selectedImage && (
+                <img src={URL.createObjectURL(new Blob([new Uint8Array(selectedImage.data)]))} alt="Car" style={{ maxWidth: '100%' }} />
+              )}
+            </Modal.Body>
+          </Modal>
         </div>
       )}
     </Container>

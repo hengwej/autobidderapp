@@ -77,6 +77,11 @@ export default class Home extends Component {
             // Update to auction status to closed
             axios.post(`http://127.0.0.1:5000/api/auctions/updateAuctionToClose`, { status: "CLOSED", auctionID: auctionID }).then((res) => {
             });
+
+            // Update the orderStatus to completed in order table
+            const orderData = { orderStatus: 'Completed', auctionID: auctionID };
+            axios.put(`http://127.0.0.1:5000/api/auctions/completeOrder`, orderData).then((res) => {
+            });
         }
 
         return timeLeft;
