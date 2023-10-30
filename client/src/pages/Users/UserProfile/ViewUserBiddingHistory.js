@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button, Container, Dropdown, Row, Col } from 'react-bootstrap';
+import { Table, Button, Container, Dropdown, Row, Col, Modal } from 'react-bootstrap';
 import './styles.css';
 import * as api from '../../../utils/UserProfileAPI';
 import { useAuth } from '../../../utils/AuthProvider';
@@ -8,6 +8,10 @@ const ViewUserBiddingHistory = () => {
   const [biddingHistory, setBiddingHistory] = useState([]);
   const [displayedHistory, setDisplayedHistory] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // Image Display
+  const [showImageModal, setShowImageModal] = useState(false); // State to control the image modal
+  const [selectedImage, setSelectedImage] = useState(null); // State to store the selected image
 
   // Table Page
   const [expandedItem, setExpandedItem] = useState(null);
@@ -101,6 +105,11 @@ const ViewUserBiddingHistory = () => {
     }
   };
 
+  const handleViewImage = (imageData) => {
+    setSelectedImage(imageData);
+    setShowImageModal(true);
+  };
+
   return (
     <Container fluid>
       <h3>Bidding History</h3>
@@ -144,6 +153,7 @@ const ViewUserBiddingHistory = () => {
               <tr>
                 <th>ID</th>
                 <th>Details</th>
+                <th>Image</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -167,6 +177,9 @@ const ViewUserBiddingHistory = () => {
                       )}
                     </td>
                     <td>
+                      <Button variant="primary" size="sm" className="HistoryTable-button" onClick={() => handleViewImage(bid.auction.car.carImage)}>View Image</Button>
+                    </td>
+                    <td>
                       <Button variant="primary" size="sm" className="HistoryTable-button" onClick={() => handleViewDetails(bid.bidID)}>
                         {expandedItem === bid.bidID ? 'View Less' : 'View More'}
                       </Button>
@@ -181,6 +194,16 @@ const ViewUserBiddingHistory = () => {
             <span className="page-number mx-4">{currentPage}</span>
             <Button variant="primary" size="sm" className="Page-button" disabled={currentPage >= numPages} onClick={handleNextPage}>Next</Button>
           </div>
+          <Modal show={showImageModal} onHide={() => setShowImageModal(false)}>
+            <Modal.Header closeButton>
+              <Modal.Title>Car Image</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              {selectedImage && (
+                <img src={URL.createObjectURL(new Blob([new Uint8Array(selectedImage.data)]))} alt="Car" style={{ maxWidth: '100%' }} />
+              )}
+            </Modal.Body>
+          </Modal>
         </div>
       )}
     </Container>
