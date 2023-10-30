@@ -98,6 +98,35 @@ router.get('/viewUser/:userID', async (req, res) => {
     }
 });
 
+
+router.delete('/deleteUser/:userID', async (req, res) => {
+    try {
+        const userID = parseInt(req.params.userID);
+        console.log("Received request to delete user ID:", userID);
+
+        if (isNaN(userID)) {
+            console.log("Invalid user ID received:", req.params.userID);
+            return res.status(400).json({ error: 'Invalid user ID' });
+        }
+
+        // Use await to delete the user
+        const deletedUser = await prisma.user.delete({
+            where: { userID: userID },
+        });
+
+        if (!deletedUser) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        res.json({ message: 'User deleted successfully' });
+    } catch (error) {
+        console.error("Error deleting user:", error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
+
 router.post('/getUserProfileDetails', async (req, res) => {
     const token = req.cookies.token;
     const csrfTokenHeader = req.headers['x-csrf-token'];
