@@ -21,10 +21,17 @@ router.get('/getAllUsers', async (req, res) => {
 });
 
 router.delete('/deleteAccount', async (req, res) => {
+    // Initialize variables
     const token = req.cookies.token;
+    const csrfTokenHeader = req.headers['x-csrf-token'];
+    const csrfTokenCookie = req.cookies.csrfToken;
+
+    // Verify if CSRF and JWT Tokens are present
     if (!token) return res.status(401).json({ error: 'Unauthorized' });
+    if (!csrfTokenHeader) return res.status(403).json({ error: 'CSRF token is missing' });
 
     try {
+        // Verify the token and extract the account ID
         const payload = jwt.verify(token, process.env.JWT_SECRET);
         const accountID = payload.accountID;
 
@@ -53,7 +60,7 @@ router.delete('/deleteAccount', async (req, res) => {
         // Clear the authentication token cookie to log the user out
         res.clearCookie('token', { path: '/', httpOnly: true, secure: true, sameSite: 'None' });
 
-        res.json({ message: 'Account deleted successfully, user logged out' });
+        res.status(200).json({ message: 'Account deleted successfully, user logged out' });
     } catch (error) {
         if (error.name === 'TokenExpiredError') {
             return res.status(401).json({ error: 'Token has expired' });
@@ -93,7 +100,16 @@ router.get('/viewUser/:userID', async (req, res) => {
 
 router.post('/getUserProfileDetails', async (req, res) => {
     const token = req.cookies.token;
+    const csrfTokenHeader = req.headers['x-csrf-token'];
+    const csrfTokenCookie = req.cookies.csrfToken;
+
+    console.log("token: " + token);
+    console.log("csrfTokenHeader: " + csrfTokenHeader);
+    console.log("CSRF Token Cookie: " + csrfTokenCookie);
+
     if (!token) return res.status(401).json({ error: 'Unauthorized' });
+    if (!csrfTokenHeader) return res.status(403).json({ error: 'CSRF token is missing' });
+
 
     try {
         //Verify token
@@ -133,8 +149,14 @@ router.post('/getUserProfileDetails', async (req, res) => {
 });
 
 router.post('/getUserBiddingHistory', async (req, res) => {
+    // Initialize variables
     const token = req.cookies.token;
+    const csrfTokenHeader = req.headers['x-csrf-token'];
+    const csrfTokenCookie = req.cookies.csrfToken;
+
+    //Verify if CSRF and JWT Tokens are present
     if (!token) return res.status(401).json({ error: 'Unauthorized' });
+    if (!csrfTokenHeader) return res.status(403).json({ error: 'CSRF token is missing' });
 
     try {
         //Verify token
@@ -155,7 +177,7 @@ router.post('/getUserBiddingHistory', async (req, res) => {
         });
 
         //Return bidding history
-        res.json(biddingHistory);
+        res.status(200).json(biddingHistory);
 
     } catch (error) {
         if (error.name === 'TokenExpiredError') {
@@ -168,8 +190,14 @@ router.post('/getUserBiddingHistory', async (req, res) => {
 });
 
 router.post('/getUserSellingHistory', async (req, res) => {
+    //Initialize variables
     const token = req.cookies.token;
+    const csrfTokenHeader = req.headers['x-csrf-token'];
+    const csrfTokenCookie = req.cookies.csrfToken;
+
+    //Verify if CSRF and JWT Tokens are present
     if (!token) return res.status(401).json({ error: 'Unauthorized' });
+    if (!csrfTokenHeader) return res.status(403).json({ error: 'CSRF token is missing' });
 
     try {
         //Verify token
@@ -195,7 +223,7 @@ router.post('/getUserSellingHistory', async (req, res) => {
         });
 
         //Return selling history
-        res.json(sellingHistory);
+        res.status(200).json(sellingHistory);
 
     } catch (error) {
         if (error.name === 'TokenExpiredError') {
@@ -257,12 +285,15 @@ router.put('/updateUserProfileDetails', async (req, res) => {
 });
 
 router.put('/resetPassword', async (req, res) => {
+    // Initialize variables
     const { password } = req.body;
     const token = req.cookies.token;
+    const csrfTokenHeader = req.headers['x-csrf-token'];
+    const csrfTokenCookie = req.cookies.csrfToken;
 
-    if (!token) {
-        return res.status(401).json({ error: 'Unauthorized' });
-    }
+    //Verify if CSRF and JWT Tokens are present
+    if (!token) return res.status(401).json({ error: 'Unauthorized' });
+    if (!csrfTokenHeader) return res.status(403).json({ error: 'CSRF token is missing' });
 
     try {
         // Verify the token and extract the account ID
@@ -290,7 +321,7 @@ router.put('/resetPassword', async (req, res) => {
         // Clear the authentication token cookie to log the user out
         res.clearCookie('token', { path: '/', httpOnly: true, secure: true, sameSite: 'None' });
 
-        res.json({ updatedAccount, message: 'Password updated successfully, user logged out' });
+        res.status(200).json({ updatedAccount, message: 'Password updated successfully, user logged out' });
     } catch (error) {
         if (error.name === 'TokenExpiredError') {
             return res.status(401).json({ error: 'Token has expired' });
@@ -302,8 +333,14 @@ router.put('/resetPassword', async (req, res) => {
 });
 
 router.post('/getUserSellCarRequests', async (req, res) => {
+    //Initialize variables
     const token = req.cookies.token;
+    const csrfTokenHeader = req.headers['x-csrf-token'];
+    const csrfTokenCookie = req.cookies.csrfToken;
+
+    // Verify if CSRF and JWT Tokens are present
     if (!token) return res.status(401).json({ error: 'Unauthorized' });
+    if (!csrfTokenHeader) return res.status(403).json({ error: 'CSRF token is missing' });
 
     try {
         //Verify token
@@ -317,7 +354,7 @@ router.post('/getUserSellCarRequests', async (req, res) => {
         });
 
         //Return selling history
-        res.json(carRequests);
+        res.status(200).json(carRequests);
 
     } catch (error) {
         if (error.name === 'TokenExpiredError') {

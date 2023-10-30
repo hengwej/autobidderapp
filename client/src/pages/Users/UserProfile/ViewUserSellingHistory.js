@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Table, Button, Container, Dropdown, Row, Col } from 'react-bootstrap';
 import './styles.css';
 import * as api from '../../../utils/UserProfileAPI';
+import { useAuth } from '../../../utils/AuthProvider';
 
 const ViewUserSellingHistory = () => {
   const [sellingHistory, setSellingHistory] = useState([]);
@@ -17,10 +18,13 @@ const ViewUserSellingHistory = () => {
   // Sorting and Filtering
   const [orderStatusFilter, setOrderStatusFilter] = useState(""); // Default no status filter
 
+  // CSRF Token
+  const { csrfToken } = useAuth();
+
   useEffect(() => {
     async function fetchUserSellingHistory() {
       try {
-        const response = await api.userSellingHistory();
+        const response = await api.userSellingHistory(csrfToken);
         if (response.status === 200) {
           setSellingHistory(response.data);
         }
@@ -33,7 +37,7 @@ const ViewUserSellingHistory = () => {
 
     fetchUserSellingHistory();
 
-  }, []);
+  }, [csrfToken]);
 
   useEffect(() => {
     // Create a copy of the sellingHistory to avoid modifying the original data

@@ -106,7 +106,7 @@ class UserManagement extends Component {
                                         </td>
                                         <td>
                                             <Button
-                                                variant="danger"
+                                                style={{ backgroundColor: "#ff692d ", border: "none" }}
                                                 onClick={() => this.handleViewUser(user.userID)}
                                             >
                                                 View
