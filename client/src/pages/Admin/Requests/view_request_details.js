@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
-import { Table, Card, Button, Alert } from 'react-bootstrap';
+import { Table, Card, Button, Alert,Container } from 'react-bootstrap';
 
 export default function ViewRequestDetails() {
     const { requestID } = useParams();
@@ -91,6 +91,7 @@ export default function ViewRequestDetails() {
     if (!request) return <div>Request not found</div>;
 
     return (
+        <Container>
         <Card>
             <Card.Header>View Request Details</Card.Header>
             <Card.Body>
@@ -157,6 +158,7 @@ export default function ViewRequestDetails() {
                     </div>
                 </div>
             </Card.Body>
-        </Card>
+            </Card>
+        </Container>
     );
 }

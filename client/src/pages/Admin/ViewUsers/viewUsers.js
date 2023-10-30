@@ -73,7 +73,7 @@ class UserManagement extends Component {
         if (this.state.error) return <div>Error: {this.state.error.message}</div>;
 
         return (
-            <Container fluid>
+            <Container>
                 {this.state.showSuccess && (
                     <div className="success-message">User deleted successfully!</div>
                 )}
