@@ -11,7 +11,7 @@ router.post('/addAuction', controller.addAuction);
 router.post('/addBid', async (req, res) => {
     console.log("access add bid");
     const token = req.cookies.token;
-    console.log("token" + token);
+    console.log("token " + token);
     if (!token) return res.status(401).json({ error: 'Unauthorized' });
 
     try {
