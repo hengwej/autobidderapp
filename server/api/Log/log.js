@@ -4,15 +4,17 @@ const { combine, timestamp, printf } = format;
 const fs = require('fs');
 const path = require('path');
 const DailyRotateFile = require('winston-daily-rotate-file');
+// const EncryptedTransport = require('./encryptedTransport');
 
 // Determine the directory path dynamically
 const logDir = path.join(__dirname, 'logs');
 
-// Ensure the log directory exists
+// Ensure the log directory exists, if not create it
 if (!fs.existsSync(logDir)) {
     fs.mkdirSync(logDir, { recursive: true });
 }
 
+// Define custom log levels
 const customLevels = {
     levels: {
         trace: 6,
@@ -34,22 +36,24 @@ const customLevels = {
 };
 // addColors(customLevels.colors);
 
+// Function to ignore EPIPE errors
 function ignoreEpipe(err) {
     return err.code !== 'EPIPE';
 }
 
+// Create the logger instance
 const log = createLogger({
-    exitOnError: false,
-    exitOnError: ignoreEpipe,
-    levels: customLevels.levels,
+    exitOnError: false,  // Do not exit on handled exceptions
+    exitOnError: ignoreEpipe,  // Custom error handler
+    levels: customLevels.levels,  // Custom log levels
     format: combine(
-        timestamp(),
+        timestamp(),   // Add timestamp to logs
         // colorize(),
-        printf(info => `${info.timestamp} ${info.level}: ${info.message}`)
+        printf(info => `${info.timestamp} ${info.level}: ${info.message}`)  // Customize log format
     ),
-    defaultMeta: { service: 'user-service' },
-    transports: [
-        new transports.Console(),
+    defaultMeta: { service: 'user-service' },  // Default metadata
+    transports: [  // Define multiple transports
+        // new EncryptedTransport({ filename: path.join(logDir, 'encrypted.log') }),
         new transports.File({
             filename: path.join(logDir, 'combined.log')
         }),
@@ -91,13 +95,14 @@ const log = createLogger({
             maxFiles: '14d',
         }),
     ],
-    rejectionHandlers: [
+    rejectionHandlers: [  // Handle unhandled promise rejections
         new transports.File({
             filename: path.join(logDir, 'rejections.log')
         })
     ]
 });
 
+// Create a log wrapper function to include accountID in logs
 function createLogWrapper(accountID = "Guest") {
     return {
         trace: (message) => log.log('trace', `Account ID: ${accountID}. Message -> ${message}`),
@@ -109,4 +114,5 @@ function createLogWrapper(accountID = "Guest") {
     };
 }
 
+// Export the logger and log wrapper function
 module.exports = { log, createLogWrapper };

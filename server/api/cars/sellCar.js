@@ -17,27 +17,32 @@ const cookieParser = require('cookie-parser');
 const { DateTime } = require('luxon');
 const { log, createLogWrapper } = require('../Log/log');
 
-router.use(cookieParser());
+router.use(cookieParser());  // Middleware for parsing cookies from the client
 
+// Middleware to set cookie for session management
 router.use((req, res, next) => {
+     // Setting a cookie named 'session' with value '1'
+    // The cookie is HttpOnly, has a SameSite policy of 'strict', and is sent only over HTTPS
     res.cookie('session', '1', {
         httpOnly: true,
         sameSite: 'strict',
         secure: true  // Only send cookie over HTTPS
     });
-    next();
+    next();  // Move to the next middleware in the chain
 });
 
+// Configuring CORS (Cross-Origin Resource Sharing) options
 const corsOptions = {
-    origin: 'http://localhost:3000',  // replace with your frontend application's URL
-    credentials: true,
+    origin: 'http://localhost:3000',  // Specify the allowed origin for cross-origin requests
+    credentials: true,  // Allow credentials (cookies, authorization headers, etc.) to be shared across origins
 };
 
-router.use(cors(corsOptions));
+router.use(cors(corsOptions));  // Use the cors middleware with the specified options
 
-// Set up HTTP security headers
+// Configure and apply various security headers using helmet
 router.use(helmet.contentSecurityPolicy({
     directives: {
+        // Specify sources for various types of content
         defaultSrc: ["'self'"],
         scriptSrc: ["'self'", "'unsafe-inline'"],
         styleSrc: ["'self'", "'unsafe-inline'"],
@@ -49,49 +54,49 @@ router.use(helmet.contentSecurityPolicy({
         connectSrc: ["'self'"],
         fontSrc: ["'self'", "https://fonts.gstatic.com"],  // Example: Allow fonts from self and Google Fonts
         objectSrc: ["'none'"], // disallow the embedding of objects (like Flash or Java applets)
-        // ... other directives
     }
 }));
 
 // Remove potentially sensitive headers
 router.use(helmet.hidePoweredBy());
 
-// HTTP Strict Transport Security (HSTS)
+// Apply HTTP Strict Transport Security (HSTS) to enforce secure connections
 router.use(helmet.hsts({
-    maxAge: 31536000, // 1 year in seconds
-    includeSubDomains: true,
-    preload: true
+    maxAge: 31536000, // Set the max age of the HSTS header to 1 year in seconds
+    includeSubDomains: true,  // Apply HSTS to all subdomains
+    preload: true  // Opt-in to the HSTS preload list
 }));
 
-// Prevent clickjacking 
+// Prevent clickjacking by denying the ability to embed site in an iframe
 router.use(helmet.frameguard({ action: 'deny' }));
 
-// DNS Prefetch Control
+// Control DNS prefetching
 router.use(helmet.dnsPrefetchControl());
 
-// Referrer Policy
+// Set Referrer Policy to not leak referrer information
 router.use(helmet.referrerPolicy({ policy: 'no-referrer' }));
 
-// Cross-site Scripting (XSS) Protection: Some small XSS protections.
+// Protect against Cross-site Scripting (XSS) attacks
 router.use(helmet.xssFilter());
 
-// Prevent clients from sniffing the MIME type.
+// Prevent clients from MIME type sniffing
 router.use(helmet.noSniff());
 
-// Prevent IE from executing downloads in the site's context.
+// Prevent IE from executing downloads in site's context
 router.use(helmet.ieNoOpen());
 
 // // Set up logging
 // // commenting out cause might eat up too much space
 // router.use(morgan('combined'));
 
-// Set up rate limiting
+// Middleware for rate limiting to help prevent abuse and protect against DDoS attacks
 const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
+    windowMs: 15 * 60 * 1000, // Set a time window of 15 minutes
     max: 100 // limit each IP to 100 requests per windowMs
 });
 router.use(limiter);
 
+// Function to handle image processing, resizing and compression
 const handleImageProcessing = async (file) => {
     if (!file || !file.originalname) {
         throw new Error('Invalid file object');
@@ -120,7 +125,7 @@ const handleImageProcessing = async (file) => {
     return fileBuffer;
 };
 
-// Set up file upload handling
+// Configure multer for handling multipart/form-data (file uploads)
 const upload = multer({
     dest: path.join(__dirname, '..', '..', 'uploads'),
     limits: { fileSize: 1000000 }, // limit file size to 1MB
@@ -140,6 +145,7 @@ const upload = multer({
     }
 });
 
+// Define a route to get all car entries from the database
 router.get('/allCar', async (req, res, next) => {
     try {
         const allCars = await prisma.car.findMany();
@@ -152,6 +158,7 @@ router.get('/allCar', async (req, res, next) => {
     }
 });
 
+// Define a route to add a new car entry to the database
 router.post('/addCar', async (req, res, next) => {
     try {
         const newCar = await prisma.car.create({
@@ -167,8 +174,9 @@ router.post('/addCar', async (req, res, next) => {
     }
 });
 
+// Route to request a to list a car to sell a car
 router.post('/sellCar',
-    upload.single('images'), // Middleware for handling file uploads
+    upload.single('images'), // Use multer middleware to handle file upload
     [
         // Express-Validator Middleware to Validate and Sanitize Data
         check('vehicleNumber').isString().trim().escape(),
@@ -272,7 +280,7 @@ router.post('/sellCar',
         }
     });
 
-// Centralized error handling middleware
+// Centralized error handling middleware to catch and handle all errors
 router.use((err, req, res, next) => {
     // console.error(err.stack);  // Log the stack trace
 
@@ -289,4 +297,5 @@ router.use((err, req, res, next) => {
     res.status(statusCode).json(response);  // Respond with the status code and error message
 });
 
+// Export the router object to be used in other parts of the application
 module.exports = router;
