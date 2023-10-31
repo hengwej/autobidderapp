@@ -12,6 +12,7 @@ router.post('/addBidHistory', async (req, res) => {
     const token = req.cookies.token;
     console.log("token bid hist " + token);
     if (!token) return res.status(401).json({ error: 'Unauthorized' });
+    console.log(req.body);
 
     try {
         //Verify token
@@ -21,7 +22,10 @@ router.post('/addBidHistory', async (req, res) => {
         //Find account associated with the token by accountID
         const existingBiddingHistory = await prisma.biddingHistory.findFirst({
             where: {
-                accountID: payload.accountID, // Use accountID from token payload
+                AND: [
+                    { accountID: payload.accountID },
+                    { auctionID: req.body.auctionID },
+                ],
             },
             include: {
                 auction: {
@@ -36,16 +40,18 @@ router.post('/addBidHistory', async (req, res) => {
 
         if (existingBiddingHistory) {
             // If a record with the accountID exists, update it
-            const updatedBiddingHistory = await prisma.biddingHistory.update({
+            const updatedBiddingHistory = await prisma.biddingHistory.updateMany({
                 where: {
-                    accountID: payload.accountID,
+                    AND: [
+                        { accountID: payload.accountID },
+                        { auctionID: req.body.auctionID },
+                    ],
                 },
                 data: {
-                    // Update the fields you want to change
-                    // For example, update a 'bidValue' field
-                    bidAmount: rnewBidHistory.bidValue,
+                    bidAmount: newBidHistory.bidValue,
                 },
             });
+
             res.json(updatedBiddingHistory);
         } else {
             // If no record with the accountID exists, create a new record
