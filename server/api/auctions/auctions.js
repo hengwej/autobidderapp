@@ -1,12 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const controller = require('./controller');
 const jwt = require('jsonwebtoken');
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-router.get('/allAuction', controller.allAuction);
-router.post('/addAuction', controller.addAuction);
+router.post('/allAuction', async (req, res) => {
+    const allAuctions = await prisma.auction.findMany();
+    res.json(allAuctions);
+});
 
 router.post('/addBid', async (req, res) => {
     console.log("access add bid");
@@ -18,7 +19,7 @@ router.post('/addBid', async (req, res) => {
         //Verify token
         const payload = jwt.verify(token, process.env.JWT_SECRET);
 
-        const  newBid = req.body;
+        const newBid = req.body;
         try {
             const addBid = await prisma.auction.updateMany({
                 where: {
@@ -47,9 +48,9 @@ router.post('/addBid', async (req, res) => {
 });
 
 router.post('/updateAuctionToClose', async (req, res) => {
-    
+
     const closeAuction = req.body;
-   
+
     const updateClose = await prisma.auction.updateMany({
         where: {
             auctionID: closeAuction.auctionID,
@@ -60,7 +61,7 @@ router.post('/updateAuctionToClose', async (req, res) => {
     });
 
     res.json(updateClose);
-    
+
 });
 
 router.put('/addOrder', async (req, res) => {
@@ -90,7 +91,7 @@ router.put('/addOrder', async (req, res) => {
             });
 
             res.json(updatedOrder);
-            
+
         } else {
             // No existing order found, create a new order.
             const newOrder = await prisma.orders.create({
@@ -114,7 +115,7 @@ router.put('/addOrder', async (req, res) => {
 });
 
 router.put('/completeOrder', async (req, res) => {
-    
+
     const { orderStatus, auctionID } = req.body;
 
     try {
@@ -139,7 +140,7 @@ router.put('/completeOrder', async (req, res) => {
 
         console.error("Error updating order data:", error);
         res.status(500).json({ error: 'Internal server error', details: error });
-    }    
+    }
 });
 
 router.post('/addSellingHistory', async (req, res) => {
@@ -149,7 +150,7 @@ router.post('/addSellingHistory', async (req, res) => {
         // Check if there is an existing order with the same auction ID
         const existingOrder = await prisma.orders.findFirst({
             where: { auctionID: { equals: auctionID } },
-            include: { 
+            include: {
                 auction: {
                     include: {
                         car: true
@@ -167,7 +168,7 @@ router.post('/addSellingHistory', async (req, res) => {
             if (!existingSellingHistory) {
                 // No existing selling history found, create a new one
                 const sellingHistory = await prisma.sellingHistory.create({
-                    data: { 
+                    data: {
                         orderID: existingOrder.orderID,
                         accountID: existingOrder.auction.car.accountID,
                     },
@@ -181,7 +182,7 @@ router.post('/addSellingHistory', async (req, res) => {
         } else {
             res.status(404).json({ error: 'Order not found' });
         }
-            
+
     } catch (error) {
         console.error("Error creating history record:", error);
         res.status(500).json({ error: 'Internal server error', details: error });

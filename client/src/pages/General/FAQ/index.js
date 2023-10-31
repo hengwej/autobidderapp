@@ -4,6 +4,7 @@ import Header from "../../../components/Header";
 import "../../../css/styles.css";
 import "./styles.css";
 import Container from "react-bootstrap/Container";
+import * as faqAPI from "../../../utils/FaqAPI.js"
 
 export default class FAQ extends React.Component {
     constructor(props) {
@@ -17,14 +18,11 @@ export default class FAQ extends React.Component {
 
     async componentDidMount() {
         try {
-            const response = await fetch("http://127.0.0.1:5000/api/FAQ/getAllFAQs");
-
-            if (!response.ok) {
-                throw Error(`HTTP error! Status: ${response.status}`);
+            const response = await faqAPI.getAllFAQs();
+            if (response.status === 200) {
+                const data = await response.data;
+                this.setState({ faqData: data, loading: false });
             }
-
-            const data = await response.json();
-            this.setState({ faqData: data, loading: false });
         } catch (error) {
             console.error("Error fetching data:", error);
             this.setState({ error, loading: false });
