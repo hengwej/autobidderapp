@@ -93,15 +93,15 @@ model Comment {
 }
 
 model Orders {
-    orderID             Int              @id @default(autoincrement())
-    orderStatus         String
-    auctionID           Int              @map("auctionID")
-    accountID           Int              @map("accountID")
-    createdAt           DateTime         @default(now())
-    updatedAt           DateTime         @default(now()) @updatedAt
-    account             Account          @relation("BidderAccountToOrders", fields: [accountID], references: [accountID], onDelete: Cascade)
-    auction             Auction          @relation(fields: [auctionID], references: [auctionID], onDelete: Cascade)
-    sellingHistory      SellingHistory[]
+    orderID        Int              @id @default(autoincrement())
+    orderStatus    String
+    auctionID      Int              @map("auctionID")
+    accountID      Int              @map("accountID")
+    createdAt      DateTime         @default(now())
+    updatedAt      DateTime         @default(now()) @updatedAt
+    account        Account          @relation("BidderAccountToOrders", fields: [accountID], references: [accountID], onDelete: Cascade)
+    auction        Auction          @relation(fields: [auctionID], references: [auctionID], onDelete: Cascade)
+    sellingHistory SellingHistory[]
 }
 
 model SellingHistory {
@@ -123,6 +123,8 @@ model BiddingHistory {
     updatedAt    DateTime @default(now()) @updatedAt
     account      Account  @relation(fields: [accountID], references: [accountID], onDelete: Cascade)
     auction      Auction  @relation(fields: [auctionID], references: [auctionID], onDelete: Cascade)
+
+    @@unique([accountID, auctionID])
 }
 
 model Request {
