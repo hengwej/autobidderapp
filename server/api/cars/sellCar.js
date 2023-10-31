@@ -15,6 +15,7 @@ const fs = require('fs').promises;
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const { DateTime } = require('luxon');
+const { log, createLogWrapper } = require('../Log/log');
 
 router.use(cookieParser());
 
@@ -156,6 +157,7 @@ router.post('/addCar', async (req, res, next) => {
         const newCar = await prisma.car.create({
             data: req.body,
         });
+        req.log.info(`User added a new car: ${JSON.stringify(newCar)}`);
         res.json(newCar);
     } catch (error) {
         if (error.name === 'TokenExpiredError') {
@@ -254,6 +256,10 @@ router.post('/sellCar',
                     submissionTime: DateTime.now().setZone('Asia/Singapore').toISO(),
                 },
             });
+            // const accountID = payload.accountID;
+            // const accountLog = createLogWrapper(accountID);
+            // accountLog.info(`Request ID: ${JSON.stringify(request.requestID)}. Car listing successfully requested. `);
+            req.log.info(`Request ID: ${JSON.stringify(request.requestID)}. Car listing successfully requested. `);
             //Return JSON object
             //Return bidding history
             res.status(200).json({ message: 'Car listing successfully requested. ', request });
@@ -268,7 +274,8 @@ router.post('/sellCar',
 
 // Centralized error handling middleware
 router.use((err, req, res, next) => {
-    console.error(err.stack);  // Log the stack trace
+    // console.error(err.stack);  // Log the stack trace
+
     const statusCode = err.statusCode || 500;  // Use the error's status code, or default to 500
     const response = {
         message: err.message || 'Something broke!'  // Use the error's message, or a default message
@@ -278,6 +285,7 @@ router.use((err, req, res, next) => {
     } else {
         response.message = 'An error occurred, please try again later.';  // Generic error message
     }
+    req.log.error(`${err.message}, Stack: ${err.stack}`);
     res.status(statusCode).json(response);  // Respond with the status code and error message
 });
 
