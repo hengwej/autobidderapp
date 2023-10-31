@@ -1,0 +1,10 @@
+2023-10-31T18:15:40.219Z fatal: Account ID: Guest. Message -> This is a fatal log message
+2023-10-31T18:15:40.219Z unknown: Account ID: Guest. Message -> This is an unknown level log message
+2023-10-31T18:59:43.508Z fatal: Account ID: 32. Message -> This is a fatal log message
+2023-10-31T18:59:43.509Z unknown: Account ID: 32. Message -> This is an unknown level log message
+2023-10-31T19:26:24.227Z fatal: Account ID: 32. Message -> This is a fatal log message
+2023-10-31T19:26:24.227Z unknown: Account ID: 32. Message -> This is an unknown level log message
+2023-10-31T19:29:56.245Z fatal: Account ID: 32. Message -> This is a fatal log message
+2023-10-31T19:31:10.334Z fatal: Account ID: 32. Message -> This is a fatal log message
+2023-10-31T20:22:58.434Z fatal: Account ID: Guest. Message -> This is a fatal log message
+2023-10-31T20:23:18.297Z fatal: Account ID: 32. Message -> This is a fatal log message
