@@ -4,9 +4,10 @@ import Card from "react-bootstrap/Card";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import Header from "../../../components/Header";
 import { Link } from "react-router-dom";
-import axios from 'axios';
+import * as auctionAPI from "../../../utils/AuctionAPI";
+import * as carAPI from "../../../utils/CarAPI";
+import * as bidAPI from "../../../utils/BidAPI";
 
 export default class Home extends Component {
     constructor(props) {
@@ -21,21 +22,21 @@ export default class Home extends Component {
 
     async componentDidMount() {
         try {
-            const response = await fetch("http://127.0.0.1:5000/api/cars/allCar");
-            const data = await response.json();
+            const carResponse = await carAPI.getAllCars();
+            const data = carResponse.data;
 
             this.setState({ carData: data, loading: false });
 
-            const auctionResponse = await fetch("http://127.0.0.1:5000/api/auctions/allAuction");
-            const retrieveAuctionData = await auctionResponse.json();
+            const auctionResponse = await auctionAPI.getAllAuctions();
+            const retrieveAuctionData = auctionResponse.data;
 
             this.setState({ auctionData: retrieveAuctionData, loading: false });
-  
+
             // Initialize timers for each car
             const initialTimers = {};
             retrieveAuctionData.forEach((auctionItem) => {
                 const auction = retrieveAuctionData.find((auctionItem) => data.carID === auctionItem.carID);
-                
+
                 if (auction) {
                     initialTimers[auctionItem.carID] = this.calculateTimeLeft(
                         new Date(auction.startDate),
@@ -54,7 +55,6 @@ export default class Home extends Component {
     }
 
     calculateTimeLeft = (startDate, endDate, auctionID) => {
-        const auctionStartDate = new Date(startDate);
         const auctionEndDate = new Date(endDate);
         const currentDate = new Date();
         const difference = auctionEndDate - currentDate;
@@ -71,17 +71,16 @@ export default class Home extends Component {
 
         if (difference <= 0 && auctionID) {
             // Update to bidding status to end
-            axios.post(`http://127.0.0.1:5000/api/biddingHistory/updateBidHistoryToEnd`, { status: "Ended", auctionID: auctionID }).then((res) => {
-            });
+            const bidData = { status: "Ended", auctionID: auctionID };
+            bidAPI.updateBidHistoryToEnd(bidData);
 
             // Update to auction status to closed
-            axios.post(`http://127.0.0.1:5000/api/auctions/updateAuctionToClose`, { status: "CLOSED", auctionID: auctionID }).then((res) => {
-            });
+            const updateData = { status: "CLOSED", auctionID: auctionID };
+            auctionAPI.updateAuctionToClose(updateData);
 
             // Update the orderStatus to completed in order table
             const orderData = { orderStatus: 'Completed', auctionID: auctionID };
-            axios.put(`http://127.0.0.1:5000/api/auctions/completeOrder`, orderData).then((res) => {
-            });
+            auctionAPI.completeOrder(orderData);
         }
 
         return timeLeft;
@@ -91,7 +90,7 @@ export default class Home extends Component {
         this.countdownInterval = setInterval(() => {
             const { auctionData, timeLeft } = this.state;
             const updatedTimers = { ...timeLeft };
-            
+
             auctionData.forEach((auction) => {
                 const timer = this.calculateTimeLeft(auction.startDate, auction.endDate, auction.auctionID);
                 updatedTimers[auction.carID] = timer;

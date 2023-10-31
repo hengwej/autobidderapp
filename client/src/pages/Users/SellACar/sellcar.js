@@ -1,9 +1,9 @@
 import React, { useState, useCallback } from "react";
 import "./styles.css";
-import axios from "axios";
 import * as Yup from 'yup';
 import DOMPurify from 'dompurify';
 import { debounce } from 'lodash';
+import * as carAPI from "../../../utils/CarAPI.js"
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;  // 5 MB in bytes
 
@@ -151,19 +151,14 @@ function SellCar() {
                 data.append('images', formData.images);
             }
             try {
-                const response = await fetch('https://localhost:3000/sellcar', {
-                    method: 'POST',
-                    body: data,
-                });
-                const responseData = await response.json();
-                // console.log(responseData);
-                setSuccess(true);  // set success to true on successful submission
-                setSubmissionStatus('success');  // set submission status to success on successful submission
+                const response = await carAPI.checkConnection(data);
+                if (response.status === 200) {
+                    setSuccess(true);  // set success to true on successful submission
+                    setSubmissionStatus('success');  // set submission status to success on successful submission
+                }
             } catch (error) {
                 console.error('Error:', error);
-                axios.post('http://localhost:5000/api/cars/sellCar', data, {
-                    withCredentials: true
-                }).then(response => {
+                await carAPI.sellCar(data).then(response => {
                     //Handle JSON Response Here
                     // console.log(response.formData);
                 }).catch(error => {
