@@ -5,8 +5,8 @@ import axios from 'axios';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { Modal, Button } from "react-bootstrap";
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js'; // Import Stripe components
-import * as bidAPI from "../../../utils/BidAPI.js"
 import * as auctionAPI from "../../../utils/AuctionAPI.js"
+import * as bidAPI from "../../../utils/BidAPI.js"
 
 export default function PlaceBid({ carID, handleClose }) {
     const [auctionData, setAuctionData] = useState({});
@@ -112,13 +112,14 @@ export default function PlaceBid({ carID, handleClose }) {
                 console.log('Payment successful!');
                 // Record the bid in the database now that payment was successful
                 //await axios.post(`http://127.0.0.1:5000/api/auctions/addBid`, { bidValue: bidValue, carID: carID },{withCredentials:true});
-                await bidAPI.addBid(bidValue, carID);
+
+                await auctionAPI.addBid(bidValue, carID);
                 // Create or Update a record the order table everytime a new bid is placed 
                 const orderData = { orderStatus: 'Pending', auctionID: auctionID };
-                await bidAPI.addOrder(orderData);
+                await auctionAPI.addOrder(orderData);
                 // Create a record in the selling history table once a new order is made (for the seller to track)
                 const sellingHistoryData = { auctionID: auctionID };
-                await bidAPI.addSellingHistory(sellingHistoryData);
+                await auctionAPI.addSellingHistory(sellingHistoryData);
                 // Close the modal and reset state
                 handleCloseBid();
                 handleClose();
