@@ -5,9 +5,10 @@ import axios from 'axios';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { Modal, Button } from "react-bootstrap";
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js'; // Import Stripe components
-import  * as api from "../../../utils/bidAPI.js"
+import * as bidAPI from "../../../utils/BidAPI.js"
+import * as auctionAPI from "../../../utils/AuctionAPI.js"
 
-export default function PlaceBid({ carID, handleClose  }) {
+export default function PlaceBid({ carID, handleClose }) {
     const [auctionData, setAuctionData] = useState({});
     const [bidValue, setBidValue] = useState('');
     const [OpenedBid, setOpenedBid] = useState(false);
@@ -27,8 +28,8 @@ export default function PlaceBid({ carID, handleClose  }) {
     useEffect(() => {
         async function fetchData() {
             try {
-                const response = await fetch("http://127.0.0.1:5000/api/auctions/allAuction");
-                const data = await response.json();
+                const response = await auctionAPI.getAllAuctions();
+                const data = await response.data;
                 const auction = data.find((auction) => carID === auction.carID);
 
                 setCurrentHighestBid(auction.currentHighestBid);
@@ -36,8 +37,8 @@ export default function PlaceBid({ carID, handleClose  }) {
                 setAuctionData(data);
                 setLoading(false);
 
-                const biddingHistoryResponse = await fetch("http://127.0.0.1:5000/api/biddingHistory/allBidHistory");
-                const biddingHistoryData = biddingHistoryResponse.json();
+                const biddingHistoryResponse = await bidAPI.allBidHistory();
+                const biddingHistoryData = biddingHistoryResponse.data;
 
             } catch (error) {
                 console.error("Error fetching data:", error);
@@ -48,6 +49,11 @@ export default function PlaceBid({ carID, handleClose  }) {
 
         fetchData();
     }, [carID, auctionID]);
+
+    function addBidHistory() {
+        const bidHistoryData = { bidValue: bidValue, status: "ongoing", auctionID: auctionID };
+        bidAPI.addBidHistory(bidHistoryData);
+    }
 
     useEffect(() => {
         if (paymentSuccess) {
@@ -76,7 +82,7 @@ export default function PlaceBid({ carID, handleClose  }) {
         const cardElement = elements.getElement(CardElement);
 
         // Use your card Element with other Stripe.js APIs
-        const {error, paymentMethod} = await stripe.createPaymentMethod({
+        const { error, paymentMethod } = await stripe.createPaymentMethod({
             type: 'card',
             card: cardElement,
         });
@@ -94,7 +100,7 @@ export default function PlaceBid({ carID, handleClose  }) {
 
             const clientSecret = response.data.clientSecret;
 
-            const {error: confirmError} = await stripe.confirmCardPayment(clientSecret, {
+            const { error: confirmError } = await stripe.confirmCardPayment(clientSecret, {
                 payment_method: paymentMethod.id
             });
 
@@ -106,13 +112,13 @@ export default function PlaceBid({ carID, handleClose  }) {
                 console.log('Payment successful!');
                 // Record the bid in the database now that payment was successful
                 //await axios.post(`http://127.0.0.1:5000/api/auctions/addBid`, { bidValue: bidValue, carID: carID },{withCredentials:true});
-                await api.addBid(bidValue, carID);
+                await bidAPI.addBid(bidValue, carID);
                 // Create or Update a record the order table everytime a new bid is placed 
                 const orderData = { orderStatus: 'Pending', auctionID: auctionID };
-                await api.addOrder(orderData);
+                await bidAPI.addOrder(orderData);
                 // Create a record in the selling history table once a new order is made (for the seller to track)
                 const sellingHistoryData = { auctionID: auctionID };
-                await api.addSellingHistory(sellingHistoryData);
+                await bidAPI.addSellingHistory(sellingHistoryData);
                 // Close the modal and reset state
                 handleCloseBid();
                 handleClose();
@@ -124,8 +130,7 @@ export default function PlaceBid({ carID, handleClose  }) {
             }
 
             // Add to bidding history
-            axios.post(`http://127.0.0.1:5000/api/biddingHistory/addBidHistory`, { bidValue: bidValue, status: "ongoing", auctionID: auctionData.auctionID }, { withCredentials: true }).then((res) => {
-            });
+            addBidHistory();
         }
     };
 
@@ -140,7 +145,7 @@ export default function PlaceBid({ carID, handleClose  }) {
             handleOpenBid();
         }
     };
-    
+
 
     const CARD_ELEMENT_OPTIONS = {
         style: {
@@ -177,10 +182,10 @@ export default function PlaceBid({ carID, handleClose  }) {
             <Modal
                 show={OpenedBid} onHide={handleCloseBid}>
                 <Modal.Header closeButton style={{ backgroundColor: 'lightyellow', width: 33 + 'em', position: 'relative', right: 1 + 'em' }}>
-                    <Modal.Title>Are you sure you want to bid $<u style={{color: 'red'}}>{bidValue}</u>?</Modal.Title>
+                    <Modal.Title>Are you sure you want to bid $<u style={{ color: 'red' }}>{bidValue}</u>?</Modal.Title>
                 </Modal.Header>
                 <Modal.Body style={{ backgroundColor: 'lightyellow', width: 33 + 'em', position: 'relative', right: 1 + 'em', height: 10 + 'em' }}>
-                    <CardElement options={CARD_ELEMENT_OPTIONS} className="card-element"/> {/* Stripe form */}
+                    <CardElement options={CARD_ELEMENT_OPTIONS} className="card-element" /> {/* Stripe form */}
                     {paymentError && <div className="payment-error">{paymentError}</div>} {/* Display payment error */}
                     {paymentSuccess && <p>Payment successful! The page will refresh shortly.</p>}
                     <Button variant="secondary" onClick={handleCloseBid} className="cancel_btn">Cancel</Button>
@@ -189,7 +194,7 @@ export default function PlaceBid({ carID, handleClose  }) {
                     </Button>
                     {bidError && <p style={{ color: 'red' }}>{bidError}</p>}
                 </Modal.Body>
-                <Modal.Footer style={{ backgroundColor: 'lightyellow', width: 33 + 'em', position: 'relative', right: 1 + 'em', height: 5 + 'em' }}/>
+                <Modal.Footer style={{ backgroundColor: 'lightyellow', width: 33 + 'em', position: 'relative', right: 1 + 'em', height: 5 + 'em' }} />
             </Modal>
         </div>
     );
