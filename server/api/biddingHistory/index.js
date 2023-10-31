@@ -55,6 +55,7 @@ router.post('/addBidHistory', async (req, res) => {
                     bidAmount: newBidHistory.bidValue,
                     bidStatus: newBidHistory.status,
                     auctionID: newBidHistory.auctionID,
+                    bidTimestamp: new Date(),
                 },
             });
             res.json(newBiddingHistory);
@@ -72,7 +73,7 @@ router.post('/addBidHistory', async (req, res) => {
 
 router.post('/updateBidHistoryToEnd', async (req, res) => {
 
-    const endBidHistory  = req.body;
+    const endBidHistory = req.body;
 
     const updateEndBiddingHistory = await prisma.biddingHistory.updateMany({
         where: {
@@ -84,7 +85,7 @@ router.post('/updateBidHistoryToEnd', async (req, res) => {
     });
 
     res.json(updateEndBiddingHistory);
-  
+
 });
 
 module.exports = router;
