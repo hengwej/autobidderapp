@@ -51,10 +51,8 @@ const ViewUserBiddingHistory = () => {
     let sortedBiddingHistory = [...biddingHistory];
 
     // Filter by bid status
-    if (bidStatusFilter === "Active Bids") {
-      sortedBiddingHistory = sortedBiddingHistory.filter(bid => bid.bidStatus.toLowerCase() === "active");
-    } else if (bidStatusFilter === "Outbidded Bids") {
-      sortedBiddingHistory = sortedBiddingHistory.filter(bid => bid.bidStatus.toLowerCase() === "outbidded");
+    if (bidStatusFilter === "Ongoing Bids") {
+      sortedBiddingHistory = sortedBiddingHistory.filter(bid => bid.bidStatus.toLowerCase() === "ongoing");
     } else if (bidStatusFilter === "Ended Bids") {
       sortedBiddingHistory = sortedBiddingHistory.filter(bid => bid.bidStatus.toLowerCase() === "ended");
     }
@@ -126,8 +124,7 @@ const ViewUserBiddingHistory = () => {
                   Filter By: {bidStatusFilter || "None"}
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                  <Dropdown.Item onClick={() => { setBidStatusFilter("Active Bids"); setCurrentPage(1); }}>Active Bids</Dropdown.Item>
-                  <Dropdown.Item onClick={() => { setBidStatusFilter("Outbidded Bids"); setCurrentPage(1); }}>Outbidded Bids</Dropdown.Item>
+                  <Dropdown.Item onClick={() => { setBidStatusFilter("Ongoing Bids"); setCurrentPage(1); }}>Ongoing Bids</Dropdown.Item>
                   <Dropdown.Item onClick={() => { setBidStatusFilter("Ended Bids"); setCurrentPage(1); }}>Ended Bids</Dropdown.Item>
                   <Dropdown.Item onClick={() => { setBidStatusFilter(""); setCurrentPage(1); }}>Clear Status Filter</Dropdown.Item>
                 </Dropdown.Menu>
