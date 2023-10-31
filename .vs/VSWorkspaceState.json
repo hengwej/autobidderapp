@@ -1,15 +1,16 @@
 {
   "ExpandedNodes": [
     "",
+    "\\client",
+    "\\client\\src",
+    "\\client\\src\\pages",
+    "\\client\\src\\pages\\Users",
+    "\\client\\src\\pages\\Users\\UserProfile",
+    "\\client\\src\\utils",
     "\\server",
     "\\server\\api",
-    "\\server\\api\\comments",
-    "\\server\\api\\FAQ",
-    "\\server\\api\\middleware",
-    "\\server\\api\\requests",
-    "\\server\\prisma",
-    "\\server\\prisma\\migrations",
-    "\\server\\uploads"
+    "\\server\\api\\accounts"
   ],
+  "SelectedNode": "\\client\\src\\pages\\Admin\\ViewUsers\\viewUsers.js",
   "PreviewInSolutionExplorer": false
 }

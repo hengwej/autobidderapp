@@ -131,20 +131,16 @@ exports.approveRequest = async (req, res) => {
             },
         });
 
-        const newAuction = await prisma.auction.create({
+        const newAuction = await prisma.auction.createMany({
             data: {
                 auctionStatus: 'OPENED',
                 startDate: startDate,
                 endDate: endDate,
-                currentHighestBid: 0,
+                currentHighestBid: existingRequest.startingBid,
                 auctionCreationTime: new Date(),
-                accountID: existingRequest.accountID,
-                auctionCreator: {
-                    connect: { accountID: hardcodedAccountID },
-                },
-                car: {
-                    connect: { carID: newCar.carID },
-                },
+                accountID:accountID ,
+                auctionCreatorID: hardcodedAccountID , 
+                carID: newCar.carID ,
                 createdAt: new Date(),
                 updatedAt: new Date(),
             },
