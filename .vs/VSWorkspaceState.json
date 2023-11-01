@@ -4,13 +4,12 @@
     "\\client",
     "\\client\\src",
     "\\client\\src\\pages",
+    "\\client\\src\\pages\\Admin",
+    "\\client\\src\\pages\\General",
+    "\\client\\src\\pages\\General\\Homepage",
     "\\client\\src\\pages\\Users",
-    "\\client\\src\\pages\\Users\\UserProfile",
-    "\\client\\src\\utils",
-    "\\server",
-    "\\server\\api",
-    "\\server\\api\\accounts"
+    "\\client\\src\\pages\\Users\\PlaceBid",
+    "\\client\\src\\utils"
   ],
-  "SelectedNode": "\\client\\src\\pages\\Admin\\ViewUsers\\viewUsers.js",
   "PreviewInSolutionExplorer": false
 }
