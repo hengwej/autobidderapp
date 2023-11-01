@@ -3,11 +3,11 @@ import { useNavigate } from "react-router-dom"; // Import the hook
 import "../../../css/styles.css";
 import "../styles.css";
 import Container from "react-bootstrap/Container";
-import axios from "axios";
 import Button from "react-bootstrap/Button";
 import "../../../css/styles.css";
 import "../styles.css";
 import { Table, Card } from "react-bootstrap";
+import * as usersAPI from "../../../utils/UserProfileAPI.js";
 
 
 class UserManagement extends Component {
@@ -24,7 +24,7 @@ class UserManagement extends Component {
 
     async componentDidMount() {
         try {
-            const response = await fetch("http://127.0.0.1:5000/api/users/getAllUsers");
+            const response = await usersAPI.getAllUsers();
             const data = await response.json();
             this.setState({ userData: data, loading: false });
         } catch (error) {
@@ -38,14 +38,15 @@ class UserManagement extends Component {
         if (Number.isInteger(userID)) {
             const confirmed = window.confirm("Are you sure you want to delete this user?");
             if (confirmed) {
-                axios.delete(`http://127.0.0.1:5000/api/users/deleteUser/${userID}`)
-                    .then((response) => {
+                try {
+                    const response = usersAPI.deleteUser(userID)
+                    if (response.status === 200) {
                         this.setState({ showSuccess: true });
                         console.log("User deleted successfully");
-                    })
-                    .catch((error) => {
-                        console.error("Error deleting user:", error);
-                    });
+                    }
+                } catch (error) {
+                    console.error("Error deleting user:", error);
+                }
             }
         } else {
             console.error("Invalid user ID:", userID);
@@ -73,7 +74,7 @@ class UserManagement extends Component {
         if (this.state.error) return <div>Error: {this.state.error.message}</div>;
 
         return (
-            <Container fluid>
+            <Container>
                 {this.state.showSuccess && (
                     <div className="success-message">User deleted successfully!</div>
                 )}
@@ -122,7 +123,7 @@ class UserManagement extends Component {
         );
     }
 }
- 
+
 export default function UserManagementWithNavigation() {
     const navigate = useNavigate(); // Initialize navigate using useNavigate hook
     return <UserManagement navigate={navigate} />;

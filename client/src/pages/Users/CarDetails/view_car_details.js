@@ -4,18 +4,20 @@ import { Modal, Button, Container } from "react-bootstrap";
 import Placebid from "../PlaceBid/placebid";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../../../utils/AuthProvider";
+import * as carAPI from "../../../utils/CarAPI";
+import * as auctionAPI from "../../../utils/AuctionAPI";
+import * as accountAPI from "../../../utils/AccountAPI";
 
 export default function ViewCarDetails() {
     const { carID } = useParams();
     const [carData, setCarData] = useState({});
     const [timeLeft, setTimeLeft] = useState({});
     const [showPlaceBidModal, setShowPlaceBidModal] = useState(false);
-    const [error, setError] = useState(null);
+    const [setError] = useState(null);
     const [currentHighestBid, setCurrentHighestBid] = useState(null);
     const [auctionStartDate, setAuctionStartDate] = useState(null);
     const [auctionEndDate, setAuctionEndDate] = useState(null);
     const [auctionID, setAuctionID] = useState(null);
-    const [carCommentData, setCarCommentData] = useState(null);
     const [accountID, setAccountID] = useState(null);
     const [userName, setUserName] = useState(null);
     const { user } = useAuth();
@@ -32,8 +34,8 @@ export default function ViewCarDetails() {
     useEffect(() => {
         async function fetchData() {
             try {
-                const response = await fetch("http://127.0.0.1:5000/api/cars/allCar");
-                const data = await response.json();
+                const response = await carAPI.getAllCars();
+                const data = await response.data;
                 console.log(data);
                 const car = data.find((car) => car.carID === parseInt(carID));
                 console.log("Extracted carID:", typeof carID);
@@ -46,21 +48,16 @@ export default function ViewCarDetails() {
                     console.log("Data not found for ID", carID);
                 }
 
-                const auctionResponse = await fetch("http://127.0.0.1:5000/api/auctions/allAuction");
-                const auctionData = await auctionResponse.json();
+                const auctionResponse = await auctionAPI.getAllAuctions();
+                const auctionData = await auctionResponse.data;
                 const auction = auctionData.find((auction) => parseInt(carID) === auction.carID);
                 setCurrentHighestBid(auction.currentHighestBid);
                 setAuctionStartDate(auction.startDate);
                 setAuctionEndDate(auction.endDate);
 
-                const commentResponse = await fetch("http://127.0.0.1:5000/api/comments/allComment");
-                const commentData = await commentResponse.json();
-                const comment = commentData.find((comment) => auction.auctionID === comment.auctionID);
-                setCarCommentData(comment.details);
-
-                const accountResponse = await fetch("http://127.0.0.1:5000/api/accounts/allAccount");
-                const accountData = await accountResponse.json();
-                const account = accountData.find((account) => comment.accountID === account.accountID);
+                const accountResponse = await accountAPI.allAccount();
+                const accountData = await accountResponse.data;
+                const account = accountData.find((account) => account.accountID);
                 setUserName(account.username);
 
             } catch (error) {
@@ -111,29 +108,11 @@ export default function ViewCarDetails() {
         }, 1000);
     };
 
-    //const addComment = () => {
-    //    // Get the input value using the ref
-    //    const commentValue = commentInputRef.current.value;
-
-    //    // Make sure the input is not empty before posting to the server
-    //    if (commentValue.trim() !== '') {
-    //        axios.post(`http://127.0.0.1:5000/api/comments/addComment`, { comment: commentValue, auctionID: auctionID }, { withCredentials: true })
-    //            .then(res => {
-    //            })
-    //            .catch(error => {
-    //                console.error("Failed to comment:", error);
-    //            });
-    //    }
-
-    //    // Clear the input field
-    //    commentInputRef.current.value = '';
-    //}
-
     return (
         <Container>
             <div className="wrapper">
                 <div className="flex-container">
-                    <div key={carData.carID}>
+                    <div key={carData.id}>
                         <label className="cardetails_label">{carData.make}&nbsp;{carData.model}</label><br />
                         <div className="carDetails">
                             {carData && carData.carImage && carData.carImage.data && (
@@ -142,31 +121,37 @@ export default function ViewCarDetails() {
                         </div>
                     </div>
 
-                    <table className="side-table" key={carData.carID}>
-                        <tr>
-                            <th style={{ width: 180 + 'px', borderRight: "2px solid black" }}>Vehicle Number</th>
-                            <td style={{ width: 500 + 'px' }}>{carData.vehicleNumber}</td>
-                        </tr>
-                        <tr>
-                            <th style={{ width: 180 + 'px', borderRight: "2px solid black" }}>Make</th>
-                            <td>{carData.make}</td>
-                        </tr>
-                        <tr>
-                            <th style={{ borderRight: "2px solid black" }}>Model</th>
-                            <td>{carData.model}</td>
-                        </tr>
-                        <tr>
-                            <th style={{ borderRight: "2px solid black" }}>Interior Color</th>
-                            <td>{carData.interiorColor}</td>
-                        </tr>
-                        <tr>
-                            <th style={{ borderRight: "2px solid black" }}>Exterior Color</th>
-                            <td>{carData.exteriorColor}</td>
-                        </tr>
-                    </table>
+
+                    <div className="side-table">
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <th className="table-header" style={{ borderRight: '2px solid black' }}>Vehicle Number</th>
+                                    <td className="table-cell" style={{ width: '500px' }}>{carData.vehicleNumber}</td>
+                                </tr>
+
+                                <tr>
+                                    <th className="table-header" style={{ borderRight: '2px solid black' }}>Make</th>
+                                    <td className="table-cell">{carData.make}</td>
+                                </tr>
+                                <tr>
+                                    <th className="table-header" style={{ borderRight: '2px solid black' }}>Model</th>
+                                    <td className="table-cell">{carData.model}</td>
+                                </tr>
+                                <tr>
+                                    <th className="table-header" style={{ borderRight: '2px solid black' }}>Interior Color</th>
+                                    <td className="table-cell">{carData.interiorColor}</td>
+                                </tr>
+                                <tr>
+                                    <th className="table-header" style={{ borderRight: '2px solid black' }}>Exterior Color</th>
+                                    <td className="table-cell">{carData.exteriorColor}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+
                 </div>
-
-
 
                 <div className="timer">
                     <b>Time Left:</b>{" "}
@@ -184,8 +169,6 @@ export default function ViewCarDetails() {
                         Place Bid
                     </Button>
                 )}
-
-
 
                 <Modal show={showPlaceBidModal} onHide={handlePlaceBidClose}>
                     <Modal.Header closeButton>
@@ -260,7 +243,6 @@ export default function ViewCarDetails() {
                         </ul>
                     </div>
                 </div>
-
 
             </div>
         </Container>

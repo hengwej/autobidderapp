@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { useNavigate } from "react-router-dom";
 import { Table, Card, Container, Row, Col } from 'react-bootstrap';
-import axios from 'axios';
 import Button from "react-bootstrap/Button";
 import { Dropdown } from 'react-bootstrap';
+import * as requestsAPI from "../../../utils/RequestsAPI.js";
 
 class Requests extends Component {
     constructor(props) {
@@ -18,7 +18,7 @@ class Requests extends Component {
 
     async componentDidMount() {
         try {
-            const response = await axios.get('http://127.0.0.1:5000/api/requests/getAllRequests');
+            const response = await requestsAPI.getAllRequests();
             this.setState({ requests: response.data, loading: false });
         } catch (error) {
             console.error("Error fetching data:", error);
@@ -39,7 +39,7 @@ class Requests extends Component {
         if (this.state.error) return <div>Error: {this.state.error.message}</div>;
 
         return (
-            <Container fluid className="request-page">
+            <Container className="request-page">
                 <Row>
                     <Col>
                         <div className="dropdown-container">
@@ -54,6 +54,8 @@ class Requests extends Component {
                                 <Dropdown.Menu>
                                     <Dropdown.Item onClick={() => this.filterRequests("")}>All Requests</Dropdown.Item>
                                     <Dropdown.Item onClick={() => this.filterRequests("Rejected")}>Rejected Requests</Dropdown.Item>
+                                    <Dropdown.Item onClick={() => this.filterRequests("Pending")}>Pending Requests</Dropdown.Item>
+
                                 </Dropdown.Menu>
                             </Dropdown>
                         </div>
@@ -80,9 +82,11 @@ class Requests extends Component {
                                                 <tr key={request.requestID}>
                                                     <td>{request.requestID}</td>
                                                     <td>{request.requestStatus}</td>
-                                                    <td>{new Date(request.requestSubmissionTime).toLocaleString('en-US', { hour12: false })}</td>
+                                                    <td>{Date(request.requestSubmissionTime).toLocaleString('en-US', { timeZone: 'Asia/Singapore' })}</td>
                                                     <td>{request.vehicleNumber}</td>
                                                     <td>
+
+
                                                         <Button
                                                             style={{ backgroundColor: "#ff692d", border: "none" }}
                                                             onClick={() => this.handleViewDetails(request.requestID)}

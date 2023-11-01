@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { useParams } from "react-router-dom";
-import { Card } from "react-bootstrap";
-
-
+import { Card, Container } from "react-bootstrap";
+import * as usersAPI from "../../../utils/UserProfileAPI.js";
 
 export default function ViewUserDetails() {
     const { userID } = useParams();
@@ -13,7 +11,7 @@ export default function ViewUserDetails() {
 
     useEffect(() => {
         // Fetch user details based on the userId from the URL
-        axios.get(`http://127.0.0.1:5000/api/users/viewUser/${userID}`)
+        usersAPI.viewUser(userID)
             .then((response) => {
                 setUser(response.data);
                 setLoading(false);
@@ -30,16 +28,19 @@ export default function ViewUserDetails() {
     if (!user) return <div>User not found</div>;
 
     return (
-        <Card>
-            <Card.Header>View User Details</Card.Header>
-            <Card.Body>
-                <div>
-                    <p>Name: {user.firstName} {user.lastName}</p>
-                    <p>Email: {user.emailAddress}</p>
-                    <p>Phone Number: {user.phoneNumber}</p>
-                    <p>Address: {user.address}</p>
-                </div>
-            </Card.Body>
-        </Card>
+        <Container>
+            <Card>
+                <Card.Header style={{ fontWeight: "bold" }}>View User Details</Card.Header>
+                <Card.Body>
+                    <div>
+                        <p><b>First Name:</b> {user.firstName}</p>
+                        <p><b>Last Name:</b> {user.lastName}</p>
+                        <p><b>Email:</b> {user.emailAddress}</p>
+                        <p><b>Phone Number:</b> {user.phoneNumber}</p>
+                        <p><b>Address:</b> {user.address}</p>
+                    </div>
+                </Card.Body>
+            </Card>
+        </Container>
     );
 }
