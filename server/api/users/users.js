@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const router = express.Router();
 const prisma = new PrismaClient();
 const bcrypt = require('bcrypt');
+const { sanitiseObj } = require('../../utils/Validator');
 const saltRounds = 10;
 
 
@@ -266,7 +267,13 @@ router.post('/getUserSellingHistory', async (req, res) => {
 
 
 router.put('/updateUserProfileDetails', async (req, res) => {
-    const { newUserData, newAccountData } = req.body;
+    let { newUserData, newAccountData } = req.body;
+
+
+    //sanitise obj
+    newUserData = sanitiseObj(newUserData);
+    newAccountData = sanitiseObj(newAccountData);
+
     const token = req.cookies.token;
 
     if (!token) {
@@ -316,6 +323,7 @@ router.put('/updateUserProfileDetails', async (req, res) => {
 router.put('/resetPassword', async (req, res) => {
     // Initialize variables
     const { password } = req.body;
+    //do not sanitise password
     const token = req.cookies.token;
     const csrfTokenHeader = req.headers['x-csrf-token'];
     const csrfTokenCookie = req.cookies.csrfToken;
