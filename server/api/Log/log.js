@@ -5,6 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const DailyRotateFile = require('winston-daily-rotate-file');
 // const EncryptedTransport = require('./encryptedTransport');
+const moment = require('moment');
 
 // Determine the directory path dynamically
 const logDir = path.join(__dirname, 'logs');
@@ -49,7 +50,8 @@ const log = createLogger({
     format: combine(
         timestamp(),   // Add timestamp to logs
         // colorize(),
-        printf(info => `${info.timestamp} ${info.level}: ${info.message}`)  // Customize log format
+        printf(info => `${moment(info.timestamp).format('DD-MM-YYYY HH:mm:ss')} ${info.level}: ${info.message}`)  // Customize log format and timestamp format
+        // printf(info => `${info.timestamp} ${info.level}: ${info.message}`)  // Customize log format
     ),
     defaultMeta: { service: 'user-service' },  // Default metadata
     transports: [  // Define multiple transports
