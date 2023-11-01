@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "F:\\University\\Year 3\\3103\\AutoBidder\\autobidderapp\\server\\api\\Log\\logs\\archive\\.7033d9cdd7445217c3646c67160e390f66ffa43d-audit.json",
+    "files": [
+        {
+            "date": 1698835806013,
+            "name": "F:\\University\\Year 3\\3103\\AutoBidder\\autobidderapp\\server\\api\\Log\\logs\\archive\\application-2023-11-01.log",
+            "hash": "15dd2fe63d4d87649dc608d0cced25fac1b121523d0e8ad52e9949fcdad0402d"
+        }
+    ],
+    "hashType": "sha256"
+}
