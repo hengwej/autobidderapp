@@ -34,29 +34,41 @@ export default function ViewCarDetails() {
     useEffect(() => {
         async function fetchData() {
             try {
-                const response = await carAPI.getAllCars();
-                const data = await response.data;
-                console.log(data);
-                const car = data.find((car) => car.carID === parseInt(carID));
+                const [carResponse, auctionResponse, accountResponse] = await Promise.all([
+                    carAPI.getAllCars(),
+                    auctionAPI.getAllAuctions(),
+                    accountAPI.allAccount()
+                ]);
+
+                const carData = await carResponse.data;
+                const auctionData = await auctionResponse.data;
+                const accountData = await accountResponse.data;
+
+                console.log(carData);
+                console.log(auctionData);
+                console.log(accountData);
+
+                const car = carData.find((car) => car.carID === parseInt(carID));
                 console.log("Extracted carID:", typeof carID);
+
                 if (car) {
                     console.log("Data for ID", carID, ":", car);
                     setCarData(car);
-                    calculateTimeLeft();
-                    startCountdown();
                 } else {
                     console.log("Data not found for ID", carID);
                 }
 
-                const auctionResponse = await auctionAPI.getAllAuctions();
-                const auctionData = await auctionResponse.data;
                 const auction = auctionData.find((auction) => parseInt(carID) === auction.carID);
-                setCurrentHighestBid(auction.currentHighestBid);
-                setAuctionStartDate(auction.startDate);
-                setAuctionEndDate(auction.endDate);
+                console.log(auction);
 
-                const accountResponse = await accountAPI.allAccount();
-                const accountData = await accountResponse.data;
+                if (auction) {
+                    setCurrentHighestBid(auction.currentHighestBid);
+                    setAuctionStartDate(auction.startDate);
+                    setAuctionEndDate(auction.endDate);
+                } else {
+                    console.log("Auction not found for carID: " + carID);
+                }
+
                 const account = accountData.find((account) => account.accountID);
                 setUserName(account.username);
 
@@ -80,6 +92,7 @@ export default function ViewCarDetails() {
         const startDate = new Date(auctionStartDate);
         const endDate = new Date(auctionEndDate);
         const currentDate = new Date();
+    
 
         const difference = endDate - currentDate;
 
@@ -112,7 +125,7 @@ export default function ViewCarDetails() {
         <Container>
             <div className="wrapper">
                 <div className="flex-container">
-                    <div key={carData.id}>
+                    <div key={carData.carID}>
                         <label className="cardetails_label">{carData.make}&nbsp;{carData.model}</label><br />
                         <div className="carDetails">
                             {carData && carData.carImage && carData.carImage.data && (
