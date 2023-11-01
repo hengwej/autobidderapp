@@ -112,7 +112,7 @@ export default function ViewCarDetails() {
         <Container>
             <div className="wrapper">
                 <div className="flex-container">
-                    <div key={carData.carID}>
+                    <div key={carData.id}>
                         <label className="cardetails_label">{carData.make}&nbsp;{carData.model}</label><br />
                         <div className="carDetails">
                             {carData && carData.carImage && carData.carImage.data && (
@@ -121,31 +121,37 @@ export default function ViewCarDetails() {
                         </div>
                     </div>
 
-                    <table className="side-table" key={carData.carID}>
-                        <tr>
-                            <th style={{ width: 180 + 'px', borderRight: "2px solid black" }}>Vehicle Number</th>
-                            <td style={{ width: 500 + 'px' }}>{carData.vehicleNumber}</td>
-                        </tr>
-                        <tr>
-                            <th style={{ width: 180 + 'px', borderRight: "2px solid black" }}>Make</th>
-                            <td>{carData.make}</td>
-                        </tr>
-                        <tr>
-                            <th style={{ borderRight: "2px solid black" }}>Model</th>
-                            <td>{carData.model}</td>
-                        </tr>
-                        <tr>
-                            <th style={{ borderRight: "2px solid black" }}>Interior Color</th>
-                            <td>{carData.interiorColor}</td>
-                        </tr>
-                        <tr>
-                            <th style={{ borderRight: "2px solid black" }}>Exterior Color</th>
-                            <td>{carData.exteriorColor}</td>
-                        </tr>
-                    </table>
+
+                    <div className="side-table">
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <th className="table-header" style={{ borderRight: '2px solid black' }}>Vehicle Number</th>
+                                    <td className="table-cell" style={{ width: '500px' }}>{carData.vehicleNumber}</td>
+                                </tr>
+
+                                <tr>
+                                    <th className="table-header" style={{ borderRight: '2px solid black' }}>Make</th>
+                                    <td className="table-cell">{carData.make}</td>
+                                </tr>
+                                <tr>
+                                    <th className="table-header" style={{ borderRight: '2px solid black' }}>Model</th>
+                                    <td className="table-cell">{carData.model}</td>
+                                </tr>
+                                <tr>
+                                    <th className="table-header" style={{ borderRight: '2px solid black' }}>Interior Color</th>
+                                    <td className="table-cell">{carData.interiorColor}</td>
+                                </tr>
+                                <tr>
+                                    <th className="table-header" style={{ borderRight: '2px solid black' }}>Exterior Color</th>
+                                    <td className="table-cell">{carData.exteriorColor}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+
                 </div>
-
-
 
                 <div className="timer">
                     <b>Time Left:</b>{" "}
@@ -237,7 +243,6 @@ export default function ViewCarDetails() {
                         </ul>
                     </div>
                 </div>
-
 
             </div>
         </Container>
