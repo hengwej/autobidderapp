@@ -39,6 +39,7 @@
         "sanitize-filename": "^1.6.3",
         "sharp": "^0.32.6",
         "stripe": "^14.1.0",
+        "winston": "^3.11.0",
         "winston-daily-rotate-file": "^4.7.1"
     }
 }
