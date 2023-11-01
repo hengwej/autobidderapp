@@ -31,7 +31,7 @@ const UserAccountDeletion = () => {
 
     // Make an HTTPS DELETE request to delete the account
     try {
-      const response = await api.deleteUser(csrfToken);
+      const response = await api.deleteAccount(csrfToken);
       if (response.status === 200) {
         console.log("Account deleted successfully");
         setShowSuccessModal(true);
