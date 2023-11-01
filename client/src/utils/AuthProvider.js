@@ -38,7 +38,6 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         const fetchData = async () => {
             const response = await fetchUser();
-            console.log("response: ", response);
             if (response.status === 200 && response.data.message !== 'Not authenticated') {
                 await refreshCSRFToken();
             } else {
@@ -90,7 +89,7 @@ export const AuthProvider = ({ children }) => {
     const logout = async () => {
         try {
             // Send a POST request to the /logout endpoint with the CSRF token in the headers
-            const response = await api.logout({ csrfToken });
+            await api.logout({ csrfToken });
             // Redirect the user to the home page
             window.location.href = '/';
         } catch (error) {

@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const router = express.Router();
 const prisma = new PrismaClient();
 const bcrypt = require('bcrypt');
+const { sanitiseStr, sanitiseObj } = require('../../utils/Validator');
 const saltRounds = 10;
 
 
@@ -97,6 +98,35 @@ router.get('/viewUser/:userID', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
+
+router.delete('/deleteUser/:userID', async (req, res) => {
+    try {
+        const userID = parseInt(req.params.userID);
+        console.log("Received request to delete user ID:", userID);
+
+        if (isNaN(userID)) {
+            console.log("Invalid user ID received:", req.params.userID);
+            return res.status(400).json({ error: 'Invalid user ID' });
+        }
+
+        // Use await to delete the user
+        const deletedUser = await prisma.user.delete({
+            where: { userID: userID },
+        });
+
+        if (!deletedUser) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        res.json({ message: 'User deleted successfully' });
+    } catch (error) {
+        console.error("Error deleting user:", error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
 
 router.post('/getUserProfileDetails', async (req, res) => {
     const token = req.cookies.token;
@@ -237,7 +267,13 @@ router.post('/getUserSellingHistory', async (req, res) => {
 
 
 router.put('/updateUserProfileDetails', async (req, res) => {
-    const { newUserData, newAccountData } = req.body;
+    let { newUserData, newAccountData } = req.body;
+
+
+    //sanitise obj
+    newUserData = sanitiseObj(newUserData);
+    newAccountData = sanitiseObj(newAccountData);
+
     const token = req.cookies.token;
 
     if (!token) {
@@ -287,6 +323,7 @@ router.put('/updateUserProfileDetails', async (req, res) => {
 router.put('/resetPassword', async (req, res) => {
     // Initialize variables
     const { password } = req.body;
+    //do not sanitise password
     const token = req.cookies.token;
     const csrfTokenHeader = req.headers['x-csrf-token'];
     const csrfTokenCookie = req.cookies.csrfToken;

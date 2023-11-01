@@ -1,5 +1,6 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
+const jwt = require('jsonwebtoken');
 
 
 exports.getAllRequests = async (req, res) => {
@@ -79,16 +80,30 @@ const processedRequests = new Set();
 
 // New controller function for approving a request
 exports.approveRequest = async (req, res) => {
+    const token = req.cookies.token;
+
+    if (!token) return res.status(401).json({ error: 'Unauthorized' });
+
+
     try {
+        //Verify token
+        const payload = jwt.verify(token, process.env.JWT_SECRET);
+        const hardcodedAccountID = payload.accountID;
+
+
         const requestID = parseInt(req.params.requestID);
 
         if (isNaN(requestID)) {
             return res.status(400).json({ error: 'Invalid request ID' });
+        } else {
+            console.log("Request ID is valid");
         }
 
         // Check if the request has already been processed
         if (processedRequests.has(requestID)) {
             return res.status(400).json({ error: 'Request has already been processed' });
+        } else {
+            console.log("Request has not been processed");
         }
 
         // Check if the request exists before approval
@@ -108,7 +123,7 @@ exports.approveRequest = async (req, res) => {
         console.log('req.user:', req.user);
         const accountID = existingRequest.accountID; // Fetch accountID from existingRequest
 
-        const hardcodedAccountID = 25;
+
 
         // Create a new car record in the car table using the request data
         const newCar = await prisma.car.create({
@@ -131,20 +146,16 @@ exports.approveRequest = async (req, res) => {
             },
         });
 
-        const newAuction = await prisma.auction.create({
+        const newAuction = await prisma.auction.createMany({
             data: {
                 auctionStatus: 'OPENED',
                 startDate: startDate,
                 endDate: endDate,
-                currentHighestBid: 0,
+                currentHighestBid: existingRequest.startingBid,
                 auctionCreationTime: new Date(),
-                accountID: existingRequest.accountID,
-                auctionCreator: {
-                    connect: { accountID: hardcodedAccountID },
-                },
-                car: {
-                    connect: { carID: newCar.carID },
-                },
+                accountID: accountID,
+                auctionCreatorID: hardcodedAccountID,
+                carID: newCar.carID,
                 createdAt: new Date(),
                 updatedAt: new Date(),
             },

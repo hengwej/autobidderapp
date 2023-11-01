@@ -118,3 +118,17 @@ hr.dotted {
     padding: 2rem;
     border-radius: 10px;
 }
+
+.side-table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.table-header {
+    border: 1px solid black;
+   
+}
+
+.table-cell {
+    border-bottom: 2px solid orange;
+}

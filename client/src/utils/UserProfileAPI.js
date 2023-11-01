@@ -22,7 +22,7 @@ export const updateUser = async (requestData, csrfToken) => {
     }
 };
 
-export const deleteUser = async (csrfToken) => {
+export const deleteAccount = async (csrfToken) => {
     try {
         const response = await api.delete("/api/users/deleteAccount", {}, {
             headers: {
@@ -104,6 +104,48 @@ export const userSellCarRequests = async (csrfToken) => {
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRF-Token': csrfToken,
+            }
+        });
+        return response;
+    } catch (error) {
+        console.error("Error getting User Sell Car Requests:", error);
+        throw error;
+    }
+};
+
+export const viewUser = async (userID) => {
+    try {
+        const response = await api.get("/api/users/viewUser" + userID, {}, {
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        return response;
+    } catch (error) {
+        console.error("Error getting User Sell Car Requests:", error);
+        throw error;
+    }
+};
+
+export const getAllUsers = async () => {
+    try {
+        const response = await api.get("/api/users/getAllUsers", {}, {
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        return response;
+    } catch (error) {
+        console.error("Error getting User Sell Car Requests:", error);
+        throw error;
+    }
+};
+
+export const deleteUser = async (userID) => {
+    try {
+        const response = await api.delete("/api/users/deleteUser" + userID, {}, {
+            headers: {
+                'Content-Type': 'application/json',
             }
         });
         return response;
