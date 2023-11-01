@@ -18,15 +18,10 @@ const sanitiseObj = (data) => {
   for (const key in data) {
     if (data.hasOwnProperty(key)) {
       // Sanitize each field using removeSpecial function
-      sanitizedData[key] = removeSpecial(data[key]);
+      sanitizedData[key] = sanitiseStr(data[key]);
     }
   }
   return sanitizedData;
-};
-
-const escapeInput = (input) => {
-  // Remove special characters prone to exploits
-  return validator.escape(input);
 };
 
 const sanitiseStr = (input) => {
@@ -34,34 +29,29 @@ const sanitiseStr = (input) => {
   return input.replace(/[<>|:;"()\/\\]/g, '');
 };
   
-  const validateEmail = (email) => {
-    const normalizedEmail = sanitizeInput(email.trim().toLowerCase());
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(normalizedEmail) ? normalizedEmail : null;
-  };
+  // const validateEmail = (email) => {
+  //   const normalizedEmail = sanitizeInput(email.trim().toLowerCase());
+  //   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  //   return emailRegex.test(normalizedEmail) ? normalizedEmail : null;
+  // };
   
-  const validatePassword = (password) => {
-    const sanitizedPassword = sanitizeInput(password.trim());
-    return sanitizedPassword.length > 8 ? sanitizedPassword : null;
-  };
+  // const validatePassword = (password) => {
+  //   const sanitizedPassword = sanitizeInput(password.trim());
+  //   return sanitizedPassword.length > 8 ? sanitizedPassword : null;
+  // };
   
-  const validateUsername = (username) => {
-    const sanitizedUsername = sanitizeInput(username.trim());
-    return sanitizedUsername;
-  };
+  // const validateUsername = (username) => {
+  //   const sanitizedUsername = sanitizeInput(username.trim());
+  //   return sanitizedUsername;
+  // };
   
-  const generalValidation = (input) => {
-    // Remove special characters prone to exploits
-    return sanitizeInput(input.trim());
-  };
+  // const generalValidation = (input) => {
+  //   // Remove special characters prone to exploits
+  //   return sanitizeInput(input.trim());
+  // };
   
   module.exports = {
-    validateEmail,
-    validatePassword,
-    validateUsername,
-    generalValidation,
     sanitiseObj,
-    escapeInput,
     sanitiseStr
   };
 // export default { validateEmail, validatePassword, validateUsername, generalValidation };
