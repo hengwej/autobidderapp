@@ -1,3 +1,5 @@
+const customValidator = require('../../utils/Validator');
+const { sanitiseStr, sanitiseObj} = customValidator;
 const express = require('express');
 const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcrypt');
@@ -10,6 +12,7 @@ const prisma = new PrismaClient();
 const saltRounds = 10;
 const axios = require('axios'); //for recaptcha backend logic
 const validator = require('validator');
+
 
 
 //asynchronous recaptcha backend logic
@@ -46,7 +49,13 @@ router.post('/signUp', async (req, res) => {
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
-    const { userData, accountData } = req.body;
+    let { userData, accountData } = req.body;
+    //sanitise
+    console.log('Old user inputs: Account Data - ' + JSON.stringify(accountData) + ', User Data - ' + JSON.stringify(userData));
+    // const username =  validator.escape(accountData.username);
+    userData = sanitiseObj(userData);
+    accountData = sanitiseObj(accountData);
+    console.log('New user inputs: Account Data - ' + JSON.stringify(accountData) + ', User Data - ' + JSON.stringify(userData));
     try {
         const user = await prisma.user.create({ data: userData });
         accountData.userID = user.userID;
@@ -63,23 +72,14 @@ router.post('/signUp', async (req, res) => {
 });
 
 router.post('/login', async (req, res) => {
-    const { username, password } = req.body;
+    let { username, password } = req.body;
+    //sanitise str
+    username = sanitiseStr(username);
 
+    console.log('Login Inputs: User - ' + JSON.stringify(username) + ', User Data - ' + JSON.stringify(password));
     if (!username || !password) {
         return res.status(400).json({ message: 'Please enter both username and password' });
     }
-
-
-    // validation and sanitisation
-    // Check for illegal characters in username and password
-    if (validator.matches(username, /[<>]/) || validator.matches(password, /[<>]/)) {
-        return res.status(400).json({ message: 'Illegal characters detected' });
-    }
-
-    // Sanitize
-    const sanitizedUsername = validator.escape(username);
-    const sanitizedPassword = validator.escape(password);
-
 
     //resume backend logic
     try {
@@ -91,10 +91,10 @@ router.post('/login', async (req, res) => {
         if (!account || !(await bcrypt.compare(password, account.password))) {
             return res.status(401).json({ error: 'Invalid credentials' });
         }
-
+        //otp generation
         const generatedOtp = crypto.randomInt(100000, 1000000).toString();
         console.log("Generated OTP: " + generatedOtp);
-
+        //nodemailer backend
         const transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
