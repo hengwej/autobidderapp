@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const router = express.Router();
 const prisma = new PrismaClient();
 const bcrypt = require('bcrypt');
-const { sanitiseObj } = require('../../utils/Validator');
+const { sanitiseStr, sanitiseObj } = require('../../utils/Validator');
 const saltRounds = 10;
 
 
