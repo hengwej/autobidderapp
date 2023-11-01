@@ -22,32 +22,39 @@ app.use(cookieParser());
 function checkRole(role) {
   return (req, res, next) => {
     const token = req.cookies.token;
+    // Create the accountLog wrapper at the beginning
+    const accountLog = createLogWrapper(token ? jwt.decode(token).id : 'Guest');
 
     if (!token) {
+      accountLog.warn('No token provided');
       return res.status(401).json({ error: 'Not authorized' });
     }
 
     jwt.verify(token, 'your-secret-key', (err, decodedToken) => {
       if (err || !decodedToken) {
+        accountLog.error('Token verification failed');
         return res.status(401).json({ error: 'Not authorized' });
       }
 
       if (decodedToken.role !== role) {
+        accountLog.warn('Incorrect role');
         return res.status(403).json({ error: 'Forbidden' });
       }
 
       req.account = decodedToken;
+      accountLog.info(`Role check successful `);
       next();
     });
   };
 }
 
 // Importing route handlers
+const logMiddleware = require('./api/Log/logMiddleware');
 const carRoutes = require('./api/cars/sellCar');
 const userRoutes = require('./api/users/users');
-const accountRoutes = require('./api/accounts');
+const accountRoutes = require('./api/accounts/accounts');
 const authRoutes = require('./api/auth/auth');
-const auctionRoutes = require('./api/auctions');
+const auctionRoutes = require('./api/auctions/auctions');
 const bidHistoryRoutes = require('./api/biddingHistory');
 const commentRoutes = require('./api/comments');
 const requestRoutes = require('./api/requests');
@@ -55,6 +62,7 @@ const faqRoutes = require('./api/FAQ');
 const stripeRoutes = require('./api/stripe');
 
 // Setting up routes
+app.use(logMiddleware);
 app.use('/api/cars', carRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/accounts', accountRoutes);
@@ -69,12 +77,26 @@ app.use('/api/stripe', stripeRoutes);
 // Protected route example
 app.get('/some-protected-route', checkRole('admin'), (req, res) => {
   // Your route handling code here...
+  req.log.info('This protected route');
   res.send('Hello, Admin!');
 });
 
 // Default route
 app.get('/', (req, res) => {
-  res.send('Hello from Express!');
+  req.log.info('This default route');
+  res.send('Hello from the other side~ ai!');
+});
+
+//test error log
+app.get('/error', (req, res, next) => {
+  req.log.trace('This is a trace log message');
+  req.log.debug('This is a debug log message');
+  req.log.info('This is an info log message');
+  req.log.warn('This is a warn log message');
+  req.log.error('This is an error log message');
+  req.log.fatal('This is a fatal log message');
+  // This will trigger an error
+  throw new Error('Intentional error for testing');
 });
 
 // Starting the server

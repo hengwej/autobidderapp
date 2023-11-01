@@ -3,6 +3,7 @@ const router = express.Router();
 const controller = require('./controller');
 const jwt = require('jsonwebtoken');
 const { PrismaClient } = require('@prisma/client');
+const { sanitiseObj, sanitiseStr } = require('../../utils/Validator');
 const prisma = new PrismaClient();
 
 router.get('/allBidHistory', controller.allBidHistory);
@@ -12,6 +13,7 @@ router.post('/addBidHistory', async (req, res) => {
     const token = req.cookies.token;
     console.log("token bid hist " + token);
     if (!token) return res.status(401).json({ error: 'Unauthorized' });
+    console.log(req.body);
 
     try {
         //Verify token
@@ -21,7 +23,10 @@ router.post('/addBidHistory', async (req, res) => {
         //Find account associated with the token by accountID
         const existingBiddingHistory = await prisma.biddingHistory.findFirst({
             where: {
-                accountID: payload.accountID, // Use accountID from token payload
+                AND: [
+                    { accountID: payload.accountID },
+                    { auctionID: req.body.auctionID },
+                ],
             },
             include: {
                 auction: {
@@ -33,19 +38,23 @@ router.post('/addBidHistory', async (req, res) => {
         });
 
         const newBidHistory = req.body;
+        //sanitise
+        newBidHistory = sanitiseObj(newBidHistory);
 
         if (existingBiddingHistory) {
             // If a record with the accountID exists, update it
-            const updatedBiddingHistory = await prisma.biddingHistory.update({
+            const updatedBiddingHistory = await prisma.biddingHistory.updateMany({
                 where: {
-                    accountID: payload.accountID,
+                    AND: [
+                        { accountID: payload.accountID },
+                        { auctionID: req.body.auctionID },
+                    ],
                 },
                 data: {
-                    // Update the fields you want to change
-                    // For example, update a 'bidValue' field
-                    bidAmount: rnewBidHistory.bidValue,
+                    bidAmount: newBidHistory.bidValue,
                 },
             });
+
             res.json(updatedBiddingHistory);
         } else {
             // If no record with the accountID exists, create a new record
@@ -55,6 +64,7 @@ router.post('/addBidHistory', async (req, res) => {
                     bidAmount: newBidHistory.bidValue,
                     bidStatus: newBidHistory.status,
                     auctionID: newBidHistory.auctionID,
+                    bidTimestamp: new Date(),
                 },
             });
             res.json(newBiddingHistory);
@@ -72,7 +82,9 @@ router.post('/addBidHistory', async (req, res) => {
 
 router.post('/updateBidHistoryToEnd', async (req, res) => {
 
-    const endBidHistory  = req.body;
+    let endBidHistory = req.body;
+    //sanitisation
+    //endBidHistory = sanitiseObj(endBidHistory);
 
     const updateEndBiddingHistory = await prisma.biddingHistory.updateMany({
         where: {
@@ -84,7 +96,7 @@ router.post('/updateBidHistoryToEnd', async (req, res) => {
     });
 
     res.json(updateEndBiddingHistory);
-  
+
 });
 
 module.exports = router;
