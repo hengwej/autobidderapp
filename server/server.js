@@ -24,7 +24,7 @@ function checkRole(role) {
     const token = req.cookies.token;
     // Create the accountLog wrapper at the beginning
     const accountLog = createLogWrapper(token ? jwt.decode(token).id : 'Guest');
-    
+
     if (!token) {
       accountLog.warn('No token provided');
       return res.status(401).json({ error: 'Not authorized' });
