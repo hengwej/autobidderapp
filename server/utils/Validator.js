@@ -17,7 +17,7 @@ const sanitiseObj = (data) => {
   const sanitizedData = {};
   for (const key in data) {
     if (data.hasOwnProperty(key)) {
-      // Sanitize each field using removeSpecial function
+      // Sanitize each field using sanitiseStr function
       sanitizedData[key] = sanitiseStr(data[key]);
     }
   }
