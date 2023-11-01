@@ -4,13 +4,15 @@
     "\\client",
     "\\client\\src",
     "\\client\\src\\pages",
-    "\\client\\src\\pages\\General",
-    "\\client\\src\\pages\\General\\FAQ",
     "\\client\\src\\pages\\Users",
-    "\\client\\src\\pages\\Users\\UserProfile",
+    "\\client\\src\\pages\\Users\\SellACar",
+    "\\client\\src\\utils",
     "\\server",
-    "\\server\\processed_car_images"
+    "\\server\\api",
+    "\\server\\api\\auctions",
+    "\\server\\api\\biddingHistory",
+    "\\server\\api\\requests"
   ],
-  "SelectedNode": "\\server\\processed_car_images",
+  "SelectedNode": "\\server\\api\\biddingHistory\\index.js",
   "PreviewInSolutionExplorer": false
 }
