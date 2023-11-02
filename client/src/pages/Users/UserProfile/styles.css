@@ -100,3 +100,7 @@ background-color: #ff4800 !important;
   margin-bottom: 2px;
   font-weight: bold;
 }
+
+.custom-card:hover {
+  transform: none;
+}
