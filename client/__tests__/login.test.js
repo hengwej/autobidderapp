@@ -1,6 +1,7 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { MemoryRouter } from 'react-router-dom'; // Import MemoryRouter
 import Login from '../src/pages/Auth/Login/index.js';
 
 // Mock the AuthProvider and other dependencies
@@ -14,7 +15,14 @@ jest.mock('../src/utils/AuthProvider', () => {
 });
 
 test('renders login form', () => {
-    render( < Login / > );
+    render( <
+        MemoryRouter >
+        <
+        Login / >
+        <
+        /MemoryRouter>
+    );
+
     const usernameInput = screen.getByLabelText(/Username/i);
     const passwordInput = screen.getByLabelText(/Password/i);
     const loginButton = screen.getByText(/Login/i);
@@ -25,7 +33,14 @@ test('renders login form', () => {
 });
 
 test('validates the login form with invalid data', async() => {
-    render( < Login / > );
+    render( <
+        MemoryRouter >
+        <
+        Login / >
+        <
+        /MemoryRouter>
+    );
+
     const loginButton = screen.getByText(/Login/i);
 
     // Try submitting the form without filling in any fields
@@ -36,7 +51,14 @@ test('validates the login form with invalid data', async() => {
 });
 
 test('submits the login form with valid data', async() => {
-    render( < Login / > );
+    render( <
+        MemoryRouter >
+        <
+        Login / >
+        <
+        /MemoryRouter>
+    );
+
     const usernameInput = screen.getByLabelText(/Username/i);
     const passwordInput = screen.getByLabelText(/Password/i);
     const loginButton = screen.getByText(/Login/i);
