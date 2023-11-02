@@ -1,55 +1,21 @@
-/**
- * logMiddleware.js
- * 
- * This module provides an Express middleware function for logging and user identification.
- * 
- * Features:
- * - Captures essential request details: HTTP method, URL, IP address, and user-agent.
- * - Attempts to identify the user making the request using a JWT token.
- * - Uses the createLogWrapper function from the log module to ensure consistent metadata in logs.
- * 
- * Put on server.js:
- * const logMiddleware = require('./logMiddleware.js');
- * app.use(logMiddleware);
- * 
- * Usage: 
- * req.log.<type of log>(`logging`);
- */
-
 const { log, createLogWrapper } = require('./log');
 const jwt = require('jsonwebtoken');
 
-/**
- * Middleware function to handle logging and user identification
- * @param {Object} req - Express request object
- * @param {Object} res - Express response object
- * @param {Function} next - Express next middleware function
- */
+// Exporting a middleware function to handle logging and user identification
 module.exports = (req, res, next) => {
-    const token = req.cookies.token;
-    const { method, url, ip, headers, user } = req;
-    const userAgent = headers['user-agent'];
-    let userId = "G";  // Default to "G"
-    if (token) {
-        try {
-            const payload = jwt.verify(token, process.env.JWT_SECRET);
-            userId = payload.accountID;
-        } catch (error) {
-            // Handle token verification errors if necessary
-            req.log.error('JWT Verification Error in logMiddleware:', error);
-        }
-    } else if (user) {
-        userId = user.userID;
+    const token = req.cookies.token;  // Retrieve token from request cookies
+    const { method, url, ip, headers, user } = req;  // Destructure request properties
+    const userAgent = headers['user-agent'];  // Extract user-agent from headers
+    let userId = "";
+    if (!token) {
+        userId = user ? user.userID : "Guest";  // Set userId to 'Guest' if token is absent
+    } else {
+        //Verify token
+        const payload = jwt.verify(token, process.env.JWT_SECRET);
+        userId = user ? user.userID : payload.accountID;  // Set userId from token payload or user object
     }
-    const context = {
-        userId,
-        method,
-        url,
-        ip,
-        userAgent
-    };
-    req.log = createLogWrapper(context);
-    req.log.info(`Received a ${method} request for ${url} from ${ip} User-Agent: ${userAgent}`);
-    next();
+    req.log = createLogWrapper(userId);  // Create a wrapped logger instance with userId and attach to request object
+    req.log.info(`Received a ${method} request for ${url} from ${ip} User-Agent: ${userAgent}`);  // Log the request details
+    // log.info(`UserID: ${userId}, Received a ${method} request for ${url} from ${ip} User-Agent: ${userAgent}`);
+    next();  // Proceed to the next middleware function in the stack
 };
-
