@@ -4,6 +4,7 @@ import * as Yup from 'yup';
 import DOMPurify from 'dompurify';
 import { debounce } from 'lodash';
 import * as carAPI from "../../../utils/CarAPI.js"
+import { useAuth } from '../../../utils/AuthProvider';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;  // 5 MB in bytes
 
@@ -54,6 +55,7 @@ const sanitizeInput = (input) => {
 };
 
 function SellCar() {
+    const { csrfToken } = useAuth();
     const [errors, setErrors] = useState({});
 
     const [formData, setFormData] = useState({
@@ -158,7 +160,7 @@ function SellCar() {
                 }
             } catch (error) {
                 console.error('Error:', error);
-                await carAPI.sellCar(data).then(response => {
+                await carAPI.sellCar(data, csrfToken).then(response => {
                     //Handle JSON Response Here
                     // console.log(response.formData);
                 }).catch(error => {

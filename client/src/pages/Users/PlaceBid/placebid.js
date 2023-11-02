@@ -7,6 +7,7 @@ import { Modal, Button } from "react-bootstrap";
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js'; // Import Stripe components
 import * as auctionAPI from "../../../utils/AuctionAPI.js"
 import * as bidAPI from "../../../utils/BidAPI.js"
+import { useAuth } from '../../../utils/AuthProvider';
 
 export default function PlaceBid({ carID, handleClose }) {
     const [auctionData, setAuctionData] = useState({});
@@ -24,6 +25,8 @@ export default function PlaceBid({ carID, handleClose }) {
     const [paymentError, setPaymentError] = useState(null);
     const [paymentSuccess, setPaymentSuccess] = useState(false); // New state variable for tracking payment success
 
+    const { csrfToken } = useAuth();
+
 
     useEffect(() => {
         async function fetchData() {
@@ -37,7 +40,7 @@ export default function PlaceBid({ carID, handleClose }) {
                 setAuctionData(data);
                 setLoading(false);
 
-                const biddingHistoryResponse = await bidAPI.allBidHistory();
+                const biddingHistoryResponse = await bidAPI.allBidHistory(csrfToken);
                 const biddingHistoryData = biddingHistoryResponse.data;
 
             } catch (error) {
@@ -52,7 +55,7 @@ export default function PlaceBid({ carID, handleClose }) {
 
     function addBidHistory() {
         const bidHistoryData = { bidValue: bidValue, status: "ongoing", auctionID: auctionID };
-        bidAPI.addBidHistory(bidHistoryData);
+        bidAPI.addBidHistory(bidHistoryData, csrfToken);
     }
 
     useEffect(() => {
@@ -113,13 +116,13 @@ export default function PlaceBid({ carID, handleClose }) {
                 // Record the bid in the database now that payment was successful
                 //await axios.post(`http://127.0.0.1:5000/api/auctions/addBid`, { bidValue: bidValue, carID: carID },{withCredentials:true});
 
-                await auctionAPI.addBid(bidValue, carID);
+                await auctionAPI.addBid(bidValue, carID, csrfToken);
                 // Create or Update a record the order table everytime a new bid is placed 
                 const orderData = { orderStatus: 'Pending', auctionID: auctionID };
-                await auctionAPI.addOrder(orderData);
+                await auctionAPI.addOrder(orderData, csrfToken);
                 // Create a record in the selling history table once a new order is made (for the seller to track)
                 const sellingHistoryData = { auctionID: auctionID };
-                await auctionAPI.addSellingHistory(sellingHistoryData);
+                await auctionAPI.addSellingHistory(sellingHistoryData, csrfToken);
                 // Close the modal and reset state
                 handleCloseBid();
                 handleClose();

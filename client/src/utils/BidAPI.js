@@ -19,9 +19,14 @@ export const updateBidHistoryToEnd = async (requestData) => {
     }
 };
 
-export const allBidHistory = async () => {
+export const allBidHistory = async (csrfToken) => {
     try {
-        const response = await api.get("/api/biddingHistory/allBidHistory");
+        const response = await api.get("/api/biddingHistory/allBidHistory", {}, {
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': csrfToken
+            }
+        });
         return response;
     } catch (error) {
         console.error("Error fetching cars:", error);
@@ -29,13 +34,12 @@ export const allBidHistory = async () => {
     }
 };
 
-export const addBidHistory = async (requestData) => {
-    console.log(requestData);
-    console.log("addBidHistory");
+export const addBidHistory = async (requestData, csrfToken) => {
     try {
         const response = await api.post("/api/biddingHistory/addBidHistory", requestData, {
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': csrfToken
             }
         });
         return response;
