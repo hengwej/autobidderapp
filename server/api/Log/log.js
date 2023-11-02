@@ -1,3 +1,22 @@
+/**
+ * log.js
+ * 
+ * This module provides a comprehensive logging solution using the winston library.
+ * 
+ * Features:
+ * - Custom log levels: trace, debug, info, warn, error, fatal.
+ * - File-based logging with separate files for each log level.
+ * - Daily rotating file transport for archiving logs.
+ * - A log wrapper function to ensure consistent metadata in logs.
+ * 
+ * Usage if want to directly access from this file:
+ * const { log, createLogWrapper } = require('./log.js');
+ * const logger = createLogWrapper({ userId: '12345' });
+ * logger.info('This is an info log with user context.');
+ * 
+ * else use logMiddleware.js
+ */
+
 const winston = require('winston');
 const { createLogger, format, transports, add } = winston;
 const { combine, timestamp, printf } = format;
@@ -5,7 +24,7 @@ const fs = require('fs');
 const path = require('path');
 const DailyRotateFile = require('winston-daily-rotate-file');
 // const EncryptedTransport = require('./encryptedTransport');
-const moment = require('moment');
+const moment = require('moment');  // For formatting timestamps
 
 // Determine the directory path dynamically
 const logDir = path.join(__dirname, 'logs');
@@ -37,24 +56,20 @@ const customLevels = {
 };
 // addColors(customLevels.colors);
 
-// Function to ignore EPIPE errors
-function ignoreEpipe(err) {
-    return err.code !== 'EPIPE';
-}
-
-// Create the logger instance
+// Logger instance creation with specified configurations.
 const log = createLogger({
     exitOnError: false,  // Do not exit on handled exceptions
-    exitOnError: ignoreEpipe,  // Custom error handler
     levels: customLevels.levels,  // Custom log levels
     format: combine(
-        timestamp(),   // Add timestamp to logs
-        // colorize(),
-        printf(info => `${moment(info.timestamp).format('DD-MM-YYYY HH:mm:ss')} ${info.level}: ${info.message}`)  // Customize log format and timestamp format
-        // printf(info => `${info.timestamp} ${info.level}: ${info.message}`)  // Customize log format
+        timestamp({  
+            format: () => moment().format('DD-MM-YYYY HH:mm:ss')  // Add timestamp to logs
+        }), 
+        // colorize(),  
+        format.json()
     ),
-    defaultMeta: { service: 'user-service' },  // Default metadata
+    defaultMeta: { service: 'user-service' },  // Default metadata for logs
     transports: [  // Define multiple transports
+        // File transport configurations for each log level
         // new EncryptedTransport({ filename: path.join(logDir, 'encrypted.log') }),
         new transports.File({
             filename: path.join(logDir, 'combined.log')
@@ -89,7 +104,7 @@ const log = createLogger({
             level: 'fatal',
             handleExceptions: true
         }),
-        new DailyRotateFile({
+        new DailyRotateFile({  // Daily rotating file transport configuration
             filename: path.join(logDir, 'archive', 'application-%DATE%.log'),
             datePattern: 'YYYY-MM-DD',
             zippedArchive: true,
@@ -104,15 +119,19 @@ const log = createLogger({
     ]
 });
 
-// Create a log wrapper function to include accountID in logs
-function createLogWrapper(accountID = "Guest") {
+/**
+ * Creates a log wrapper with a given context. This ensures that logs have consistent metadata.
+ * @param {Object} context - The context to be added to the logs.
+ * @returns {Object} - A logger object with methods for each log level.
+ */
+function createLogWrapper(context = {}) {
     return {
-        trace: (message) => log.log('trace', `Account ID: ${accountID}. Message -> ${message}`),
-        debug: (message) => log.log('debug', `Account ID: ${accountID}. Message -> ${message}`),
-        info: (message) => log.log('info', `Account ID: ${accountID}. Message -> ${message}`),
-        warn: (message) => log.log('warn', `Account ID: ${accountID}. Message -> ${message}`),
-        error: (message) => log.log('error', `Account ID: ${accountID}. Message -> ${message}`),
-        fatal: (message) => log.log('fatal', `Account ID: ${accountID}. Message -> ${message}`),
+        trace: (message) => log.log('trace', { ...context, message: `${context.userId} - ${message}` }),
+        debug: (message) => log.log('debug', { ...context, message: `${context.userId} - ${message}` }),
+        info: (message) => log.log('info', { ...context, message: `${context.userId} - ${message}` }),
+        warn: (message) => log.log('warn', { ...context, message: `${context.userId} - ${message}` }),
+        error: (message) => log.log('error', { ...context, message: `${context.userId} - ${message}` }),
+        fatal: (message) => log.log('fatal', { ...context, message: `${context.userId} - ${message}` }),
     };
 }
 
