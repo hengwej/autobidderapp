@@ -37,6 +37,10 @@
             "^.+\\.js$": "babel-jest"
         }
     },
+    "presets": [
+        "@babel/preset-env",
+        "@babel/preset-react"
+    ],
     "proxy": "http://localhost:5000",
     "eslintConfig": {
         "extends": [
