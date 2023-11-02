@@ -17,6 +17,7 @@ export default function ViewRequestDetails() {
 
     useEffect(() => {
 
+
         requestsAPI.viewRequestDetails(requestID, csrfToken)
             .then((response) => {
                 setRequest(response.data);
