@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import Login from './index';
 
 // Mock the AuthProvider and other dependencies
-jest.mock('../../../utils/AuthProvider', () => {
+jest.mock('../src/utils/AuthProvider', () => {
     return {
         useAuth: () => ({
             login: jest.fn(),
