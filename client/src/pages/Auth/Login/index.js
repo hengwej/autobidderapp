@@ -22,7 +22,7 @@ function Login() {
         navigate('/');
     }
 
-    const onSubmit = async (data, { setSubmitting, setFieldError }) => {
+    const onSubmit = async (data, { setSubmitting, setFieldError, resetForm }) => {
         setIsButtonDisabled(true);
         const { username, password } = data;
         // start of captcha logic, uncomment to get it up    
@@ -36,7 +36,14 @@ function Login() {
 
                 if (response.status === 200) {
                     console.log('Login successful!');
+                    // Pop-up to tell user that otp is sent to email
+                    window.alert('An OTP has been sent to your email!');
                     navigate('/auth/confirmation');
+                } else if (response.status === 401) {
+                    window.alert('Invalid username or password! Please try again.');
+                    // Clear the form fields and reset CAPTCHA when the user clicks "OK"
+                    recaptchaRef.current.reset();
+                    resetForm();
                 }
             } catch (error) {
                 console.error("Failed to login:", error);
