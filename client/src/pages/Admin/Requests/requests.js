@@ -4,8 +4,15 @@ import { Table, Card, Container, Row, Col } from 'react-bootstrap';
 import Button from "react-bootstrap/Button";
 import { Dropdown } from 'react-bootstrap';
 import * as requestsAPI from "../../../utils/RequestsAPI.js";
+import { useAuth } from '../../../utils/AuthProvider';
+
+
+
+
+
 
 class Requests extends Component {
+
     constructor(props) {
         super(props);
         this.state = {
@@ -17,8 +24,20 @@ class Requests extends Component {
     }
 
     async componentDidMount() {
+        if (this.props.csrfToken) {
+            this.fetchData(this.props.csrfToken);
+        }
+    }
+
+    async componentDidUpdate(prevProps) {
+        if (this.props.csrfToken && this.props.csrfToken !== prevProps.csrfToken) {
+            this.fetchData(this.props.csrfToken);
+        }
+    }
+
+    async fetchData(csrfToken) {
         try {
-            const response = await requestsAPI.getAllRequests();
+            const response = await requestsAPI.getAllRequests(csrfToken);
             this.setState({ requests: response.data, loading: false });
         } catch (error) {
             console.error("Error fetching data:", error);
@@ -109,5 +128,7 @@ class Requests extends Component {
 
 export default function RequestsWithNavigation() {
     const navigate = useNavigate();
-    return <Requests navigate={navigate} />;
+    const { csrfToken } = useAuth();
+
+    return <Requests navigate={navigate} csrfToken={csrfToken} />;
 }

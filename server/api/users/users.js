@@ -1,10 +1,9 @@
 const express = require('express');
 const { PrismaClient } = require('@prisma/client');
-const jwt = require('jsonwebtoken');
 const router = express.Router();
 const prisma = new PrismaClient();
 const bcrypt = require('bcrypt');
-const { sanitiseStr, sanitiseObj } = require('../../utils/Validator');
+const { sanitiseObj } = require('../../utils/Validator');
 const saltRounds = 10;
 
 const csrfProtection = require('../../utils/CsrfUtils');
@@ -67,7 +66,7 @@ router.delete('/deleteAccount', csrfProtection, checkJwtToken, async (req, res) 
 });
 
 
-router.get('/viewUser/:userID', async (req, res) => {
+router.get('/viewUser/:userID', csrfProtection, checkJwtToken, async (req, res) => {
     try {
         const userID = parseInt(req.params.userID);
         console.log("Received request for user ID:", userID);
