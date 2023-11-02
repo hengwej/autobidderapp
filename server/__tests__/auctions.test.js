@@ -1,6 +1,7 @@
 const request = require('supertest');
 const express = require('express');
 const auctionsRouter = require('../api/auctions/auctions'); // Update the path accordingly
+const prisma = new PrismaClient();
 
 const app = express();
 app.use(express.json());
