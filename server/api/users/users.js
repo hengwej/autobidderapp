@@ -133,7 +133,7 @@ router.get('/viewUser/:userID', csrfProtection, checkJwtToken, async (req, res) 
  * @returns {ErrorResponse} 400 - If userID is invalid.
  * @returns {ErrorResponse} 404 - If user not found.
  */
-router.delete('/deleteUser/:userID', async (req, res) => {
+router.delete('/deleteUser/:userID', csrfProtection, checkJwtToken, async (req, res) => {
     try {
         const userID = parseInt(req.params.userID);
         req.log.info('Received request to delete user ID:', userID);

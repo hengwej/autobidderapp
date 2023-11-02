@@ -99,6 +99,7 @@ export const userSellingHistory = async (csrfToken) => {
 };
 
 export const userSellCarRequests = async (csrfToken) => {
+
     try {
         const response = await api.post("/api/users/getUserSellCarRequests", {}, {
             headers: {
@@ -113,11 +114,12 @@ export const userSellCarRequests = async (csrfToken) => {
     }
 };
 
-export const viewUser = async (userID) => {
+export const viewUser = async (userID, csrfToken) => {
     try {
-        const response = await api.get("/api/users/viewUser" + userID, {}, {
+        const response = await api.get("/api/users/viewUser/" + userID, {
             headers: {
                 'Content-Type': 'application/json',
+                'X-CSRF-Token': csrfToken,
             }
         });
         return response;
@@ -127,11 +129,12 @@ export const viewUser = async (userID) => {
     }
 };
 
-export const getAllUsers = async () => {
+export const getAllUsers = async (csrfToken) => {
     try {
-        const response = await api.get("/api/users/getAllUsers", {}, {
+        const response = await api.get("/api/users/getAllUsers", {
             headers: {
                 'Content-Type': 'application/json',
+                'X-CSRF-Token': csrfToken,
             }
         });
         return response;
@@ -141,11 +144,12 @@ export const getAllUsers = async () => {
     }
 };
 
-export const deleteUser = async (userID) => {
+export const deleteUser = async (userID, csrfToken) => {
     try {
-        const response = await api.delete("/api/users/deleteUser" + userID, {}, {
+        const response = await api.delete("/api/users/deleteUser/" + userID, {
             headers: {
                 'Content-Type': 'application/json',
+                'X-CSRF-Token': csrfToken,
             }
         });
         return response;
