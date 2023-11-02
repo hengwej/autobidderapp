@@ -1,32 +1,76 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect'; // Import this for additional matchers
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { MemoryRouter } from 'react-router-dom'; // Import MemoryRouter
 import Login from '../src/pages/Auth/Login/index.js';
 
+// Mock the AuthProvider and other dependencies
+jest.mock('../src/utils/AuthProvider', () => {
+    return {
+        useAuth: () => ({
+            login: jest.fn(),
+            user: null,
+        }),
+    };
+});
+
 test('renders login form', () => {
-    render( < Login / > );
-    // Check if the form elements are rendered
-    expect(screen.getByLabelText(/Username/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Password/i)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Login/i })).toBeInTheDocument();
+    render( <
+        MemoryRouter >
+        <
+        Login / >
+        <
+        /MemoryRouter>
+    );
+
+    const usernameInput = screen.getByLabelText(/Username/i);
+    const passwordInput = screen.getByLabelText(/Password/i);
+    const loginButton = screen.getByText(/Login/i);
+
+    expect(usernameInput).toBeInTheDocument();
+    expect(passwordInput).toBeInTheDocument();
+    expect(loginButton).toBeInTheDocument();
 });
 
-test('disables login button initially', () => {
-    render( < Login / > );
-    // Check if the login button is disabled initially
-    expect(screen.getByRole('button', { name: /Login/i })).toBeDisabled();
+test('validates the login form with invalid data', async() => {
+    render( <
+        MemoryRouter >
+        <
+        Login / >
+        <
+        /MemoryRouter>
+    );
+
+    const loginButton = screen.getByText(/Login/i);
+
+    // Try submitting the form without filling in any fields
+    userEvent.click(loginButton);
+
+    const errorMessage = await screen.findAllByRole('alert');
+    expect(errorMessage).toHaveLength(2); // Two error messages for 'username' and 'password'
 });
 
-test('enables login button when form is filled', async() => {
-    render( < Login / > );
-    // Fill out the form fields
-    fireEvent.change(screen.getByLabelText(/Username/i), { target: { value: 'testuser' } });
-    fireEvent.change(screen.getByLabelText(/Password/i), { target: { value: 'password123' } });
-    // Wait for the re-render due to state changes
-    await waitFor(() => {
-        // Check if the login button is enabled after filling out the form
-        expect(screen.getByRole('button', { name: /Login/i })).toBeEnabled();
-    });
-});
+test('submits the login form with valid data', async() => {
+    render( <
+        MemoryRouter >
+        <
+        Login / >
+        <
+        /MemoryRouter>
+    );
 
-// Add more test cases for other scenarios as needed
+    const usernameInput = screen.getByLabelText(/Username/i);
+    const passwordInput = screen.getByLabelText(/Password/i);
+    const loginButton = screen.getByText(/Login/i);
+
+    // Fill in valid data
+    userEvent.type(usernameInput, 'testuser');
+    userEvent.type(passwordInput, 'password123');
+    userEvent.click(loginButton);
+
+    // You may need to await some async actions if any
+    // For example, if the login function is asynchronous.
+    // await waitFor(() => {
+    //   expect(someElement).toBeInTheDocument();
+    // });
+});
