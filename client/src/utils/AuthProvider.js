@@ -62,10 +62,12 @@ export const AuthProvider = ({ children }) => {
             }
             return response;
         } catch (error) {
-            console.error('Failed to login', error);
+            if (error.response.status === 401) {
+                return { status: 401, data: { message: 'Invalid OTP' } };
+            } else {
+                console.error('Failed to login', error);
+            }
         }
-
-        setUser({ accountType: "bidder" });
     };
 
     const login = async (username, password) => {
@@ -80,9 +82,14 @@ export const AuthProvider = ({ children }) => {
 
                 //setUser({ accountType: response.data.accountType });
             }
+            
             return response;
         } catch (error) {
-            console.error('Failed to login', error);
+            if (error.response.status === 401) {
+                return { status: 401, data: { message: 'Invalid username or password' } };
+            } else {
+                console.error('Failed to login', error);
+            }
         }
     };
 
@@ -90,12 +97,21 @@ export const AuthProvider = ({ children }) => {
         try {
             // Send a POST request to the /logout endpoint with the CSRF token in the headers
             await api.logout({ csrfToken });
-            // Redirect the user to the home page
-            window.location.href = '/';
+            // Display a browser pop-up notification to confirm the logout
+            const userWantsToLogout = window.confirm('Are you sure you want to log out?');
+            if (userWantsToLogout) {
+                // User clicked "OK," proceed with logout
+                window.alert('Logout sucessful! You will redirected to the homepage.');
+                // Redirect the user to the home page
+                window.location.href = '/';
+                setUser(null);
+            } else {
+                // User clicked "Cancel," stay on the current page and display message
+                window.alert('Logout process cancelled!');
+            }
         } catch (error) {
             console.error("Failed to logout:", error);
         }
-        setUser(null);
     };
 
     const value = { user, login, otp, logout, csrfToken, loading };
