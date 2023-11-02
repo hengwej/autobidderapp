@@ -9,8 +9,8 @@ app.use('/api/auctions', auctionsRouter);
 describe('Auctions API Endpoints', () => {
     test('POST /api/auctions/allAuction should return all auctions', async() => {
         const response = await request(app).post('/api/auctions/allAuction');
+        console.log(response.body);
         expect(response.status).toBe(200);
-        //expect(response.body).toHaveLength(2); // Update the expected length according to your test data
     });
 
     // Add more test cases for other routes as needed
