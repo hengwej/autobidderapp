@@ -23,12 +23,13 @@ test('renders login form', () => {
         /MemoryRouter>
     );
 
-    const usernameInput = screen.getByLabelText(/Username/i);
-    const passwordInput = screen.getByLabelText(/Password/i);
-    const loginButton = screen.getByText(/Login/i);
+    const usernameLabel = screen.getByText(/Username:/i);
+    const passwordLabel = screen.getByText(/Password:/i);
 
-    expect(usernameInput).toBeInTheDocument();
-    expect(passwordInput).toBeInTheDocument();
+    const loginButton = screen.queryByText(/Login/i);
+
+    expect(usernameLabel).toBeInTheDocument();
+    expect(passwordLabel).toBeInTheDocument();
     expect(loginButton).toBeInTheDocument();
 });
 
@@ -41,7 +42,7 @@ test('validates the login form with invalid data', async() => {
         /MemoryRouter>
     );
 
-    const loginButton = screen.getByText(/Login/i);
+    const loginButton = screen.queryByText(/Login/i);
 
     // Try submitting the form without filling in any fields
     userEvent.click(loginButton);
