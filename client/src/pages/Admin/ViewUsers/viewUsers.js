@@ -8,6 +8,7 @@ import "../../../css/styles.css";
 import "../styles.css";
 import { Table, Card } from "react-bootstrap";
 import * as usersAPI from "../../../utils/UserProfileAPI.js";
+import { useAuth } from "../../../utils/AuthProvider";
 
 
 class UserManagement extends Component {
@@ -23,9 +24,21 @@ class UserManagement extends Component {
     }
 
     async componentDidMount() {
+        if (this.props.csrfToken) {
+            this.fetchData(this.props.csrfToken);
+        }
+    }
+
+    async componentDidUpdate(prevProps) {
+        if (this.props.csrfToken && this.props.csrfToken !== prevProps.csrfToken) {
+            this.fetchData(this.props.csrfToken);
+        }
+    }
+
+    async fetchData(csrfToken) {
         try {
-            const response = await usersAPI.getAllUsers();
-            const data = await response.json();
+            const response = await usersAPI.getAllUsers(csrfToken);
+            const data = await response.data;
             this.setState({ userData: data, loading: false });
         } catch (error) {
             console.error("Error fetching data:", error);
@@ -39,11 +52,10 @@ class UserManagement extends Component {
             const confirmed = window.confirm("Are you sure you want to delete this user?");
             if (confirmed) {
                 try {
-                    const response = usersAPI.deleteUser(userID)
-                    if (response.status === 200) {
+                    const response = usersAPI.deleteUser(userID, this.props.csrfToken).then((response) => {
                         this.setState({ showSuccess: true });
                         console.log("User deleted successfully");
-                    }
+                    });
                 } catch (error) {
                     console.error("Error deleting user:", error);
                 }
@@ -126,5 +138,6 @@ class UserManagement extends Component {
 
 export default function UserManagementWithNavigation() {
     const navigate = useNavigate(); // Initialize navigate using useNavigate hook
-    return <UserManagement navigate={navigate} />;
+    const { csrfToken } = useAuth();
+    return <UserManagement navigate={navigate} csrfToken={csrfToken} />;
 }// Wrap and export
