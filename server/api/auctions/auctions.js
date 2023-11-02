@@ -4,20 +4,19 @@ const jwt = require('jsonwebtoken');
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
+const csrfProtection = require('../../utils/CsrfUtils');
+const checkJwtToken = require('../../utils/JwtTokens');
+
 router.post('/allAuction', async (req, res) => {
     const allAuctions = await prisma.auction.findMany();
     res.json(allAuctions);
 });
 
-router.post('/addBid', async (req, res) => {
-    console.log("access add bid");
-    const token = req.cookies.token;
-    console.log("token " + token);
-    if (!token) return res.status(401).json({ error: 'Unauthorized' });
+router.post('/addBid', csrfProtection, checkJwtToken, async (req, res) => {
 
     try {
         //Verify token
-        const payload = jwt.verify(token, process.env.JWT_SECRET);
+        const payload = req.user;
 
         const newBid = req.body;
         try {
@@ -64,17 +63,12 @@ router.post('/updateAuctionToClose', async (req, res) => {
 
 });
 
-router.put('/addOrder', async (req, res) => {
-    const token = req.cookies.token;
+router.put('/addOrder', csrfProtection, checkJwtToken, async (req, res) => {
     const { orderStatus, auctionID } = req.body;
-
-    if (!token) {
-        return res.status(401).json({ error: 'Unauthorized' });
-    }
 
     try {
         // Verify the token and extract the account ID
-        const payload = jwt.verify(token, process.env.JWT_SECRET);
+        const payload = req.user;
         const accountID = payload.accountID;
 
         // Check if there is an existing order with the same auction ID
@@ -143,7 +137,7 @@ router.put('/completeOrder', async (req, res) => {
     }
 });
 
-router.post('/addSellingHistory', async (req, res) => {
+router.post('/addSellingHistory', csrfProtection, checkJwtToken, async (req, res) => {
     const { auctionID } = req.body;
 
     try {
