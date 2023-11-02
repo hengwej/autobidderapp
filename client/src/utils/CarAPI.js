@@ -21,7 +21,6 @@ export const sellCar = async (data, csrfToken) => {
     try {
         const response = await api.post("/api/cars/sellCar", data, {
             headers: {
-                'Content-Type': 'application/json',
                 'X-CSRF-Token': csrfToken
             }
         });

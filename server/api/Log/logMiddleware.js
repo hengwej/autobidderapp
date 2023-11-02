@@ -36,7 +36,12 @@ module.exports = (req, res, next) => {
             userId = payload.accountID;
         } catch (error) {
             // Handle token verification errors if necessary
-            req.log.error('JWT Verification Error in logMiddleware:', error);
+            if (req.log) {
+                req.log.error('JWT Verification Error in logMiddleware:', error);
+            } else {
+                console.error('logging is not yet defined:', error);
+            }
+            
         }
     } else if (user) {
         userId = user.userID;
