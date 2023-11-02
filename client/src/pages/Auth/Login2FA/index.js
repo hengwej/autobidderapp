@@ -18,7 +18,7 @@ function Login2FA() {
     const navigate = useNavigate();
 
 
-    const onSubmit = async (data, { setSubmitting, setFieldError }) => {
+    const onSubmit = async (data, { setSubmitting, setFieldError, resetForm }) => {
 
         try {
             const response = await otp(data.Code2FA);
@@ -26,7 +26,13 @@ function Login2FA() {
             if (response.status === 200) {
 
                 console.log('OTP verification successful!');
+                window.alert('Login sucessful! You will redirected to the homepage.');
                 navigate('/');
+            } else if (response.status === 401) {
+                // Send alert if otp doesn't match
+                window.alert('Invalid OTP! Please try again.');
+                // Clear the form fields when the user clicks "OK"
+                resetForm();
             }
         } catch (error) {
             console.error('OTP verification failed:', error.response ? error.response.data : error.message);
