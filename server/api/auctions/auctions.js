@@ -20,7 +20,9 @@ router.post('/allAuction', async(req, res) => {
         req.log.info("Successfully retrieved all auctions.");
         res.status(200).json(allAuctions);
     } catch (error) {
-        req.log.error('Error fetching all auctions:', error);
+        if(req.log){
+            req.log.error('Error fetching all auctions:', error);
+        }
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
