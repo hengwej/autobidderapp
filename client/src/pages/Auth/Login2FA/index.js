@@ -26,7 +26,7 @@ function Login2FA() {
             if (response.status === 200) {
 
                 console.log('OTP verification successful!');
-                window.alert('Login sucessful! You will redirected to the homepage.');
+                window.alert('Login successful! You will redirected to the homepage.');
                 navigate('/');
             } else if (response.status === 401) {
                 // Send alert if otp doesn't match
