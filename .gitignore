@@ -3,3 +3,4 @@
 .env
 # Ignore log files
 *.log
+server/api/Log/logs/*
