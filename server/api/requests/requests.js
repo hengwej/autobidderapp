@@ -1,15 +1,21 @@
+
+const express = require('express');
 const { PrismaClient } = require('@prisma/client');
+const router = express.Router();
 const prisma = new PrismaClient();
-const jwt = require('jsonwebtoken');
+
+const csrfProtection = require('../../utils/CsrfUtils');
+const checkJwtToken = require('../../utils/JwtTokens');
+
+const processedRequests = new Set();
 
 
-exports.getAllRequests = async (req, res) => {
+router.get('/getAllRequests', csrfProtection, checkJwtToken, async (req, res) => {
     const allRequests = await prisma.request.findMany();
     res.json(allRequests);
-};
+});
 
-
-exports.viewRequestDetails = async (req, res) => {
+router.get('/viewRequestDetails/:requestID', csrfProtection, checkJwtToken, async (req, res) => {
     try {
         const requestID = parseInt(req.params.requestID);
         console.log("Received request for user ID:", requestID);
@@ -33,10 +39,9 @@ exports.viewRequestDetails = async (req, res) => {
         console.error("Error retrieving request details:", error);
         res.status(500).json({ error: 'Internal server error' });
     }
-};
+});
 
-
-exports.rejectRequest = async (req, res) => {
+router.delete('/rejectRequest/:requestID', csrfProtection, checkJwtToken, async (req, res) => {
     try {
         const requestID = parseInt(req.params.requestID);
 
@@ -74,12 +79,9 @@ exports.rejectRequest = async (req, res) => {
         console.error('Error rejecting request:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
-};
+});
 
-const processedRequests = new Set();
-
-// New controller function for approving a request
-exports.approveRequest = async (req, res) => {
+router.post('/approveRequest/:requestID', csrfProtection, checkJwtToken, async (req, res) => {
     const token = req.cookies.token;
 
     if (!token) return res.status(401).json({ error: 'Unauthorized' });
@@ -173,4 +175,6 @@ exports.approveRequest = async (req, res) => {
         console.error('Error approving request:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
-};
+});
+
+module.exports = router;

@@ -57,9 +57,9 @@ const authRoutes = require('./api/auth/auth');
 const auctionRoutes = require('./api/auctions/auctions');
 const bidHistoryRoutes = require('./api/biddingHistory');
 const commentRoutes = require('./api/comments');
-const requestRoutes = require('./api/requests');
+const requestRoutes = require('./api/requests/requests');
 const faqRoutes = require('./api/FAQ');
-const stripeRoutes = require('./api/stripe');
+const stripeRoutes = require('./api/stripe/stripe');
 
 // Setting up routes
 app.use(logMiddleware);
