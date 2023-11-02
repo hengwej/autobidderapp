@@ -54,33 +54,19 @@ export default class Home extends Component {
         }
     }
 
-    calculateTimeLeft = (startDate, endDate, auctionID) => {
+    calculateTimeLeft = (startDate, endDate) => {
         const auctionEndDate = new Date(endDate);
         const currentDate = new Date();
         const difference = auctionEndDate - currentDate;
         let timeLeft = {};
 
-        if (difference >= 0) {
+        if (difference > 0) {
             timeLeft = {
                 days: Math.floor(difference / (1000 * 60 * 60 * 24)),
                 hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
                 minutes: Math.floor((difference / (1000 * 60)) % 60),
                 seconds: Math.floor((difference / 1000) % 60)
             };
-        }
-
-        if (difference <= 0 && auctionID) {
-            // Update to bidding status to end
-            const bidData = { status: "Ended", auctionID: auctionID };
-            bidAPI.updateBidHistoryToEnd(bidData);
-
-            // Update to auction status to closed
-            const updateData = { status: "CLOSED", auctionID: auctionID };
-            auctionAPI.updateAuctionToClose(updateData);
-
-            // Update the orderStatus to completed in order table
-            const orderData = { orderStatus: 'Completed', auctionID: auctionID };
-            auctionAPI.completeOrder(orderData);
         }
 
         return timeLeft;
@@ -90,14 +76,55 @@ export default class Home extends Component {
         this.countdownInterval = setInterval(() => {
             const { auctionData, timeLeft } = this.state;
             const updatedTimers = { ...timeLeft };
+            let auctionsToUpdate = [];
 
             auctionData.forEach((auction) => {
-                const timer = this.calculateTimeLeft(auction.startDate, auction.endDate, auction.auctionID);
+                const timer = this.calculateTimeLeft(auction.startDate, auction.endDate);
                 updatedTimers[auction.carID] = timer;
+
+                // Check if the auction has just completed
+                if (this.isAuctionJustCompleted(timer, timeLeft[auction.carID])) {
+                    auctionsToUpdate.push(auction.auctionID);
+                }
             });
 
-            this.setState({ timeLeft: updatedTimers });
+            this.setState({ timeLeft: updatedTimers }, () => {
+                auctionsToUpdate.forEach((auctionID) => {
+                    this.handleAuctionCompletion(auctionID);
+                });
+            });
         }, 1000);
+    };
+
+    isAuctionJustCompleted = (currentTimer, previousTimer) => {
+        // Check if the auction was running in the previous check and has now completed
+        return previousTimer && Object.values(previousTimer).some(val => val > 0) && !Object.values(currentTimer).some(val => val > 0);
+    };
+
+    handleAuctionCompletion = (auctionID) => {
+        // Check if this auctionID is already processed to prevent multiple updates
+        if (this.state.auctionData.some(auction => auction.auctionID === auctionID && auction.isCompleted)) {
+            return;
+        }
+
+        // Mark the auction as completed to prevent future updates
+        this.setState(prevState => ({
+            auctionData: prevState.auctionData.map(auction =>
+                auction.auctionID === auctionID ? { ...auction, isCompleted: true } : auction
+            )
+        }));
+
+        // Update to bidding status to end
+        const bidData = { status: "Ended", auctionID: auctionID };
+        bidAPI.updateBidHistoryToEnd(bidData);
+
+        // Update to auction status to closed
+        const updateData = { status: "CLOSED", auctionID: auctionID };
+        auctionAPI.updateAuctionToClose(updateData);
+
+        // Update the orderStatus to completed in order table
+        const orderData = { orderStatus: 'Completed', auctionID: auctionID };
+        auctionAPI.completeOrder(orderData);
     };
 
     render() {
@@ -118,7 +145,7 @@ export default class Home extends Component {
                         {activeCars.map((car) => (
                             <Col lg={4} key={car.carID}> {/* Use lg for larger column widths */}
                                 <Link to={`/viewCarDetails/${car.carID}`} style={{ textDecoration: "none" }}> {/* Specify the target route */}
-                                    <Card style={{ height: 400 + 'px' }}>
+                                    <Card className="carCard" style={{ height: 400 + 'px' }}>
                                         <Card.Img src={URL.createObjectURL(new File([new Blob([new Uint8Array(car.carImage.data)])], { type: 'image/jpeg' }))} alt={car.model} />
                                         <Card.Body>
                                             <Card.Title>{car.make} {car.model}</Card.Title>
