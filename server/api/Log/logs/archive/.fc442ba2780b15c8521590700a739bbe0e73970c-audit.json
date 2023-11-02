@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "C:\\Users\\jeanh\\Desktop\\ICT3103-Secure Software Developement\\Project\\autobidderapp\\server\\api\\Log\\logs\\archive\\.fc442ba2780b15c8521590700a739bbe0e73970c-audit.json",
+    "files": [
+        {
+            "date": 1698931159562,
+            "name": "C:\\Users\\jeanh\\Desktop\\ICT3103-Secure Software Developement\\Project\\autobidderapp\\server\\api\\Log\\logs\\archive\\application-2023-11-02.log",
+            "hash": "b5eb0a6871f72c620b95849492db264055d98fa9032d21f522cb40ecdabb1304"
+        }
+    ],
+    "hashType": "sha256"
+}
