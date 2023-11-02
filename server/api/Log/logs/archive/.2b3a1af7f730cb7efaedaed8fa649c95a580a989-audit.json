@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "C:\\Users\\jodie\\OneDrive\\Documents\\GitHub\\autobidderapp\\server\\api\\Log\\logs\\archive\\.2b3a1af7f730cb7efaedaed8fa649c95a580a989-audit.json",
+    "files": [
+        {
+            "date": 1698821528532,
+            "name": "C:\\Users\\jodie\\OneDrive\\Documents\\GitHub\\autobidderapp\\server\\api\\Log\\logs\\archive\\application-2023-11-01.log",
+            "hash": "6cad7f40b9b89b4c69194dc30beeb55595ff0e3716e807385ced46497411a461"
+        }
+    ],
+    "hashType": "sha256"
+}

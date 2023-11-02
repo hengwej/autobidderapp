@@ -3,6 +3,7 @@ const router = express.Router();
 const controller = require('./controller');
 const jwt = require('jsonwebtoken');
 const { PrismaClient } = require('@prisma/client');
+const { sanitiseObj, sanitiseStr } = require('../../utils/Validator');
 const prisma = new PrismaClient();
 
 router.get('/allBidHistory', controller.allBidHistory);
@@ -37,6 +38,8 @@ router.post('/addBidHistory', async (req, res) => {
         });
 
         const newBidHistory = req.body;
+        //sanitise
+        newBidHistory = sanitiseObj(newBidHistory);
 
         if (existingBiddingHistory) {
             // If a record with the accountID exists, update it
@@ -79,7 +82,9 @@ router.post('/addBidHistory', async (req, res) => {
 
 router.post('/updateBidHistoryToEnd', async (req, res) => {
 
-    const endBidHistory = req.body;
+    let endBidHistory = req.body;
+    //sanitisation
+    //endBidHistory = sanitiseObj(endBidHistory);
 
     const updateEndBiddingHistory = await prisma.biddingHistory.updateMany({
         where: {

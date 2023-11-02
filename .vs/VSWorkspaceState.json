@@ -5,12 +5,14 @@
     "\\client\\src",
     "\\client\\src\\pages",
     "\\client\\src\\pages\\Users",
-    "\\client\\src\\pages\\Users\\UserProfile",
+    "\\client\\src\\pages\\Users\\SellACar",
     "\\client\\src\\utils",
     "\\server",
     "\\server\\api",
-    "\\server\\api\\accounts"
+    "\\server\\api\\auctions",
+    "\\server\\api\\biddingHistory",
+    "\\server\\api\\requests"
   ],
-  "SelectedNode": "\\client\\src\\pages\\Admin\\ViewUsers\\viewUsers.js",
+  "SelectedNode": "\\server\\api\\biddingHistory\\index.js",
   "PreviewInSolutionExplorer": false
 }

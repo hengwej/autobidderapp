@@ -3,6 +3,7 @@ const router = express.Router();
 const controller = require('./controller');
 const jwt = require('jsonwebtoken');
 const { PrismaClient } = require('@prisma/client');
+const { sanitiseStr, sanitiseObj } = require('../../utils/Validator');
 const prisma = new PrismaClient();
 
 router.get('/allComment', controller.allComment);
@@ -17,8 +18,11 @@ router.post('/addComment', async (req, res) => {
         //Verify token
         const payload = jwt.verify(token, process.env.JWT_SECRET);
 
-        const { newComment } = req.body;
-        console.log("comment" + newComment);
+        let { newComment } = req.body;
+        //sanitisation
+        newComment = sanitiseObj(newComment);
+        
+        console.log("Sanitised comment" + newComment);
         //Perform Database calls here
         //Find account associated with the token by accountID
         const comment = await prisma.comment.create({
