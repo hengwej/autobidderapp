@@ -42,10 +42,6 @@ td {
     gap: 1rem;
 }
 
-
-
-
-
 .timer {
     background-color: white;
     padding: 10px;
@@ -54,6 +50,18 @@ td {
     width: 575px;
     position: relative;
     top: 43px;
+    font-size: 15px;
+    border-radius: 13px;
+}
+
+.timerNoLogin {
+    background-color: white;
+    padding: 10px;
+    color: black;
+    border: 2px solid black;
+    width: 575px;
+    position: relative;
+    top: 20px;
     font-size: 15px;
     border-radius: 13px;
 }

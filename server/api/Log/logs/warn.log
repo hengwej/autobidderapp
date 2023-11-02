@@ -84,3 +84,23 @@ SyntaxError: Unexpected token '}'
     at require (node:internal/modules/cjs/helpers:102:18)
     at Object.<anonymous> (C:\Temp\3203\project\app\autobidderapp\server\server.js:53:19)
     at Module._compile (node:internal/modules/cjs/loader:1105:14)
+02-11-2023 21:21:03 warn: Account ID: Guest. Message -> User not authenticated
+02-11-2023 21:26:45 warn: Account ID: Guest. Message -> User not authenticated
+02-11-2023 21:51:19 warn: Account ID: Guest. Message -> User not authenticated
+02-11-2023 21:54:42 warn: Account ID: Guest. Message -> User not authenticated
+02-11-2023 21:55:00 warn: Account ID: Guest. Message -> User not authenticated
+02-11-2023 22:05:02 warn: Account ID: Guest. Message -> User not authenticated
+02-11-2023 22:06:08 warn: Account ID: Guest. Message -> User not authenticated
+02-11-2023 22:36:59 warn: Account ID: Guest. Message -> User not authenticated
+02-11-2023 23:11:52 warn: Account ID: Guest. Message -> User not authenticated
+02-11-2023 23:15:46 warn: Account ID: Guest. Message -> User not authenticated
+02-11-2023 23:15:57 warn: Account ID: Guest. Message -> User not authenticated
+02-11-2023 23:16:09 warn: Account ID: Guest. Message -> User not authenticated
+02-11-2023 23:16:20 warn: Account ID: Guest. Message -> User not authenticated
+02-11-2023 23:16:30 warn: Account ID: Guest. Message -> User not authenticated
+02-11-2023 23:16:40 warn: Account ID: Guest. Message -> User not authenticated
+02-11-2023 23:16:50 warn: Account ID: Guest. Message -> User not authenticated
+02-11-2023 23:17:04 warn: Account ID: Guest. Message -> User not authenticated
+02-11-2023 23:17:16 warn: Account ID: Guest. Message -> User not authenticated
+02-11-2023 23:19:30 warn: Account ID: Guest. Message -> User not authenticated
+02-11-2023 23:33:43 warn: Account ID: Guest. Message -> User not authenticated

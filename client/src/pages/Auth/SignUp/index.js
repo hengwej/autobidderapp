@@ -1,12 +1,32 @@
-import React from 'react'
+import React, { useState } from 'react'
 import './styles.css'
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import * as api from '../../../utils/AuthAPI';
 import { useNavigate } from 'react-router-dom';
-import { Container } from 'react-bootstrap';
+import { Container, Modal, Button } from 'react-bootstrap';
 
 function SignUp() {
+    const [showModal, setShowSucessModal] = useState(false);
+    const [showFailModal, setShowFailModal] = useState(false);
+
+    const handleClose = () => {
+        setShowSucessModal(false); // Function to close the modal
+    }
+
+    const handleOpen = () => {
+        setShowSucessModal(true); // Function to open the modal
+    }
+
+    const handleFailClose = () => {
+        setShowFailModal(false); // Function to close the modal
+        navigate('/');
+    }
+
+    const handleFailOpen = () => {
+        setShowFailModal(true); // Function to open the modal
+    }
+
     const navigate = useNavigate();
     const initialValues = {
         username: '',
@@ -37,7 +57,12 @@ function SignUp() {
 
             if (response.status === 200) {
                 console.log('Account created successfully!');
-                navigate('/auth/login');
+
+                handleOpen();
+            }
+            else
+            {
+                handleFailOpen();
             }
 
 
@@ -90,6 +115,38 @@ function SignUp() {
                         <button type="submit">Sign Up</button>
                     </Form>
                 </Formik>
+
+                {/* Modal success component */}
+                <Modal show={showModal} onHide={handleClose}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Sign Up is Successful!</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Button style={{ backgroundColor: 'orangered', marginLeft: 10 + 'em', padding: 1 + 'em' }} onClick={() => navigate('/auth/login')}>
+                            Go To Login
+                        </Button>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={handleClose}>
+                            Close
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+
+                {/* Modal fail component */}
+                <Modal show={showFailModal} onHide={handleFailClose}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Sign Up Failed!</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <p style={{ color: 'red', textAlign: 'center', fontSize: 20 + 'px' }}>Failed to Sign Up, Please try again later.</p>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={() => navigate('/')}>
+                            Close
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
             </div>
         </Container>
     )

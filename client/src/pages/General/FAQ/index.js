@@ -36,7 +36,7 @@ export default class FAQ extends React.Component {
                 <div className="main-container">
                     <div className="header-container">
                         <h2>Contact Us and FAQ</h2>
-                        <Header headerText="Contact Us" />
+                        <Header headerText="Contact Us"/>
                     </div>
 
                     <div className="contact-info-container">
@@ -70,8 +70,8 @@ export default class FAQ extends React.Component {
                         <table>
                             <thead>
                                 <tr>
-                                    <th>Question Type</th>
-                                    <th>Answer</th>
+                                    <th style={{color: 'orangered'}}>Question Type</th>
+                                    <th style={{ color: 'orangered' }}>Answer</th>
                                 </tr>
                             </thead>
                             <tbody>

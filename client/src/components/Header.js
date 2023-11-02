@@ -19,9 +19,8 @@ const Header = ({ headerText }) => {
     };
 
     const h1Style = {
-        color: "white",
+        backgroundColor: "orangered",
         textShadow: "none", // Remove the text shadow
-
 
 
     };
