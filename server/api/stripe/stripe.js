@@ -1,7 +1,10 @@
-// ./api/stripe/controller.js
-const stripe = require('stripe')(process.env.STRIPE_SK);
+const express = require('express');
+const router = express.Router();
 
-exports.createPaymentIntent = async (req, res) => {
+const csrfProtection = require('../../utils/CsrfUtils');
+const checkJwtToken = require('../../utils/JwtTokens');
+
+router.post('/create-payment-intent', csrfProtection, checkJwtToken, async (req, res) => {
     try {
         const { amount, currency } = req.body;
 
@@ -10,7 +13,7 @@ exports.createPaymentIntent = async (req, res) => {
             amount,
             currency,
             // Verify your integration in this guide by including this parameter
-            metadata: {integration_check: 'accept_a_payment'},
+            metadata: { integration_check: 'accept_a_payment' },
         });
 
         // Send publishable key and PaymentIntent details to client
@@ -20,6 +23,6 @@ exports.createPaymentIntent = async (req, res) => {
     } catch (error) {
         res.status(500).send({ statusCode: 500, message: error.message });
     }
-};
+});
 
-// Add more Stripe-related endpoints as needed
+module.exports = router;
