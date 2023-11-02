@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Table, Card, Button, Alert, Container } from 'react-bootstrap';
 import * as requestsAPI from "../../../utils/RequestsAPI.js";
+import { useAuth } from '../../../utils/AuthProvider';
 
 export default function ViewRequestDetails() {
     const { requestID } = useParams();
@@ -12,9 +13,11 @@ export default function ViewRequestDetails() {
     const [successMessage, setSuccessMessage] = useState("");
     const navigate = useNavigate();
 
+    const { csrfToken } = useAuth();
+
     useEffect(() => {
 
-        requestsAPI.viewRequestDetails(requestID)
+        requestsAPI.viewRequestDetails(requestID, csrfToken)
             .then((response) => {
                 setRequest(response.data);
                 if (response.data.carImage && response.data.carImage.data) {
@@ -33,7 +36,7 @@ export default function ViewRequestDetails() {
 
     const handleApprove = () => {
 
-        requestsAPI.approveRequest(requestID)
+        requestsAPI.approveRequest(requestID, csrfToken)
             .then((response) => {
                 setSuccessMessage("Request approved successfully");
                 console.log('Request approved successfully:', response.data);
@@ -63,7 +66,7 @@ export default function ViewRequestDetails() {
 
         if (shouldDelete) {
             // Send an API request to delete the request when the "Reject" button is clicked.
-            requestsAPI.approveRequest(requestID)
+            requestsAPI.rejectRequest(requestID, csrfToken)
                 .then((response) => {
                     // Handle success, show a message, and refresh the page.
                     setSuccessMessage("Request rejected successfully");

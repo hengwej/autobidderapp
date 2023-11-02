@@ -7,9 +7,13 @@ const api = axios.create({
     withCredentials: true,
 });
 
-export const viewRequestDetails = async (requestData) => {
+export const viewRequestDetails = async (requestData, csrfToken) => {
     try {
-        const response = await api.get("/api/requests/viewRequestDetails/" + requestData, {}, {
+        const response = await api.get("/api/requests/viewRequestDetails/" + requestData, {
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': csrfToken,
+            }
         });
         return response;
     } catch (error) {
@@ -18,9 +22,13 @@ export const viewRequestDetails = async (requestData) => {
     }
 };
 
-export const approveRequest = async (requestData) => {
+export const approveRequest = async (requestData, csrfToken) => {
     try {
-        const response = await api.post("/api/requests/approveRequest/" + requestData, {}, {
+        const response = await api.post("/api/requests/approveRequest/" + requestData, {
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': csrfToken,
+            }
         });
         return response;
     } catch (error) {
@@ -29,9 +37,13 @@ export const approveRequest = async (requestData) => {
     }
 };
 
-export const rejectRequest = async (requestData) => {
+export const rejectRequest = async (requestData, csrfToken) => {
     try {
-        const response = await api.delete("/api/requests/rejectRequest/" + requestData, {}, {
+        const response = await api.delete("/api/requests/rejectRequest/" + requestData, {
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': csrfToken,
+            }
         });
         return response;
     } catch (error) {
@@ -40,13 +52,18 @@ export const rejectRequest = async (requestData) => {
     }
 };
 
-export const getAllRequests = async () => {
+export const getAllRequests = async (csrfToken) => {
     try {
-        const response = await api.get("/api/requests/getAllRequests/", {}, {
+        const response = await api.get("/api/requests/getAllRequests/", {
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': csrfToken,
+            }
         });
         return response;
     } catch (error) {
-        console.error("Error Updating History:", error);
+        console.error("Error Fetching All Requests:", error);
         throw error;
     }
 };
+

@@ -1,14 +1,18 @@
 const express = require('express');
-const router = express.Router();
-const controller = require('./controller');
-const jwt = require('jsonwebtoken');
 const { PrismaClient } = require('@prisma/client');
-const { sanitiseObj, sanitiseStr } = require('../../utils/Validator');
+const router = express.Router();
 const prisma = new PrismaClient();
 
-router.get('/allBidHistory', controller.allBidHistory);
+const csrfProtection = require('../../utils/CsrfUtils');
+const checkJwtToken = require('../../utils/JwtTokens');
 
-router.post('/addBidHistory', async (req, res) => {
+
+router.get('/allBidHistory', csrfProtection, checkJwtToken, async (req, res) => {
+    const allBiddingHistory = await prisma.biddingHistory.findMany();
+    res.json(allBiddingHistory);
+});
+
+router.post('/addBidHistory', csrfProtection, checkJwtToken, async (req, res) => {
     console.log("access bid history");
     const token = req.cookies.token;
     console.log("token bid hist " + token);
