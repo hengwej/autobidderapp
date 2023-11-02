@@ -23,12 +23,13 @@ test('renders login form', () => {
         /MemoryRouter>
     );
 
-    const usernameInput = screen.getByLabelText(/Username/i);
-    const passwordInput = screen.getByLabelText(/Password/i);
+    const usernameLabel = screen.getByText(/Username:/i);
+    const passwordLabel = screen.getByText(/Password:/i);
+
     const loginButton = screen.getByText(/Login/i);
 
-    expect(usernameInput).toBeInTheDocument();
-    expect(passwordInput).toBeInTheDocument();
+    expect(usernameLabel).toBeInTheDocument();
+    expect(passwordLabel).toBeInTheDocument();
     expect(loginButton).toBeInTheDocument();
 });
 
