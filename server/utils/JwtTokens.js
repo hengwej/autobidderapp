@@ -1,9 +1,16 @@
 const jwt = require('jsonwebtoken');
 
+/**
+ * Middleware to verify JWT token from cookies.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @param {Function} next - Express next middleware function.
+ */
 const checkJwtToken = (req, res, next) => {
     const token = req.cookies.token;
 
     if (!token) {
+        req.log.warn('Unauthorized: No token provided');  // Use a proper logging mechanism
         return res.status(401).json({ error: 'Unauthorized: No token provided' });
     }
 
@@ -13,16 +20,15 @@ const checkJwtToken = (req, res, next) => {
         next();
     } catch (error) {
         if (error.name === 'TokenExpiredError') {
-            //TODO
-            // You can handle token expiration here. For example:
+            // Handle token expiration. For example:
             // 1. Refresh the token if you have a refresh token implemented.
-            // 2. Redirect the user to login page.
+            // 2. Redirect the user to the login page.
             // 3. Provide a helpful error message to the user.
-
+            req.log.warn('Token has expired');  // Updated logging method
             return res.status(401).json({ error: 'Unauthorized: Token has expired' });
         }
 
-        console.error("JWT Verification Error:", error);
+        req.log.error(`JWT Verification Error: ${error.message}`);  // Updated logging method
         return res.status(401).json({ error: 'Unauthorized: Invalid token' });
     }
 };
