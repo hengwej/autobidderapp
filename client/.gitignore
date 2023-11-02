@@ -23,3 +23,8 @@ yarn-debug.log*
 yarn-error.log*
 
 .env
+# Ignore log files
+*.log
+
+# Ignore the logs directory
+
