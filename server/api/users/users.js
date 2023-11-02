@@ -7,33 +7,27 @@ const bcrypt = require('bcrypt');
 const { sanitiseStr, sanitiseObj } = require('../../utils/Validator');
 const saltRounds = 10;
 
+const csrfProtection = require('../../utils/CsrfUtils');
+const checkJwtToken = require('../../utils/JwtTokens');
 
 
-router.post('/addUser', async (req, res) => {
+
+router.post('/addUser', csrfProtection, checkJwtToken, async (req, res) => {
     const newUser = await prisma.user.create({
         data: req.body,
     });
     res.json(newUser);
 });
 
-router.get('/getAllUsers', async (req, res) => {
+router.get('/getAllUsers', csrfProtection, checkJwtToken, async (req, res) => {
     const allUsers = await prisma.user.findMany();
     res.json(allUsers);
 });
 
-router.delete('/deleteAccount', async (req, res) => {
-    // Initialize variables
-    const token = req.cookies.token;
-    const csrfTokenHeader = req.headers['x-csrf-token'];
-    const csrfTokenCookie = req.cookies.csrfToken;
-
-    // Verify if CSRF and JWT Tokens are present
-    if (!token) return res.status(401).json({ error: 'Unauthorized' });
-    if (!csrfTokenHeader) return res.status(403).json({ error: 'CSRF token is missing' });
+router.delete('/deleteAccount', csrfProtection, checkJwtToken, async (req, res) => {
 
     try {
-        // Verify the token and extract the account ID
-        const payload = jwt.verify(token, process.env.JWT_SECRET);
+        payload = req.user;
         const accountID = payload.accountID;
 
         // Retrieve the user's userID associated with the account
@@ -128,23 +122,11 @@ router.delete('/deleteUser/:userID', async (req, res) => {
 
 
 
-router.post('/getUserProfileDetails', async (req, res) => {
-    const token = req.cookies.token;
-    const csrfTokenHeader = req.headers['x-csrf-token'];
-    const csrfTokenCookie = req.cookies.csrfToken;
-
-    console.log("token: " + token);
-    console.log("csrfTokenHeader: " + csrfTokenHeader);
-    console.log("CSRF Token Cookie: " + csrfTokenCookie);
-
-    if (!token) return res.status(401).json({ error: 'Unauthorized' });
-    if (!csrfTokenHeader) return res.status(403).json({ error: 'CSRF token is missing' });
-
+router.post('/getUserProfileDetails', csrfProtection, checkJwtToken, async (req, res) => {
 
     try {
-        //Verify token
-        const payload = jwt.verify(token, process.env.JWT_SECRET);
 
+        const payload = req.user;
         //Find account associated with the token by accountID
         const account = await prisma.account.findUnique({
             where: {
@@ -178,19 +160,10 @@ router.post('/getUserProfileDetails', async (req, res) => {
     }
 });
 
-router.post('/getUserBiddingHistory', async (req, res) => {
-    // Initialize variables
-    const token = req.cookies.token;
-    const csrfTokenHeader = req.headers['x-csrf-token'];
-    const csrfTokenCookie = req.cookies.csrfToken;
-
-    //Verify if CSRF and JWT Tokens are present
-    if (!token) return res.status(401).json({ error: 'Unauthorized' });
-    if (!csrfTokenHeader) return res.status(403).json({ error: 'CSRF token is missing' });
-
+router.post('/getUserBiddingHistory', csrfProtection, checkJwtToken, async (req, res) => {
     try {
-        //Verify token
-        const payload = jwt.verify(token, process.env.JWT_SECRET);
+
+        payload = req.user;
 
         //Find account associated with the token by accountID
         const biddingHistory = await prisma.biddingHistory.findMany({
@@ -219,19 +192,10 @@ router.post('/getUserBiddingHistory', async (req, res) => {
     }
 });
 
-router.post('/getUserSellingHistory', async (req, res) => {
-    //Initialize variables
-    const token = req.cookies.token;
-    const csrfTokenHeader = req.headers['x-csrf-token'];
-    const csrfTokenCookie = req.cookies.csrfToken;
-
-    //Verify if CSRF and JWT Tokens are present
-    if (!token) return res.status(401).json({ error: 'Unauthorized' });
-    if (!csrfTokenHeader) return res.status(403).json({ error: 'CSRF token is missing' });
-
+router.post('/getUserSellingHistory', csrfProtection, checkJwtToken, async (req, res) => {
     try {
-        //Verify token
-        const payload = jwt.verify(token, process.env.JWT_SECRET);
+
+        payload = req.user;
 
         //Find account associated with the token by accountID
         const sellingHistory = await prisma.sellingHistory.findMany({
@@ -266,7 +230,7 @@ router.post('/getUserSellingHistory', async (req, res) => {
 });
 
 
-router.put('/updateUserProfileDetails', async (req, res) => {
+router.put('/updateUserProfileDetails', csrfProtection, checkJwtToken, async (req, res) => {
     let { newUserData, newAccountData } = req.body;
 
 
@@ -274,15 +238,9 @@ router.put('/updateUserProfileDetails', async (req, res) => {
     newUserData = sanitiseObj(newUserData);
     newAccountData = sanitiseObj(newAccountData);
 
-    const token = req.cookies.token;
-
-    if (!token) {
-        return res.status(401).json({ error: 'Unauthorized' });
-    }
 
     try {
-        // Verify the token and extract the account ID
-        const payload = jwt.verify(token, process.env.JWT_SECRET);
+        payload = req.user;
         const accountID = payload.accountID;
 
         // Find the account associated with the given account ID
@@ -320,21 +278,12 @@ router.put('/updateUserProfileDetails', async (req, res) => {
     }
 });
 
-router.put('/resetPassword', async (req, res) => {
+router.put('/resetPassword', csrfProtection, checkJwtToken, async (req, res) => {
     // Initialize variables
     const { password } = req.body;
-    //do not sanitise password
-    const token = req.cookies.token;
-    const csrfTokenHeader = req.headers['x-csrf-token'];
-    const csrfTokenCookie = req.cookies.csrfToken;
-
-    //Verify if CSRF and JWT Tokens are present
-    if (!token) return res.status(401).json({ error: 'Unauthorized' });
-    if (!csrfTokenHeader) return res.status(403).json({ error: 'CSRF token is missing' });
 
     try {
-        // Verify the token and extract the account ID
-        const payload = jwt.verify(token, process.env.JWT_SECRET);
+        payload = req.user;
         const accountID = payload.accountID;
 
         // Find the account associated with the given account ID
@@ -369,19 +318,10 @@ router.put('/resetPassword', async (req, res) => {
     }
 });
 
-router.post('/getUserSellCarRequests', async (req, res) => {
-    //Initialize variables
-    const token = req.cookies.token;
-    const csrfTokenHeader = req.headers['x-csrf-token'];
-    const csrfTokenCookie = req.cookies.csrfToken;
-
-    // Verify if CSRF and JWT Tokens are present
-    if (!token) return res.status(401).json({ error: 'Unauthorized' });
-    if (!csrfTokenHeader) return res.status(403).json({ error: 'CSRF token is missing' });
+router.post('/getUserSellCarRequests', csrfProtection, checkJwtToken, async (req, res) => {
 
     try {
-        //Verify token
-        const payload = jwt.verify(token, process.env.JWT_SECRET);
+        payload = req.user;
 
         //Find account associated with the token by accountID
         const carRequests = await prisma.request.findMany({
