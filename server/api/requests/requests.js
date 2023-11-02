@@ -118,7 +118,7 @@ router.post('/approveRequest/:requestID', csrfProtection, checkJwtToken, async (
             req.log.warn('Unauthorized attempt to approve request');  // Logging unauthorized attempt
             return res.status(401).json({ error: 'Unauthorized' });
         }
-        const payload = jwt.verify(token, process.env.JWT_SECRET);
+        const payload = req.user;
         const hardcodedAccountID = payload.accountID;
         const requestID = validateRequestID(req.params.requestID);
         if (!requestID) {
