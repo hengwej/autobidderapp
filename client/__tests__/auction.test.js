@@ -1,6 +1,6 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import { getAllAuctions } from '../auctionAPI'; // Update the path accordingly
+import { getAllAuctions } from '../src/utils/AuctionAPI';
 
 const mock = new MockAdapter(axios);
 
