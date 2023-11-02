@@ -7,7 +7,6 @@ const api = axios.create({
     withCredentials: true,
 });
 
-const request = require('supertest');
 const express = require('express');
 const auctionsRouter = require('../api/auctions/auctions'); // Update the path accordingly
 
