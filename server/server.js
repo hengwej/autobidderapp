@@ -49,6 +49,7 @@ function checkRole(role) {
 }
 
 // Importing route handlers
+const { log, createLogWrapper } = require('./api/Log/log');
 const logMiddleware = require('./api/Log/logMiddleware');
 const carRoutes = require('./api/cars/sellCar');
 const userRoutes = require('./api/users/users');
@@ -100,4 +101,10 @@ app.get('/error', (req, res, next) => {
 // Starting the server
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
+  log.info({ message: `Server is running on port ${port}` });
+});
+
+app.use((err, req, res, next) => {
+    req.log.error({ message: err.message, stack: err.stack });
+    res.status(500).send('Something went wrong!');
 });

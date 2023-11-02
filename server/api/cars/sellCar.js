@@ -4,7 +4,6 @@ const { check, validationResult } = require('express-validator');
 const multer = require('multer');
 const rateLimit = require("express-rate-limit");
 const helmet = require('helmet');
-// const morgan = require('morgan');
 const router = express.Router();
 const prisma = new PrismaClient();
 const sharp = require('sharp');
@@ -15,7 +14,6 @@ const fs = require('fs').promises;
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const { DateTime } = require('luxon');
-const { log, createLogWrapper } = require('../Log/log');
 const csrfProtection = require('../../utils/CsrfUtils');
 const checkJwtToken = require('../../utils/JwtTokens');
 
@@ -87,10 +85,6 @@ router.use(helmet.noSniff());
 // Prevent IE from executing downloads in site's context
 router.use(helmet.ieNoOpen());
 
-// // Set up logging
-// // commenting out cause might eat up too much space
-// router.use(morgan('combined'));
-
 // Middleware for rate limiting to help prevent abuse and protect against DDoS attacks
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // Set a time window of 15 minutes
@@ -98,7 +92,11 @@ const limiter = rateLimit({
 });
 router.use(limiter);
 
-// Function to handle image processing, resizing and compression
+/**
+ * Function to handle image processing, resizing, and compression.
+ * @param {Object} file - The uploaded file object.
+ * @returns {Buffer} - The processed image buffer.
+ */
 const handleImageProcessing = async (file) => {
     if (!file || !file.originalname) {
         throw new Error('Invalid file object');
@@ -142,26 +140,31 @@ const upload = multer({
         cb(null, true);
     },
     onError: function (err, next) {
-        // console.log('error', err);
         next(err);
     }
 });
 
-// Define a route to get all car entries from the database
+/**
+ * Route to fetch all car entries from the database.
+ * @route GET /allCar
+ */
 router.get('/allCar', async (req, res, next) => {
     try {
         const allCars = await prisma.car.findMany();
         res.json(allCars);
     } catch (error) {
         // Log the error (optional)
-        console.error(error.message, error.stack);
+        req.log.error(`Error fetching all cars: ${error.message}`);
         // Pass the error to the next middleware function
         next(error);
     }
 });
 
-// Define a route to add a new car entry to the database
-router.post('/addCar', csrfProtection, checkJwtToken, async (req, res, next) => {
+/**
+ * Route to add a new car entry to the database.
+ * @route POST /addCar
+ */
+router.post('/addCar', async (req, res, next) => {
     try {
         const newCar = await prisma.car.create({
             data: req.body,
@@ -172,11 +175,15 @@ router.post('/addCar', csrfProtection, checkJwtToken, async (req, res, next) => 
         if (error.name === 'TokenExpiredError') {
             return res.status(401).json({ error: 'Token has expired' });
         }
+        req.log.error(`Error adding a new car: ${error.message}`);
         next(error);  // Pass the error to the error handling middleware
     }
 });
 
-// Route to request a to list a car to sell a car
+/**
+ * Route to request to list a car for selling.
+ * @route POST /sellCar
+ */
 router.post('/sellCar',
     upload.single('images'), // Use multer middleware to handle file upload
     [
@@ -276,7 +283,6 @@ router.post('/sellCar',
             if (error.name === 'TokenExpiredError') {
                 return res.status(401).json({ error: 'Token has expired' });
             }
-            console.error(error.message, error.stack);
             next(error);  // Pass the error to the next middleware (your centralized error handling middleware)
         }
     });
@@ -284,7 +290,6 @@ router.post('/sellCar',
 // Centralized error handling middleware to catch and handle all errors
 router.use((err, req, res, next) => {
     // console.error(err.stack);  // Log the stack trace
-
     const statusCode = err.statusCode || 500;  // Use the error's status code, or default to 500
     const response = {
         message: err.message || 'Something broke!'  // Use the error's message, or a default message
