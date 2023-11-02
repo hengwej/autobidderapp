@@ -32,6 +32,11 @@
         "test": "jest",
         "eject": "react-scripts eject"
     },
+    "jest": {
+        "transform": {
+            "^.+\\.js$": "babel-jest"
+        }
+    },
     "proxy": "http://localhost:5000",
     "eslintConfig": {
         "extends": [
