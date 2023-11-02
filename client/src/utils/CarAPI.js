@@ -17,9 +17,14 @@ export const getAllCars = async () => {
     }
 }
 
-export const sellCar = async (data) => {
+export const sellCar = async (data, csrfToken) => {
     try {
-        const response = await api.post("/api/cars/sellCar", data);
+        const response = await api.post("/api/cars/sellCar", data, {
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': csrfToken
+            }
+        });
         return response;
     } catch (error) {
         console.error("Error fetching cars:", error);
