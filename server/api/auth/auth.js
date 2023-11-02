@@ -1,5 +1,5 @@
 const customValidator = require('../../utils/Validator');  // Import custom validator utility
-const { sanitiseStr, sanitiseObj } = customValidator;
+const { sanitiseStr, sanitiseObj } = customValidator;  // Destructure and import sanitiseStr and sanitiseObj functions from customValidator
 const express = require('express');
 const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcrypt');
@@ -9,68 +9,90 @@ const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const router = express.Router();  // Create an Express router instance
 const prisma = new PrismaClient();  // Prisma Client instance for database operations
-const saltRounds = 10;
+const saltRounds = 10;  // Number of rounds for bcrypt hashing
 const axios = require('axios'); //for recaptcha backend logic
-const validator = require('validator');
-const { createLogWrapper } = require('../Log/log');  // Import createLogWrapper
-const log = createLogWrapper();  // Create a wrapped logger instance
 
-//asynchronous recaptcha backend logic
+/**
+ * Verifies the reCAPTCHA token received from the frontend.
+ * @async
+ * @function verifyRecaptcha
+ * @param {string} token - The reCAPTCHA token from frontend.
+ * @returns {Object} - Verification result from Google's reCAPTCHA API.
+ */
 async function verifyRecaptcha(token) { //takes the token arg from frontend
-    const secretKey = process.env.RECAPTCHA_SERVER_KEY;
-    console.log("Server CAPTCHA key is:", process.env.RECAPTCHA_SERVER_KEY);
+    const secretKey = process.env.RECAPTCHA_SERVER_KEY;  // Secret key for reCAPTCHA verification
     try {
+        // Make a POST request to Google's reCAPTCHA API for verification
         const response = await axios.post(`https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${token}`); //REMEMBER TO SWAP OUT TESTING KEY MR DARREN
-        res.json(response.data); // this sends the response data back to the client
-        log.info("RECAPTCHA verified successfully");  // log captcha verified
-        console.log("RECAPTCHA successfully completed");
+        res.json(response.data);  // Send the verification result back to the client
+        req.log.info("RECAPTCHA verified successfully");   // Log that the reCAPTCHA was verified successfully
     } catch (error) {
-        log.warn(error.toString());  // log RECAPTCHA verified unsuccessfully
-        res.status(500).send(error.toString());
+        req.log.warn(error.toString());  // Log the error if reCAPTCHA verification fails
+        res.status(500).send(error.toString());   // Send a 500 status code with the error message
     }
 }
 
+/**
+ * Generates a CSRF token.
+ * @function
+ * @returns {string} - A random CSRF token.
+ */
 function generateCSRFToken() {
+    // Generate a random 64-byte value and convert it to a hexadecimal string
     return crypto.randomBytes(64).toString('hex');
 }
 
 /**
- * Middleware to validate JWT token
+ * Middleware to validate JWT token and ensure the user is authenticated.
+ * If the token is valid, the user object is attached to the request.
+ * Otherwise, an error response is sent.
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
  * @param {Function} next - Express next middleware function
  */
 const authenticateToken = (req, res, next) => {
-    const token = req.cookies.token;
-    if (token == null) return res.sendStatus(401);
+    const token = req.cookies.token;  // Retrieve the token from cookies
+    if (token == null) {
+        // If the token is not present, log a warning and return a 401 status code
+        req.log.warn('Authentication token missing');
+        return res.sendStatus(401);
+    }
+    // Verify the JWT token
     jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-        if (err) return res.sendStatus(403);
+        // If there's an error in verification, log a warning and return a 403 status code
+        if (err) {
+            req.log.warn('Token verification failed');
+            return res.sendStatus(403);
+        }
+        // Attach the user payload to the request object
         req.user = user;
-        next();
+        next();  // Continue to the next middleware or route handler
     });
 };
 
 /**
- * Endpoint to handle user signup
+ * Endpoint to handle user signup.
+ * This endpoint receives user data and account data, sanitizes the input, 
+ * hashes the password, and then stores the user and account data in the database.
+ * 
  * @route POST /signUp
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
  */
 router.post('/signUp', async (req, res) => {
+    // Validate the request body
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        log.warn(errors.array());
+        req.log.warn('Validation errors during signup', errors.array()); // Log validation errors
         return res.status(400).json({ errors: errors.array() });
     }
     let { userData, accountData } = req.body;
-    //sanitise
-    console.log('Old user inputs: Account Data - ' + JSON.stringify(accountData) + ', User Data - ' + JSON.stringify(userData));
-    // const username =  validator.escape(accountData.username);
+    // Sanitise user input to prevent malicious data
     userData = sanitiseObj(userData);
     accountData = sanitiseObj(accountData);
-    console.log('New user inputs: Account Data - ' + JSON.stringify(accountData) + ', User Data - ' + JSON.stringify(userData));
     try {
-        log.info('Received a signup request');  // Log signup request start
+        req.log.info('Processing signup request'); // Log signup request start
+        // Create user and account in the database
         const user = await prisma.user.create({ data: userData });
         accountData.userID = user.userID;
         accountData.accountType = "bidder";
@@ -78,38 +100,43 @@ router.post('/signUp', async (req, res) => {
         const hashedPassword = await bcrypt.hash(accountData.password, saltRounds);
         accountData.password = hashedPassword;
         const account = await prisma.account.create({ data: accountData });
-        log.info('Signup request successful');  // Log signup request end
+        req.log.info('Signup successful'); // Log signup request end
         res.json({ message: 'Signup successful!', user, account });
     } catch (error) {
-        log.error(`Error processing signup: ${error.message}`);  // Log signup request error
-        console.error("Error processing signup:", error);
+        req.log.error(`Error during signup: ${error.message}`);  // Log signup request error
         res.status(500).json({ message: 'Internal server error' });
     }
 });
 
+/**
+ * Endpoint to handle user login.
+ * @route POST /login
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 router.post('/login', async (req, res) => {
     let { username, password } = req.body;
     //sanitise str
     username = sanitiseStr(username);
-    console.log('Login Inputs: User - ' + JSON.stringify(username) + ', User Data - ' + JSON.stringify(password));
     if (!username || !password) {
-        log.warn('Wrong username / password entered');  // Log failed login attempt
+        req.log.warn('Incomplete login details provided');  // Log failed login attempt
         return res.status(400).json({ message: 'Please enter both username and password' });
     }
     //resume backend logic
     try {
+        req.log.info('Processing login request');
         const account = await prisma.account.findUnique({
             where: { username },
             include: { user: true },
         });
         if (!account || !(await bcrypt.compare(password, account.password))) {
-            log.warn('Invalid credentials');  // Log Invalid credentials
+            req.log.warn('Invalid login credentials provided');  // Log Invalid credentials
             return res.status(401).json({ error: 'Invalid credentials' });
         }
         //otp generation
         const generatedOtp = crypto.randomInt(100000, 1000000).toString();
-        log.info("Generated OTP for login request");  // Log Generated OTP for login request
-        console.log("Generated OTP: " + generatedOtp);
+        req.log.info('Generated OTP for login'); // Log Generated OTP for login request
+        // console.log("Generated OTP: " + generatedOtp);
         //nodemailer backend
         const transporter = nodemailer.createTransport({
             service: 'gmail',
@@ -126,11 +153,10 @@ router.post('/login', async (req, res) => {
         };
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
-                log.error(`${error}: "Error sending OTP`);  // Log error sending OTP 
-                console.log(error);
+                req.log.error(`Error sending OTP: ${error}`);  // Log error sending OTP 
                 return res.status(500).json({ error: 'Error sending OTP' });
             }
-            console.log('Email sent: ' + info.response);
+            req.log.info(`OTP email sent: ${info.response}`);
         });
         // Create temporary session token
         const tempPayload = {
@@ -144,21 +170,26 @@ router.post('/login', async (req, res) => {
         // Generate CSRF token
         const csrfToken = generateCSRFToken();
         res.cookie('csrfToken', csrfToken, { httpOnly: true, secure: true, sameSite: 'Strict' });
-        log.info("OTP sent to user successfully.");  // log successful OTP sent
+        req.log.info('OTP sent to user');  // log successful OTP sent
         return res.status(200).json({ message: 'OTP sent successfully. Please check your email.' });
     } catch (error) {
-        log.error(`${error}: Server error`);
-        console.error(error);
+        req.log.error(`Error during login: ${error.message}`);
         return res.status(500).json({ error: 'Server error' });
     }
 });
 
+/**
+ * Endpoint to verify OTP.
+ * @route POST /otp
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 router.post('/otp', async (req, res) => {
     const { otp } = req.body;
     try {
         const tempToken = req.cookies.tempToken;
         if (!tempToken) {
-            log.warn(`${error}: Temporary session not found`);  // log temp session not found
+            req.log.warn('Temporary session not found');  // log temp session not found
             return res.status(401).json({ error: 'Temporary session not found' });
         }
         // Verify temporary session token
@@ -166,11 +197,11 @@ router.post('/otp', async (req, res) => {
         try {
             tempUser = jwt.verify(tempToken, process.env.JWT_TEMP_SECRET);
         } catch (error) {
-            log.warn(`${error}: Invalid or expired temporary session`);  // log invalid/expired temp session
+            req.log.warn('Invalid or expired temporary session');  // log invalid/expired temp session
             return res.status(401).json({ error: 'Invalid or expired temporary session' });
         }
         if (tempUser.otp !== otp) {
-            log.warn(`${error}: Invalid OTP`);  // log when invalid OTP
+            req.log.warn('Invalid OTP provided');  // log when invalid OTP
             return res.status(401).json({ error: 'Invalid OTP' });
         }
         //get accountType from account table
@@ -178,7 +209,7 @@ router.post('/otp', async (req, res) => {
             where: { accountID: tempUser.accountID },
         });
         if (!account) {
-            log.warn(`${error}: Account not found`);  // log when entered account not found
+            req.log.warn('Account not found');  // log when entered account not found
             return res.status(401).json({ error: 'Account not found' });
         }
         // OTP is valid, create a new fully authenticated session token
@@ -186,7 +217,6 @@ router.post('/otp', async (req, res) => {
             accountID: tempUser.accountID,
             accountType: account.accountType,
         };
-        console.log("Payload: ", payload);
         const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
         // Generate CSRF token
         const csrfToken = generateCSRFToken();
@@ -194,19 +224,25 @@ router.post('/otp', async (req, res) => {
         // Store the CSRF token in a secure, HttpOnly cookie
         res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'None' });
         res.clearCookie('tempToken');
-        log.info("Login is sucessfully");  // log when login is successful
+        req.log.info('User authenticated successfully using OTP');  // log when login is successful
         return res.status(200).json({ accountType: account.accountType, csrfToken: csrfToken, message: 'Logged in successfully.' });
     } catch (error) {
-        log.error(`${error}: server error`);  // log when caught error
-        console.error(error);
+        req.log.error(`Error during OTP verification: ${error.message}`);  // log when caught error
         return res.status(500).json({ error: 'Server error' });
     }
 });
 
-router.get('/user', async (req, res) => {
+/**
+ * Endpoint to fetch authenticated user details.
+ * @route GET /user
+ * @middleware authenticateToken - Middleware to validate JWT token.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
+router.get('/user', authenticateToken, async (req, res) => {
     const token = req.cookies.token;
     if (!token) {
-        log.warn(`User not authenticated`);
+        req.log.warn(`User not authenticated`);
         return res.status(200).json({ message: 'Not authenticated' });
     }
     try {
@@ -216,31 +252,43 @@ router.get('/user', async (req, res) => {
             select: { accountType: true },
         });
         if (!user) {
-            log.warn(`${error}: user not found`)  // log when login user is not found
+            req.log.warn('User not found'); // log when login user is not found
             return res.status(404).json({ error: 'User not found' });
         }
-        log.info(`user verified: ${user}`);
+        req.log.info('User verified successfully');
         return res.status(200).json(user);
     } catch (error) {
-        log.error(`${error}: server error`);  // log when there is error caught
+        req.log.error(`Error fetching user: ${error.message}`);    // log when there is error caught
         console.error(error);
         return res.status(500).json({ error: 'Server error' });
     }
 });
 
-
+/**
+ * Endpoint to handle user logout.
+ * @route POST /logout
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 router.post('/logout', (req, res) => {
-    log.info(`logging out`);  // log start of logging out
+    req.log.info('Logging out user');  // log start of logging out
     res.clearCookie('token', { path: '/', httpOnly: true, secure: true, sameSite: 'None' });
     res.clearCookie('csrfToken', { path: '/', httpOnly: true, secure: true, sameSite: 'Strict' });
-    log.info(`Logged out successfully`)  // log end of logging out
+    req.log.info('User logged out successfully');  // log end of logging out
     res.json({ message: "Logged out successfully." });
 });
 
+/**
+ * Endpoint to refresh CSRF token.
+ * @route POST /refreshCSRFToken
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 router.post('/refreshCSRFToken', (req, res) => {
     const csrfToken = generateCSRFToken();
     res.cookie('csrfToken', csrfToken, { httpOnly: true, secure: true, sameSite: 'Strict' });
+    req.log.info('CSRF token refreshed');
     res.json({ csrfToken: csrfToken });
 });
 
-module.exports = router;
+module.exports = router;  // Export the router for use in the main application

@@ -13,6 +13,11 @@ const validator = require('validator');
 //   return sanitizedData;
 // };
 
+/**
+ * Sanitizes an object's properties.
+ * @param {Object} data - The object to sanitize.
+ * @returns {Object} - The sanitized object.
+ */
 const sanitiseObj = (data) => {
   const sanitizedData = {};
   for (const key in data) {
@@ -24,6 +29,11 @@ const sanitiseObj = (data) => {
   return sanitizedData;
 };
 
+/**
+ * Sanitizes a string by removing potentially harmful characters.
+ * @param {string} input - The string to sanitize.
+ * @returns {string} - The sanitized string.
+ */
 const sanitiseStr = (input) => {
   // Remove special characters prone to exploits
   return input.replace(/[<>|:;"()\/\\]/g, '');
