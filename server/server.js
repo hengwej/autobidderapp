@@ -132,7 +132,7 @@ app.listen(port, () => {
   log.info({ message: `Server is running on port ${port}` });
 });
 
-app.use((err, req, res, next) => {
-    req.log.error({ message: err.message, stack: err.stack });
-    res.status(500).send('Something went wrong!');
-});
+// app.use((err, req, res, next) => {
+//     req.log.error({ message: err.message, stack: err.stack });
+//     res.status(500).send('Something went wrong!');
+// });
