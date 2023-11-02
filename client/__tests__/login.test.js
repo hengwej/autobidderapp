@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import Login from './index';
+import Login from '../src/pages/Auth/Login/index.js';
 
 // Mock the AuthProvider and other dependencies
 jest.mock('../src/utils/AuthProvider', () => {
