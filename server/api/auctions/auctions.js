@@ -14,11 +14,11 @@ const checkJwtToken = require('../../utils/JwtTokens');
  * @route POST /allAuction
  * @returns {Object[]} allAuctions - The list of all auctions.
  */
-router.post('/allAuction', async (req, res) => {
+router.post('/allAuction', async(req, res) => {
     try {
         const allAuctions = await prisma.auction.findMany();
         req.log.info("Successfully retrieved all auctions.");
-        res.json(allAuctions);
+        res.status(200).json(allAuctions);
     } catch (error) {
         req.log.error('Error fetching all auctions:', error);
         res.status(500).json({ error: 'Internal Server Error' });
@@ -34,32 +34,32 @@ router.post('/allAuction', async (req, res) => {
  * @param {Object} req.body - The bid details including carID and bidValue.
  * @returns {Object} - Updated auction details.
  */
-router.post('/addBid', csrfProtection, checkJwtToken, async (req, res) => {
+router.post('/addBid', csrfProtection, checkJwtToken, async(req, res) => {
     req.log.info("Attempt to add a bid.");
     try {
         // Extract user payload from the JWT
-        const payload = req.user;  
-        const newBid = req.body;  // Retrieving bid details from the request body
+        const payload = req.user;
+        const newBid = req.body; // Retrieving bid details from the request body
 
         // Update the auction with the new bid details
         const addBid = await prisma.auction.updateMany({
             where: {
-                carID: newBid.carID,  // Matching the carID field
+                carID: newBid.carID, // Matching the carID field
             },
             data: {
-                currentHighestBid: newBid.bidValue,  // Updating the currentHighestBid field
-                accountID: payload.accountID,  // Updating the accountID field
+                currentHighestBid: newBid.bidValue, // Updating the currentHighestBid field
+                accountID: payload.accountID, // Updating the accountID field
             },
         });
         req.log.info(`Successfully added bid for carID: ${newBid.carID}`);
-        res.json(addBid);  // Sending the updated auction details as a JSON response
+        res.json(addBid); // Sending the updated auction details as a JSON response
     } catch (error) {
         if (error.name === 'TokenExpiredError') {
             req.log.error(`Token has expired: ${error}`);
-            return res.status(401).json({ error: 'Token has expired' });  // If token is expired, send a 401 Unauthorized error response
+            return res.status(401).json({ error: 'Token has expired' }); // If token is expired, send a 401 Unauthorized error response
         }
         req.log.error(`Error during bid addition: ${error}`);
-        res.status(500).json({ error: 'Internal Server Error' });  // For other errors, send a 500 Internal Server Error response
+        res.status(500).json({ error: 'Internal Server Error' }); // For other errors, send a 500 Internal Server Error response
     }
 });
 
@@ -71,16 +71,16 @@ router.post('/addBid', csrfProtection, checkJwtToken, async (req, res) => {
  * @param {Object} req.body - The auction details including auctionID and new status.
  * @returns {Object} - Updated auction details.
  */
-router.post('/updateAuctionToClose', async (req, res) => {
-    const closeAuction = req.body;  // Retrieve auction details from request body
+router.post('/updateAuctionToClose', async(req, res) => {
+    const closeAuction = req.body; // Retrieve auction details from request body
     try {
         // Update the auction status to 'closed'
         const updateClose = await prisma.auction.updateMany({
             where: {
-                auctionID: closeAuction.auctionID,  // Matching the auctionID field
+                auctionID: closeAuction.auctionID, // Matching the auctionID field
             },
             data: {
-                auctionStatus: closeAuction.status,  // Updating the auctionStatus field
+                auctionStatus: closeAuction.status, // Updating the auctionStatus field
             },
         });
         req.log.info(`Successfully closed auction with auctionID: ${closeAuction.auctionID}`);
@@ -100,8 +100,8 @@ router.post('/updateAuctionToClose', async (req, res) => {
  * @param {Object} req.body - The order details including orderStatus and auctionID.
  * @returns {Object} - New or updated order details.
  */
-router.put('/addOrder', csrfProtection, checkJwtToken, async (req, res) => {
-    const { orderStatus, auctionID } = req.body;  // Destructure orderStatus and auctionID from request body
+router.put('/addOrder', csrfProtection, checkJwtToken, async(req, res) => {
+    const { orderStatus, auctionID } = req.body; // Destructure orderStatus and auctionID from request body
     try {
         // Verify the token and extract the account ID
         const payload = req.user;
@@ -148,8 +148,8 @@ router.put('/addOrder', csrfProtection, checkJwtToken, async (req, res) => {
  * @param {Object} req.body - The order details including orderStatus and auctionID.
  * @returns {Object} - Updated order details.
  */
-router.put('/completeOrder', async (req, res) => {
-    const { orderStatus, auctionID } = req.body;  // Destructure orderStatus and auctionID from request body
+router.put('/completeOrder', async(req, res) => {
+    const { orderStatus, auctionID } = req.body; // Destructure orderStatus and auctionID from request body
     try {
         // Find the order with the specified auctionID
         const updateOrder = await prisma.orders.findFirst({
@@ -183,8 +183,8 @@ router.put('/completeOrder', async (req, res) => {
  * @param {Object} req.body - The auctionID to identify the relevant order.
  * @returns {Object} - New selling history record or error message.
  */
-router.post('/addSellingHistory', csrfProtection, checkJwtToken, async (req, res) => {
-    const { auctionID } = req.body;  // Destructure auctionID from request body
+router.post('/addSellingHistory', csrfProtection, checkJwtToken, async(req, res) => {
+    const { auctionID } = req.body; // Destructure auctionID from request body
     try {
         // Check if there's an existing order for the specified auctionID
         const existingOrder = await prisma.orders.findFirst({
