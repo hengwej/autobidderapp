@@ -8,7 +8,7 @@ describe('getAllAuctions', () => {
     it('fetches successfully data from an API', async () => {
         // Arrange
         //const mockData = [{ /* Add your mock data here */ }];
-        mock.onPost('/api/auctions/allAuction').reply(200, mockData);
+        //mock.onPost('/api/auctions/allAuction').reply(200, mockData);
 
         // Act
         const response = await getAllAuctions();
