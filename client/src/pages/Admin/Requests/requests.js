@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { useNavigate } from "react-router-dom";
 import { Table, Card, Container, Row, Col } from 'react-bootstrap';
-import axios from 'axios';
 import Button from "react-bootstrap/Button";
 import { Dropdown } from 'react-bootstrap';
+import * as requestsAPI from "../../../utils/RequestsAPI.js";
 
 class Requests extends Component {
     constructor(props) {
@@ -18,7 +18,7 @@ class Requests extends Component {
 
     async componentDidMount() {
         try {
-            const response = await axios.get('http://127.0.0.1:5000/api/requests/getAllRequests');
+            const response = await requestsAPI.getAllRequests();
             this.setState({ requests: response.data, loading: false });
         } catch (error) {
             console.error("Error fetching data:", error);
@@ -85,7 +85,7 @@ class Requests extends Component {
                                                     <td>{Date(request.requestSubmissionTime).toLocaleString('en-US', { timeZone: 'Asia/Singapore' })}</td>
                                                     <td>{request.vehicleNumber}</td>
                                                     <td>
-                                                       
+
 
                                                         <Button
                                                             style={{ backgroundColor: "#ff692d", border: "none" }}

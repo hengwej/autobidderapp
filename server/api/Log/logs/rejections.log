@@ -1,0 +1,58 @@
+2023-10-31T18:45:13.112Z error: uncaughtException: Unexpected token '('
+C:\Temp\3203\project\app\autobidderapp\server\api\cars\sellCar.js:138
+        accountLog.(err)
+                   ^
+
+SyntaxError: Unexpected token '('
+    at Object.compileFunction (node:vm:352:18)
+    at wrapSafe (node:internal/modules/cjs/loader:1033:15)
+    at Module._compile (node:internal/modules/cjs/loader:1069:27)
+    at Object.Module._extensions..js (node:internal/modules/cjs/loader:1159:10)
+    at Module.load (node:internal/modules/cjs/loader:981:32)
+    at Function.Module._load (node:internal/modules/cjs/loader:822:12)
+    at Module.require (node:internal/modules/cjs/loader:1005:19)
+    at require (node:internal/modules/cjs/helpers:102:18)
+    at Object.<anonymous> (C:\Temp\3203\project\app\autobidderapp\server\server.js:48:19)
+    at Module._compile (node:internal/modules/cjs/loader:1105:14)
+2023-10-31T18:56:49.685Z error: uncaughtException: Unexpected token '.'
+C:\Temp\3203\project\app\autobidderapp\server\api\cars\sellCar.js:290
+    req..error(`${err.message}, Stack: ${err.stack}`);
+        ^
+
+SyntaxError: Unexpected token '.'
+    at Object.compileFunction (node:vm:352:18)
+    at wrapSafe (node:internal/modules/cjs/loader:1033:15)
+    at Module._compile (node:internal/modules/cjs/loader:1069:27)
+    at Object.Module._extensions..js (node:internal/modules/cjs/loader:1159:10)
+    at Module.load (node:internal/modules/cjs/loader:981:32)
+    at Function.Module._load (node:internal/modules/cjs/loader:822:12)
+    at Module.require (node:internal/modules/cjs/loader:1005:19)
+    at require (node:internal/modules/cjs/helpers:102:18)
+    at Object.<anonymous> (C:\Temp\3203\project\app\autobidderapp\server\server.js:48:19)
+    at Module._compile (node:internal/modules/cjs/loader:1105:14)
+2023-10-31T19:23:53.147Z error: uncaughtException: app.use() requires a middleware function
+TypeError: app.use() requires a middleware function
+    at Function.use (C:\Temp\3203\project\app\autobidderapp\server\node_modules\express\lib\application.js:217:11)
+    at Object.<anonymous> (C:\Temp\3203\project\app\autobidderapp\server\server.js:59:5)
+    at Module._compile (node:internal/modules/cjs/loader:1105:14)
+    at Object.Module._extensions..js (node:internal/modules/cjs/loader:1159:10)
+    at Module.load (node:internal/modules/cjs/loader:981:32)
+    at Function.Module._load (node:internal/modules/cjs/loader:822:12)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:77:12)
+    at node:internal/main/run_main_module:17:47
+2023-10-31T21:46:11.591Z error: uncaughtException: Unexpected token '}'
+C:\Temp\3203\project\app\autobidderapp\server\api\cars\sellCar.js:39
+};
+^
+
+SyntaxError: Unexpected token '}'
+    at Object.compileFunction (node:vm:352:18)
+    at wrapSafe (node:internal/modules/cjs/loader:1033:15)
+    at Module._compile (node:internal/modules/cjs/loader:1069:27)
+    at Object.Module._extensions..js (node:internal/modules/cjs/loader:1159:10)
+    at Module.load (node:internal/modules/cjs/loader:981:32)
+    at Function.Module._load (node:internal/modules/cjs/loader:822:12)
+    at Module.require (node:internal/modules/cjs/loader:1005:19)
+    at require (node:internal/modules/cjs/helpers:102:18)
+    at Object.<anonymous> (C:\Temp\3203\project\app\autobidderapp\server\server.js:53:19)
+    at Module._compile (node:internal/modules/cjs/loader:1105:14)

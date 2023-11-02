@@ -97,7 +97,6 @@ export default class Home extends Component {
             });
 
             this.setState({ timeLeft: updatedTimers });
-            clearInterval(this.countdownInterval);
         }, 1000);
     };
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { useParams } from "react-router-dom";
 import { Card, Container } from "react-bootstrap";
+import * as usersAPI from "../../../utils/UserProfileAPI.js";
 
 export default function ViewUserDetails() {
     const { userID } = useParams();
@@ -11,7 +11,7 @@ export default function ViewUserDetails() {
 
     useEffect(() => {
         // Fetch user details based on the userId from the URL
-        axios.get(`http://127.0.0.1:5000/api/users/viewUser/${userID}`)
+        usersAPI.viewUser(userID)
             .then((response) => {
                 setUser(response.data);
                 setLoading(false);
