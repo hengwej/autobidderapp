@@ -40,7 +40,7 @@ const ViewUserProfileDetails = () => {
       {loading ? (
         <p>Loading user data...</p>
       ) : user && account ? (
-        <Card>
+        <Card className="custom-card">
           <Row>
             <Col>
               <Card.Body>
