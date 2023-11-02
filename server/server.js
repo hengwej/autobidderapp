@@ -4,6 +4,10 @@ const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
+const rateLimit = require('express-rate-limit');
+const slowDown = require('express-slow-down');
+const rateLimitHeaderParser = require('ratelimit-header-parser');
+
 
 const app = express();
 const port = 5000;
@@ -47,6 +51,30 @@ function checkRole(role) {
     });
   };
 }
+
+
+
+
+// Rate limiting configurations
+// Set up rate limiter: maximum of five requests per minute
+const limiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 100, // limit each IP to 5 requests per windowMs
+  headers: true, // Add rate limit info to the `RateLimit-*` headers
+});
+
+const speedLimiter = slowDown({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  delayAfter: 5, // Allow 5 requests per 15 minutes.
+  delayMs: (hits) => hits * 100, // Add 100 ms of delay to every request after the 5th one.
+})
+
+// Apply the rate limiting middleware to all requests
+app.use(limiter);
+
+// Apply the speed limiting middleware to all requests
+app.use(speedLimiter);
+
 
 // Importing route handlers
 const logMiddleware = require('./api/Log/logMiddleware');
