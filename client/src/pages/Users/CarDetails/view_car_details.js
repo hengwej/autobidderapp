@@ -166,21 +166,46 @@ export default function ViewCarDetails() {
 
                 </div>
 
-                <div className="timer">
-                    <b>Time Left:</b>{" "}
-                    {Object.keys(timeLeft).map((interval) => (
-                        <span key={interval}>
-                            {timeLeft[interval]} {interval}{" "}
-                        </span>
-                    ))}
-                    <b>High Bid($) </b>
-                    <span>{currentHighestBid}</span>
-                </div>
-
-                {user && (user.accountType === 'admin' || user.accountType === 'bidder') && (
-                    <Button variant="warning" onClick={handlePlaceBidShow} style={{ marginLeft: 585 + 'px', padding: 8 + 'px' }}>
-                        Place Bid
-                    </Button>
+                {user ? (
+                    user.accountType === 'admin' || user.accountType === 'bidder' ? (
+                        <>
+                            <div className="timer">
+                                <b>Time Left:</b>{" "}
+                                {Object.keys(timeLeft).map((interval) => (
+                                    <span key={interval}>
+                                        {timeLeft[interval]} {interval}{" "}
+                                    </span>
+                                ))}
+                                <b>High Bid($) </b>
+                                <span>{currentHighestBid}</span>
+                            </div>
+                            <Button variant="warning" onClick={handlePlaceBidShow} style={{ marginLeft: '585px', padding: '8px' }}>
+                                Place Bid
+                            </Button>
+                        </>
+                    ) : (
+                        <div className="timerNoLogin">
+                            <b>Time Left:</b>{" "}
+                            {Object.keys(timeLeft).map((interval) => (
+                                <span key={interval}>
+                                    {timeLeft[interval]} {interval}{" "}
+                                </span>
+                            ))}
+                            <b>High Bid($) </b>
+                            <span>{currentHighestBid}</span>
+                        </div>
+                    )
+                ) : (
+                    <div className="timerNoLogin">
+                        <b>Time Left:</b>{" "}
+                        {Object.keys(timeLeft).map((interval) => (
+                            <span key={interval}>
+                                {timeLeft[interval]} {interval}{" "}
+                            </span>
+                        ))}
+                        <b>High Bid($) </b>
+                        <span>{currentHighestBid}</span>
+                    </div>
                 )}
 
                 <Modal show={showPlaceBidModal} onHide={handlePlaceBidClose}>
