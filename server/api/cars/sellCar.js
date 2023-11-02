@@ -16,12 +16,14 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const { DateTime } = require('luxon');
 const { log, createLogWrapper } = require('../Log/log');
+const csrfProtection = require('../../utils/CsrfUtils');
+const checkJwtToken = require('../../utils/JwtTokens');
 
 router.use(cookieParser());  // Middleware for parsing cookies from the client
 
 // Middleware to set cookie for session management
 router.use((req, res, next) => {
-     // Setting a cookie named 'session' with value '1'
+    // Setting a cookie named 'session' with value '1'
     // The cookie is HttpOnly, has a SameSite policy of 'strict', and is sent only over HTTPS
     res.cookie('session', '1', {
         httpOnly: true,
@@ -159,7 +161,7 @@ router.get('/allCar', async (req, res, next) => {
 });
 
 // Define a route to add a new car entry to the database
-router.post('/addCar', async (req, res, next) => {
+router.post('/addCar', csrfProtection, checkJwtToken, async (req, res, next) => {
     try {
         const newCar = await prisma.car.create({
             data: req.body,
@@ -190,8 +192,7 @@ router.post('/sellCar',
         check('exteriorColor').isString().trim().escape(),
         check('startingBid').isNumeric().trim().escape(),
         check('reservePrice').isNumeric().trim().escape(),
-    ],
-    async (req, res, next) => {
+    ], csrfProtection, checkJwtToken, async (req, res, next) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             const error = new Error('Validation Error');
