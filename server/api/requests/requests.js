@@ -1,4 +1,3 @@
-
 const express = require('express');
 const { PrismaClient } = require('@prisma/client');
 const router = express.Router();
@@ -7,126 +6,143 @@ const prisma = new PrismaClient();
 const csrfProtection = require('../../utils/CsrfUtils');
 const checkJwtToken = require('../../utils/JwtTokens');
 
+// Set to keep track of processed requests to prevent double processing
 const processedRequests = new Set();
 
+/**
+ * Helper function to validate request ID.
+ * @param {string} requestID - The request ID to validate.
+ * @returns {number|null} - Returns parsed request ID or null if invalid.
+ */
+function validateRequestID(requestID) {
+    const parsedID = parseInt(requestID);
+    return isNaN(parsedID) ? null : parsedID;
+}
 
+/**
+ * Endpoint to fetch all requests from the database.
+ * @route GET /getAllRequests
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 router.get('/getAllRequests', csrfProtection, checkJwtToken, async (req, res) => {
-    const allRequests = await prisma.request.findMany();
-    res.json(allRequests);
+    try {
+        req.log.info("Fetching all requests");  // Logging the start of the operation
+        const allRequests = await prisma.request.findMany();
+        req.log.info("Successfully Fetched all requests");  // Logging the end of the operation
+        res.json(allRequests);
+    } catch (error) {
+        req.log.error(`Error fetching all requests: ${error.message}`);  // Logging in case of an error
+        res.status(500).send("Internal server error");
+    }
 });
 
+/**
+ * Endpoint to view details of a specific request.
+ * @route GET /viewRequestDetails/:requestID
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 router.get('/viewRequestDetails/:requestID', csrfProtection, checkJwtToken, async (req, res) => {
+    const requestID = validateRequestID(req.params.requestID);
+    if (!requestID) {
+        req.log.warn(`Invalid request ID received: ${req.params.requestID}`);
+        return res.status(400).json({ error: 'Invalid request ID' });
+    }
     try {
-        const requestID = parseInt(req.params.requestID);
-        console.log("Received request for user ID:", requestID);
-
-        if (isNaN(requestID)) {
-            console.log("Invalid request ID received:", req.params.id);
-            return res.status(400).json({ error: 'Invalid request ID' });
-        }
-
-        // Here you can use await since this function is marked as async
-        const user = await prisma.request.findUnique({
+        req.log.info(`Fetching details for request ID: ${requestID}`);
+        const requestDetails = await prisma.request.findUnique({
             where: { requestID: requestID },
         });
-
-        if (!user) {
-            return res.status(404).json({ error: 'request not found' });
+        if (!requestDetails) {
+            req.log.warn(`Request not found for ID: ${requestID}`);
+            return res.status(404).json({ error: 'Request not found' });
         }
-
-        res.json(user);
+        req.log.info(`Successfully retrieved details for request ID: ${requestID}`);
+        res.json(requestDetails);
     } catch (error) {
-        console.error("Error retrieving request details:", error);
+        req.log.error(`Error retrieving request details for ID ${requestID}: ${error.message}`);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
 
+/**
+ * Endpoint to reject a specific request.
+ * @route DELETE /rejectRequest/:requestID
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 router.delete('/rejectRequest/:requestID', csrfProtection, checkJwtToken, async (req, res) => {
+    const requestID = validateRequestID(req.params.requestID);
+    if (!requestID) {
+        req.log.warn(`Invalid request ID provided for rejection: ${requestID}`);
+        return res.status(400).json({ error: 'Invalid request ID' });
+    }
     try {
-        const requestID = parseInt(req.params.requestID);
-
-        if (isNaN(requestID)) {
-            return res.status(400).json({ error: 'Invalid request ID' });
-        }
-
-        // Check if the request has already been processed
         if (processedRequests.has(requestID)) {
+            req.log.warn(`Attempt to process already processed request ID: ${requestID}`);
             return res.status(400).json({ error: 'Request has already been processed' });
         }
-
-        // Check if the request exists before rejection
         const existingRequest = await prisma.request.findUnique({
             where: { requestID: requestID },
         });
-
         if (!existingRequest) {
+            req.log.warn(`Request not found for rejection with ID: ${requestID}`);
             return res.status(404).json({ error: 'Request not found' });
         }
-
-        // Update the request status to 'rejected'
         await prisma.request.update({
             where: { requestID: requestID },
-            data: {
-                requestStatus: 'Rejected',
-            },
+            data: { requestStatus: 'Rejected' },
         });
-
-        // Mark the request as processed
         processedRequests.add(requestID);
-
+        req.log.info(`Request with ID ${requestID} rejected successfully`);
         res.json({ message: 'Request rejected successfully' });
     } catch (error) {
-        console.error('Error rejecting request:', error);
+        req.log.error(`Error rejecting request with ID ${requestID}: ${error.message}`);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
 
+/**
+ * Endpoint to approve a specific request.
+ * @route POST /approveRequest/:requestID
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 router.post('/approveRequest/:requestID', csrfProtection, checkJwtToken, async (req, res) => {
-    const token = req.cookies.token;
-
-    if (!token) return res.status(401).json({ error: 'Unauthorized' });
-
-
     try {
-        //Verify token
+        req.log.info(`Attempting to approve request with ID: ${req.params.requestID}`);  // Logging the start of approval
+        // Verify token
+        const token = req.cookies.token;
+        if (!token) {
+            req.log.warn('Unauthorized attempt to approve request');  // Logging unauthorized attempt
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
         const payload = jwt.verify(token, process.env.JWT_SECRET);
         const hardcodedAccountID = payload.accountID;
-
-
-        const requestID = parseInt(req.params.requestID);
-
-        if (isNaN(requestID)) {
+        const requestID = validateRequestID(req.params.requestID);
+        if (!requestID) {
+            req.log.warn(`Invalid request ID provided for approval: ${requestID}`);  // Logging when invalid ID is provided
             return res.status(400).json({ error: 'Invalid request ID' });
-        } else {
-            console.log("Request ID is valid");
         }
-
         // Check if the request has already been processed
         if (processedRequests.has(requestID)) {
+            req.log.warn(`Attempt to process already processed request ID: ${requestID}`);  // Logging when request is already processed
             return res.status(400).json({ error: 'Request has already been processed' });
-        } else {
-            console.log("Request has not been processed");
         }
-
         // Check if the request exists before approval
         const existingRequest = await prisma.request.findUnique({
             where: { requestID: requestID },
         });
-
         if (!existingRequest) {
+            req.log.warn(`Request not found for approval with ID: ${requestID}`);  // Logging when request is not found
             return res.status(404).json({ error: 'Request not found' });
         }
-
         // Calculate endDate as 1 week (7 days) later from the startDate
         const startDate = new Date(); // Set the start date to the current timestamp
         const endDate = new Date(startDate);
         endDate.setDate(endDate.getDate() + 7); // Add 7 days to the start date to get the end date
-        console.log('existingRequest:', existingRequest);
-        console.log('req.user:', req.user);
         const accountID = existingRequest.accountID; // Fetch accountID from existingRequest
-
-
-
         // Create a new car record in the car table using the request data
         const newCar = await prisma.car.create({
             data: {
@@ -147,7 +163,6 @@ router.post('/approveRequest/:requestID', csrfProtection, checkJwtToken, async (
                 updatedAt: new Date(),
             },
         });
-
         const newAuction = await prisma.auction.createMany({
             data: {
                 auctionStatus: 'OPENED',
@@ -162,17 +177,15 @@ router.post('/approveRequest/:requestID', csrfProtection, checkJwtToken, async (
                 updatedAt: new Date(),
             },
         });
-
         // Mark the request as processed
         processedRequests.add(requestID);
-
         await prisma.request.delete({
             where: { requestID: requestID },
         });
-
+        req.log.info(`Request with ID ${requestID} approved successfully and car added to the car table`);  // Logging successful approval
         res.json({ message: 'Request approved, car added to the car table, and auction opened' });
     } catch (error) {
-        console.error('Error approving request:', error);
+        req.log.error(`Error approving request with ID ${requestID}: ${error.message}`);  // Logging in case of an error
         res.status(500).json({ error: 'Internal server error' });
     }
 });
