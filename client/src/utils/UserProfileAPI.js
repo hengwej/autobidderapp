@@ -24,7 +24,7 @@ export const updateUser = async (requestData, csrfToken) => {
 
 export const deleteAccount = async (csrfToken) => {
     try {
-        const response = await api.delete("/api/users/deleteAccount", {}, {
+        const response = await api.delete("/api/users/deleteAccount", {
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRF-Token': csrfToken,
