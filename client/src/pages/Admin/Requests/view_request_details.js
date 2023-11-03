@@ -33,7 +33,7 @@ export default function ViewRequestDetails() {
                 setError(error);
                 setLoading(false);
             });
-    }, [requestID]);
+    }, [csrfToken,requestID]);
 
     const handleApprove = () => {
 
