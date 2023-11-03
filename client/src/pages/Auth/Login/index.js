@@ -72,10 +72,10 @@ function Login() {
                     {({ isSubmitting, isValid, values }) => (
                         <Form>
                             <label>Username: </label>
-                            <Field id="inputLoginUsername" type="text" name="username" placeholder="Username" />
+                            <Field id="inputLoginUsername" data-testid="inputLoginUsername" type="text" name="username" placeholder="Username" />
                             <ErrorMessage className="error-message" name="username" component="span" />
                             <label>Password: </label>
-                            <Field id="inputLoginPassword" type="password" name="password" placeholder="Password" />
+                            <Field id="inputLoginPassword" data-testid="inputLoginPassword" type="password" name="password" placeholder="Password" />
                             <ErrorMessage className="error-message" name="password" component="span" />
                             <ErrorMessage className="error-message" name="login-error" component="span" />
                             <ReCAPTCHA

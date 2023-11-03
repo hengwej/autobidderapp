@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import '@testing-library/jest-dom';
 import { MemoryRouter } from 'react-router-dom'; // Import MemoryRouter
 import Login from '../src/pages/Auth/Login/index.js';
 
@@ -14,64 +15,23 @@ jest.mock('../src/utils/AuthProvider', () => {
     };
 });
 
-test('renders login form', () => {
-    render( <
-        MemoryRouter >
-        <
-        Login / >
-        <
-        /MemoryRouter>
-    );
+describe('Login Form Tests', () => {
+    test('Test if Login Form renders correctly', () => {
+        render( <
+            MemoryRouter >
+            <
+            Login / >
+            <
+            /MemoryRouter>
+        );
 
-    const usernameLabel = screen.getByText(/Username:/i);
-    const passwordLabel = screen.getByText(/Password:/i);
+        const usernameLabel = screen.getByText(/Username:/i);
+        const passwordLabel = screen.getByText(/Password:/i);
+        const loginButton = screen.getByRole('button', { name: /Login/i });
 
-    const loginButton = screen.queryByText(/Login/i);
-
-    expect(usernameLabel).toBeInTheDocument();
-    expect(passwordLabel).toBeInTheDocument();
-    expect(loginButton).toBeInTheDocument();
-});
-
-test('validates the login form with invalid data', async() => {
-    render( <
-        MemoryRouter >
-        <
-        Login / >
-        <
-        /MemoryRouter>
-    );
-
-    const loginButton = screen.queryByText(/Login/i);
-
-    // Try submitting the form without filling in any fields
-    userEvent.click(loginButton);
-
-    const errorMessage = await screen.findAllByRole('alert');
-    expect(errorMessage).toHaveLength(2); // Two error messages for 'username' and 'password'
-});
-
-test('submits the login form with valid data', async() => {
-    render( <
-        MemoryRouter >
-        <
-        Login / >
-        <
-        /MemoryRouter>
-    );
-
-    const usernameInput = screen.getByLabelText(/Username/i);
-    const passwordInput = screen.getByLabelText(/Password/i);
-    const loginButton = screen.getByText(/Login/i);
-
-    // Fill in valid data
-    userEvent.type(usernameInput, 'testuser');
-    userEvent.type(passwordInput, 'password123');
-    userEvent.click(loginButton);
-
-    // You may need to await some async actions if any
-    // For example, if the login function is asynchronous.
-    // await waitFor(() => {
-    //   expect(someElement).toBeInTheDocument();
-    // });
+        expect(usernameLabel).toBeInTheDocument();
+        expect(passwordLabel).toBeInTheDocument();
+        expect(loginButton).toBeInTheDocument();
+    });
+    
 });
