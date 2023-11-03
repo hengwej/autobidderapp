@@ -13,7 +13,6 @@ export default function ViewCarDetails() {
     const [carData, setCarData] = useState({});
     const [timeLeft, setTimeLeft] = useState({});
     const [showPlaceBidModal, setShowPlaceBidModal] = useState(false);
-    const [setError] = useState(null);
     const [currentHighestBid, setCurrentHighestBid] = useState(null);
     const [auctionEndDate, setAuctionEndDate] = useState(null);
     const [setUserName] = useState(null);
@@ -70,12 +69,11 @@ export default function ViewCarDetails() {
 
             } catch (error) {
                 console.error("Error fetching data:", error);
-                setError(error);
             }
         }
 
         fetchData();
-    }, [carID, setError, setUserName]);
+    }, [carID]);
 
     useEffect(() => {
         if (carData && carData.createdAt) {

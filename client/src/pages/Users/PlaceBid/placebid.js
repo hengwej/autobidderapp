@@ -40,9 +40,6 @@ export default function PlaceBid({ carID, handleClose }) {
                 setAuctionData(data);
                 setLoading(false);
 
-                //const biddingHistoryResponse = await bidAPI.allBidHistory(csrfToken);
-                //const biddingHistoryData = biddingHistoryResponse.data;
-
             } catch (error) {
                 console.error("Error fetching data:", error);
                 setError(error);
