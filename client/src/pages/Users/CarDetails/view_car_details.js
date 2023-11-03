@@ -15,11 +15,8 @@ export default function ViewCarDetails() {
     const [showPlaceBidModal, setShowPlaceBidModal] = useState(false);
     const [setError] = useState(null);
     const [currentHighestBid, setCurrentHighestBid] = useState(null);
-    const [auctionStartDate, setAuctionStartDate] = useState(null);
     const [auctionEndDate, setAuctionEndDate] = useState(null);
-    const [auctionID, setAuctionID] = useState(null);
-    const [accountID, setAccountID] = useState(null);
-    const [userName, setUserName] = useState(null);
+    const [setUserName] = useState(null);
     const { user } = useAuth();
     let countdownInterval;
 
@@ -63,7 +60,6 @@ export default function ViewCarDetails() {
 
                 if (auction) {
                     setCurrentHighestBid(auction.currentHighestBid);
-                    setAuctionStartDate(auction.startDate);
                     setAuctionEndDate(auction.endDate);
                 } else {
                     console.log("Auction not found for carID: " + carID);
@@ -79,7 +75,7 @@ export default function ViewCarDetails() {
         }
 
         fetchData();
-    }, [carID]);
+    }, [carID, setError, setUserName]);
 
     useEffect(() => {
         if (carData && carData.createdAt) {
@@ -89,7 +85,6 @@ export default function ViewCarDetails() {
     }, [carData]);
 
     const calculateTimeLeft = () => {
-        const startDate = new Date(auctionStartDate);
         const endDate = new Date(auctionEndDate);
         const currentDate = new Date();
     
@@ -129,7 +124,7 @@ export default function ViewCarDetails() {
                         <label className="cardetails_label">{carData.make}&nbsp;{carData.model}</label><br />
                         <div className="carDetails">
                             {carData && carData.carImage && carData.carImage.data && (
-                                <img src={URL.createObjectURL(new File([new Blob([new Uint8Array(carData.carImage.data)])], { type: 'image/jpeg' }))} className="carImages" />
+                                <img src={URL.createObjectURL(new File([new Blob([new Uint8Array(carData.carImage.data)])], { type: 'image/jpeg' }))} className="carImages"  alt=""/>
                             )}
                         </div>
                     </div>
