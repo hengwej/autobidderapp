@@ -6,11 +6,16 @@ const app = express();
 app.use(express.json());
 app.use('/api/auctions', auctionsRouter);
 
+// Set the base URL for your requests
+const baseUrl = 'http://localhost:5000';
+
 describe('Auctions API Endpoints', () => {
-    test('GET /api/auctions/allAuction should return all auctions', async() => {
-        const response = await request(app).post('/api/auctions/allAuction');
+    test('POST /api/auctions/allAuction should return all auctions', async() => {
+        const response = await request(app).post('/api/auctions/allAuction')
+            .set('Host', baseUrl); // Set the base URL
+
+        console.log(response.body);
         expect(response.status).toBe(200);
-        //expect(response.body).toHaveLength(2); // Update the expected length according to your test data
     });
 
     // Add more test cases for other routes as needed
