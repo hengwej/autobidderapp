@@ -8,6 +8,7 @@ import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js'; /
 import * as auctionAPI from "../../../utils/AuctionAPI.js"
 import * as bidAPI from "../../../utils/BidAPI.js"
 import { useAuth } from '../../../utils/AuthProvider';
+import * as paymentAPI from "../../../utils/StripeAPI.js";
 
 export default function PlaceBid({ carID, handleClose }) {
     const [setAuctionData] = useState({});
@@ -90,10 +91,8 @@ export default function PlaceBid({ carID, handleClose }) {
             setPaymentError(error.message || 'Payment failed');
         } else {
             console.log('[PaymentMethod]', paymentMethod);
-            const response = await axios.post('/api/stripe/create-payment-intent', {
-                amount: bidValue * 100, // Convert to cents and use bidValue
-                currency: 'usd'
-            });
+
+            const response = await paymentAPI.createPayment(bidValue, csrfToken);
 
             const clientSecret = response.data.clientSecret;
 

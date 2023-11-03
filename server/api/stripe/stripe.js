@@ -12,6 +12,7 @@ const checkJwtToken = require('../../utils/JwtTokens');
 router.post('/create-payment-intent', csrfProtection, checkJwtToken, async (req, res) => {
     try {
         const { amount, currency } = req.body;
+
         // Validate the received amount and currency
         if (!amount || !currency) {
             req.log.warn('Amount and currency are required.');  // Updated logging method
