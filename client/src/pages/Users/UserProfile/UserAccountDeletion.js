@@ -10,7 +10,7 @@ const UserAccountDeletion = () => {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   // CSRF Token
-  const { csrfToken } = useAuth();
+  const { setUser, csrfToken } = useAuth();
 
 
   // Get the navigate function from the hook
@@ -51,9 +51,10 @@ const UserAccountDeletion = () => {
   const handleCloseSuccessModal = () => {
     // Close the success message modal
     setShowSuccessModal(false);
-
+    
     // Redirect to the login page
     navigate('/auth/login');
+    setUser(null);
   };
 
   return (

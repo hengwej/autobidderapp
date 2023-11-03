@@ -101,7 +101,7 @@ export const AuthProvider = ({ children }) => {
             const userWantsToLogout = window.confirm('Are you sure you want to log out?');
             if (userWantsToLogout) {
                 // User clicked "OK," proceed with logout
-                window.alert('Logout sucessful! You will redirected to the homepage.');
+                window.alert('Logout successful! You will redirected to the homepage.');
                 // Redirect the user to the home page
                 window.location.href = '/';
                 setUser(null);
@@ -114,7 +114,7 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    const value = { user, login, otp, logout, csrfToken, loading };
+    const value = { user, login, otp, logout, csrfToken, loading, setUser };
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 

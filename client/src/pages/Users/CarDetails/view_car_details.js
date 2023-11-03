@@ -13,15 +13,10 @@ export default function ViewCarDetails() {
     const [carData, setCarData] = useState({});
     const [timeLeft, setTimeLeft] = useState({});
     const [showPlaceBidModal, setShowPlaceBidModal] = useState(false);
-    const [setError] = useState(null);
     const [currentHighestBid, setCurrentHighestBid] = useState(null);
-    const [auctionStartDate, setAuctionStartDate] = useState(null);
     const [auctionEndDate, setAuctionEndDate] = useState(null);
-    const [auctionID, setAuctionID] = useState(null);
-    const [accountID, setAccountID] = useState(null);
-    const [userName, setUserName] = useState(null);
+    const [setUserName] = useState(null);
     const { user } = useAuth();
-    let countdownInterval;
 
     const handlePlaceBidClose = () => {
         setShowPlaceBidModal(false);
@@ -63,7 +58,6 @@ export default function ViewCarDetails() {
 
                 if (auction) {
                     setCurrentHighestBid(auction.currentHighestBid);
-                    setAuctionStartDate(auction.startDate);
                     setAuctionEndDate(auction.endDate);
                 } else {
                     console.log("Auction not found for carID: " + carID);
@@ -74,52 +68,51 @@ export default function ViewCarDetails() {
 
             } catch (error) {
                 console.error("Error fetching data:", error);
-                setError(error);
             }
         }
 
         fetchData();
-    }, [carID]);
+    }, [carID, setUserName]);
 
     useEffect(() => {
+        let countdownInterval;
+        const calculateTimeLeft = () => {
+            const endDate = new Date(auctionEndDate);
+            const currentDate = new Date();
+
+
+            const difference = endDate - currentDate;
+
+            if (difference > 0) {
+                const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
+                const minutes = Math.floor((difference / (1000 * 60)) % 60);
+                const seconds = Math.floor((difference / 1000) % 60);
+
+                setTimeLeft({
+                    days,
+                    hours,
+                    minutes,
+                    seconds,
+                });
+            } else {
+                clearInterval(countdownInterval);
+                setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+                console.log('The event has ended.');
+            }
+        };
+
+        const startCountdown = () => {
+            countdownInterval = setInterval(() => {
+                calculateTimeLeft();
+            }, 1000);
+        };
+
         if (carData && carData.createdAt) {
             calculateTimeLeft();
             startCountdown();
         }
-    }, [carData]);
-
-    const calculateTimeLeft = () => {
-        const startDate = new Date(auctionStartDate);
-        const endDate = new Date(auctionEndDate);
-        const currentDate = new Date();
-    
-
-        const difference = endDate - currentDate;
-
-        if (difference > 0) {
-            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
-            const minutes = Math.floor((difference / (1000 * 60)) % 60);
-            const seconds = Math.floor((difference / 1000) % 60);
-
-            setTimeLeft({
-                days,
-                hours,
-                minutes,
-                seconds,
-            });
-        } else {
-            clearInterval(countdownInterval);
-            setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-            console.log('The event has ended.');
-        }
-    };
-
-    const startCountdown = () => {
-        countdownInterval = setInterval(() => {
-            calculateTimeLeft();
-        }, 1000);
-    };
+    }, [carData, auctionEndDate]);
 
     return (
         <Container>
@@ -129,7 +122,7 @@ export default function ViewCarDetails() {
                         <label className="cardetails_label">{carData.make}&nbsp;{carData.model}</label><br />
                         <div className="carDetails">
                             {carData && carData.carImage && carData.carImage.data && (
-                                <img src={URL.createObjectURL(new File([new Blob([new Uint8Array(carData.carImage.data)])], { type: 'image/jpeg' }))} className="carImages" />
+                                <img src={URL.createObjectURL(new File([new Blob([new Uint8Array(carData.carImage.data)])], { type: 'image/jpeg' }))} className="carImages"  alt=""/>
                             )}
                         </div>
                     </div>
