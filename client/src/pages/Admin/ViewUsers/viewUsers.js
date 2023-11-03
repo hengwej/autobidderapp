@@ -29,11 +29,18 @@ class UserManagement extends Component {
         }
     }
 
-    async componentDidUpdate(prevProps) {
+    async componentDidUpdate(prevProps, prevState) {
         if (this.props.csrfToken && this.props.csrfToken !== prevProps.csrfToken) {
             this.fetchData(this.props.csrfToken);
         }
+
+        if (prevState.showSuccess !== this.state.showSuccess && this.state.showSuccess) {
+            setTimeout(() => {
+                window.location.reload();
+            }, 2000); // Refresh the page after 2 seconds
+        }
     }
+
 
     async fetchData(csrfToken) {
         try {
@@ -51,29 +58,27 @@ class UserManagement extends Component {
         if (Number.isInteger(userID)) {
             const confirmed = window.confirm("Are you sure you want to delete this user?");
             if (confirmed) {
-                try {
-                    const response = usersAPI.deleteUser(userID, this.props.csrfToken).then((response) => {
-                        this.setState({ showSuccess: true });
-                        console.log("User deleted successfully");
+                usersAPI
+                    .deleteUser(userID, this.props.csrfToken)
+                    .then((response) => {
+                        if (response.status === 200) {
+                            window.alert("User deleted successfully");
+                            this.setState({ showSuccess: true });
+                        } else {
+                            window.alert("Failed to delete user");
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error deleting user:", error);
+                        window.alert("Failed to delete user");
                     });
-                } catch (error) {
-                    console.error("Error deleting user:", error);
-                }
             }
         } else {
             console.error("Invalid user ID:", userID);
         }
     }
 
-    // Automatically refresh the page after deletion
-    componentDidUpdate(prevProps, prevState) {
-        if (prevState.showSuccess !== this.state.showSuccess && this.state.showSuccess) {
-            setTimeout(() => {
-                window.location.reload();
-            }, 2000); // Refresh the page after 2 seconds
-        }
-    }
-
+    
     // Handle navigation to edit user details page
     handleViewUser = (userID) => {
         this.props.navigate(`/viewUser/${userID}`); // Use the passed navigate function
@@ -87,9 +92,6 @@ class UserManagement extends Component {
 
         return (
             <Container>
-                {this.state.showSuccess && (
-                    <div className="success-message">User deleted successfully!</div>
-                )}
                 <Card>
                     <Card.Header>User Management</Card.Header>
                     <Card.Body>

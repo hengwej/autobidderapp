@@ -4,7 +4,6 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../utils/AuthProvider';
-import * as api from '../../../utils/AuthAPI';
 import { Container } from 'react-bootstrap';
 
 function Login2FA() {

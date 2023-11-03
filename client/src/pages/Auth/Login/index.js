@@ -81,9 +81,12 @@ function Login() {
                             <ReCAPTCHA
                                 ref={recaptchaRef}
                                 sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" // change to .env, temporary testing key, please swap out later              
-                                onChange={(value) => console.log("Captcha value:", value)} //value will be parsed into backend as "token"
+                                onChange={(value) => {
+                                    console.log("Captcha value:", value);
+                                    setIsButtonDisabled(false);
+                                }} //value will be parsed into backend as "token"
                             />
-                            <button type="submit" disabled={isSubmitting || !isValid || !values.username || values.password.length < 8}>
+                            <button type="submit" disabled={isSubmitting || !isValid || !values.username || values.password.length < 8 || isButtonDisabled}>
                                 Login
                             </button>
                         </Form>
