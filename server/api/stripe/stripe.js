@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const csrfProtection = require('../../utils/CsrfUtils');
 const checkJwtToken = require('../../utils/JwtTokens');
+const stripe = require('stripe')(process.env.STRIPE_SK);
 
 /**
  * Endpoint to create a payment intent using Stripe.
