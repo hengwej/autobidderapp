@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "../../../css/styles.css";
 import "./styles.css";
 import axios from 'axios';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Formik, Form, Field } from 'formik';
 import { Modal, Button } from "react-bootstrap";
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js'; // Import Stripe components
 import * as auctionAPI from "../../../utils/AuctionAPI.js"
@@ -10,11 +10,10 @@ import * as bidAPI from "../../../utils/BidAPI.js"
 import { useAuth } from '../../../utils/AuthProvider';
 
 export default function PlaceBid({ carID, handleClose }) {
-    const [auctionData, setAuctionData] = useState({});
+    const [setAuctionData] = useState({});
     const [bidValue, setBidValue] = useState('');
     const [OpenedBid, setOpenedBid] = useState(false);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [setLoading] = useState(true);
     const [currentHighestBid, setCurrentHighestBid] = useState(null);
     const [bidError, setBidError] = useState(null);
     const [auctionID, setAuctionID] = useState(null)
@@ -42,13 +41,11 @@ export default function PlaceBid({ carID, handleClose }) {
 
             } catch (error) {
                 console.error("Error fetching data:", error);
-                setError(error);
-                setLoading(false);
             }
         }
 
         fetchData();
-    }, [carID, auctionID]);
+    }, [carID, auctionID, setAuctionData, setLoading]);
 
     function addBidHistory() {
         const bidHistoryData = { bidValue: bidValue, status: "ongoing", auctionID: auctionID };

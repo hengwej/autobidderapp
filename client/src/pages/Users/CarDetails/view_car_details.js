@@ -17,7 +17,6 @@ export default function ViewCarDetails() {
     const [auctionEndDate, setAuctionEndDate] = useState(null);
     const [setUserName] = useState(null);
     const { user } = useAuth();
-    let countdownInterval;
 
     const handlePlaceBidClose = () => {
         setShowPlaceBidModal(false);
@@ -73,46 +72,47 @@ export default function ViewCarDetails() {
         }
 
         fetchData();
-    }, [carID]);
+    }, [carID, setUserName]);
 
     useEffect(() => {
+        let countdownInterval;
+        const calculateTimeLeft = () => {
+            const endDate = new Date(auctionEndDate);
+            const currentDate = new Date();
+
+
+            const difference = endDate - currentDate;
+
+            if (difference > 0) {
+                const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
+                const minutes = Math.floor((difference / (1000 * 60)) % 60);
+                const seconds = Math.floor((difference / 1000) % 60);
+
+                setTimeLeft({
+                    days,
+                    hours,
+                    minutes,
+                    seconds,
+                });
+            } else {
+                clearInterval(countdownInterval);
+                setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+                console.log('The event has ended.');
+            }
+        };
+
+        const startCountdown = () => {
+            countdownInterval = setInterval(() => {
+                calculateTimeLeft();
+            }, 1000);
+        };
+
         if (carData && carData.createdAt) {
             calculateTimeLeft();
             startCountdown();
         }
-    }, [carData]);
-
-    const calculateTimeLeft = () => {
-        const endDate = new Date(auctionEndDate);
-        const currentDate = new Date();
-    
-
-        const difference = endDate - currentDate;
-
-        if (difference > 0) {
-            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
-            const minutes = Math.floor((difference / (1000 * 60)) % 60);
-            const seconds = Math.floor((difference / 1000) % 60);
-
-            setTimeLeft({
-                days,
-                hours,
-                minutes,
-                seconds,
-            });
-        } else {
-            clearInterval(countdownInterval);
-            setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-            console.log('The event has ended.');
-        }
-    };
-
-    const startCountdown = () => {
-        countdownInterval = setInterval(() => {
-            calculateTimeLeft();
-        }, 1000);
-    };
+    }, [carData, auctionEndDate]);
 
     return (
         <Container>
