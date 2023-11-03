@@ -25,6 +25,7 @@ const jwt = require('jsonwebtoken');
  * @param {Object} res - Express response object
  * @param {Function} next - Express next middleware function
  */
+
 module.exports = (req, res, next) => {
     const token = req.cookies.token;
     const { method, url, ip, headers, user } = req;
@@ -57,4 +58,5 @@ module.exports = (req, res, next) => {
     req.log.info(`Received a ${method} request for ${url} from ${ip} User-Agent: ${userAgent}`);
     next();
 };
+
 

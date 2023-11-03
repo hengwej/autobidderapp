@@ -15,6 +15,7 @@ const checkJwtToken = require('../../utils/JwtTokens');
  * @returns {Object[]} allAuctions - The list of all auctions.
  */
 router.post('/allAuction', async(req, res) => {
+
     try {
         const allAuctions = await prisma.auction.findMany();
         req.log.info("Successfully retrieved all auctions.");
@@ -23,10 +24,9 @@ router.post('/allAuction', async(req, res) => {
         if (req.log) {
             req.log.error('Error fetching all auctions:', error);
         }
-        res.status(500).json({ error: 'Internal Server Error' });
+        res.status(500).json({ error: 'Internal Server Error', details: error }); // Include error details in the response
     }
 });
-
 /**
  * Endpoint to add a bid to an auction.
  * This endpoint first validates the JWT from cookies to ensure the user is authenticated.
