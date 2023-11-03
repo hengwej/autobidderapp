@@ -81,6 +81,7 @@ router.delete('/deleteAccount', csrfProtection, checkJwtToken, async (req, res) 
         req.log.info('Account and associated user deleted successfully');
         // Clear the authentication token cookie to log the user out
         res.clearCookie('token', { path: '/', httpOnly: true, secure: true, sameSite: 'None' });
+        res.clearCookie('csrfToken', { path: '/', httpOnly: true, secure: true, sameSite: 'Strict' });
         res.status(200).json({ message: 'Account deleted successfully, user logged out' });
     } catch (error) {
         if (error.name === 'TokenExpiredError') {

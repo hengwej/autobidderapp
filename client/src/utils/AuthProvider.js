@@ -114,7 +114,7 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    const value = { user, login, otp, logout, csrfToken, loading };
+    const value = { user, login, otp, logout, csrfToken, loading, setUser };
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
