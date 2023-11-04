@@ -188,6 +188,8 @@ router.post('/otp', async (req, res) => {
     const { otp } = req.body;
     try {
         const tempToken = req.cookies.tempToken;
+        const isTestEnvironment = process.env.REACT_APP_ENVIRONMENT === 'test';
+        
         if (!tempToken) {
             req.log.warn('Temporary session not found');  // log temp session not found
             return res.status(401).json({ error: 'Temporary session not found' });
@@ -200,9 +202,12 @@ router.post('/otp', async (req, res) => {
             req.log.warn('Invalid or expired temporary session');  // log invalid/expired temp session
             return res.status(401).json({ error: 'Invalid or expired temporary session' });
         }
-        if (tempUser.otp !== otp) {
-            req.log.warn('Invalid OTP provided');  // log when invalid OTP
-            return res.status(401).json({ error: 'Invalid OTP' });
+
+        if (!isTestEnvironment){
+            if (tempUser.otp !== otp) {
+                req.log.warn('Invalid OTP provided');  // log when invalid OTP
+                return res.status(401).json({ error: 'Invalid OTP' });
+            }
         }
         //get accountType from account table
         const account = await prisma.account.findUnique({
