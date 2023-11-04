@@ -53,9 +53,6 @@ function checkRole(role) {
   };
 }
 
-
-
-
 // Rate limiting configurations
 // Set up rate limiter: maximum of five requests per minute
 const limiter = rateLimit({
@@ -75,7 +72,6 @@ app.use(limiter);
 
 // Apply the speed limiting middleware to all requests
 app.use(speedLimiter);
-
 
 // Importing route handlers
 const { log, createLogWrapper } = require('./api/Log/log');
@@ -134,7 +130,7 @@ app.listen(port, () => {
   findAndScheduleAuctions();
 });
 
-// app.use((err, req, res, next) => {
-//     req.log.error({ message: err.message, stack: err.stack });
-//     res.status(500).send('Something went wrong!');
-// });
+app.use((err, req, res, next) => {
+    req.log.error({ message: err.message, stack: err.stack });
+    res.status(500).send('Something went wrong!');
+});

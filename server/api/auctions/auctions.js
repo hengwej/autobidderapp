@@ -43,8 +43,21 @@ router.post('/addBid', csrfProtection, checkJwtToken, async(req, res) => {
         const payload = req.user;
         const newBid = req.body; // Retrieving bid details from the request body
 
-        // Update the auction with the new bid details
-        const addBid = await prisma.auction.updateMany({
+        // Fetch the auction to check if it has already ended
+        const auction = await prisma.auction.findUnique({
+            where: {
+                carID: newBid.carID, // Matching the carID field
+            },
+        });
+
+        // If auction does not exist or has ended, return an error
+        if (!auction || new Date(auction.endDate) < new Date()) {
+            req.log.warn('Cannot bid on an auction that does not exist or has already ended.');
+            return res.status(400).json({ error: 'Cannot bid on an auction that does not exist or has already ended.' });
+        }
+
+        // Proceed to add bid if the auction is still open
+        const addBid = await prisma.auction.update({
             where: {
                 carID: newBid.carID, // Matching the carID field
             },
@@ -53,6 +66,7 @@ router.post('/addBid', csrfProtection, checkJwtToken, async(req, res) => {
                 accountID: payload.accountID, // Updating the accountID field
             },
         });
+
         req.log.info(`Successfully added bid for carID: ${newBid.carID}`);
         res.json(addBid); // Sending the updated auction details as a JSON response
     } catch (error) {

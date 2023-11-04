@@ -20,12 +20,12 @@ app.use((req, res, next) => {
     req.log = createLogWrapper(context);
     next();
 });
- 
+
 app.use(express.json());
 app.use('/api/auctions', auctionsRouter);
 
 describe('auctions API Endpoints', () => {
-    test('POST /api/auctions/allAuction should return all auctions', async() => {
+    test('POST /api/auctions/allAuction should return all auctions', async () => {
         const response = await request(app).post('/api/auctions/allAuction')
 
         console.log(response.body);

@@ -20,12 +20,12 @@ app.use((req, res, next) => {
     req.log = createLogWrapper(context);
     next();
 });
- 
+
 app.use(express.json());
 app.use('/api/biddingHistory', biddingHistoryRouter);
 
 describe('biddingHistory API Endpoints', () => {
-    test('POST /api/biddingHistory/allBidHistory should return all bidding history records', async() => {
+    test('POST /api/biddingHistory/allBidHistory should return all bidding history records', async () => {
         const response = await request(app).post('/api/biddingHistory/allBidHistory')
 
         console.log(response.body);
