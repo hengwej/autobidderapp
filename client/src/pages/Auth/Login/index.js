@@ -13,10 +13,15 @@ function Login() {
         password: ''
     };
 
+    const isTestEnvironment = process.env.REACT_APP_ENVIRONMENT === 'test';
+    
+
     const { login, user } = useAuth();
     const navigate = useNavigate();
     const recaptchaRef = useRef();
-    const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+
+    const [isButtonDisabled, setIsButtonDisabled] = useState(!isTestEnvironment);
+
 
     if (user) {
         navigate('/');
@@ -26,9 +31,35 @@ function Login() {
         setIsButtonDisabled(true);
         const { username, password } = data;
         // start of captcha logic, uncomment to get it up    
-        const recaptchaValue = recaptchaRef.current.getValue();
-        if (!recaptchaValue) {
-            alert("Please verify you're not a robot.");
+        
+        if (!isTestEnvironment) {
+            const recaptchaValue = recaptchaRef.current.getValue();
+            if (!recaptchaValue){
+                alert("Please verify you're not a robot.");
+            }
+            else {
+                try {
+
+                    const response = await login(username, password);
+    
+                    if (response.status === 200) {
+                        console.log('Login successful!');
+                        // Pop-up to tell user that otp is sent to email
+                        window.alert('An OTP has been sent to your email!');
+                        navigate('/auth/confirmation');
+                    } else if (response.status === 401) {
+                        window.alert('Invalid username or password! Please try again.');
+                        // Clear the form fields and reset CAPTCHA when the user clicks "OK"
+                        recaptchaRef.current.reset();
+                        resetForm();
+                    }
+                } catch (error) {
+                    console.error("Failed to login:", error);
+                    setFieldError('login-error', 'Failed to login. Please check your credentials and try again.');
+                } finally {
+                    setSubmitting(false);
+                }
+            }
         } else {
             try {
 
@@ -42,7 +73,7 @@ function Login() {
                 } else if (response.status === 401) {
                     window.alert('Invalid username or password! Please try again.');
                     // Clear the form fields and reset CAPTCHA when the user clicks "OK"
-                    recaptchaRef.current.reset();
+                    //recaptchaRef.current.reset();
                     resetForm();
                 }
             } catch (error) {
@@ -78,7 +109,9 @@ function Login() {
                             <Field id="inputLoginPassword" data-testid="inputLoginPassword" type="password" name="password" placeholder="Password" />
                             <ErrorMessage className="error-message" name="password" component="span" />
                             <ErrorMessage className="error-message" name="login-error" component="span" />
+                            {!isTestEnvironment && (
                             <ReCAPTCHA
+                                data-testid="reCAPTCHA"
                                 ref={recaptchaRef}
                                 sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" // change to .env, temporary testing key, please swap out later              
                                 onChange={(value) => {
@@ -86,6 +119,7 @@ function Login() {
                                     setIsButtonDisabled(false);
                                 }} //value will be parsed into backend as "token"
                             />
+                            )}
                             <button type="submit" disabled={isSubmitting || !isValid || !values.username || values.password.length < 8 || isButtonDisabled}>
                                 Login
                             </button>
