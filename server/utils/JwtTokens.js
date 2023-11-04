@@ -20,12 +20,17 @@ const checkJwtToken = (req, res, next) => {
         next();
     } catch (error) {
         if (error.name === 'TokenExpiredError') {
-            // Handle token expiration. For example:
-            // 1. Refresh the token if you have a refresh token implemented.
-            // 2. Redirect the user to the login page.
-            // 3. Provide a helpful error message to the user.
             req.log.warn('Token has expired');  // Updated logging method
-            return res.status(401).json({ error: 'Unauthorized: Token has expired' });
+
+            // Clear the cookies in case of token expiration
+            res.clearCookie('token', { path: '/', httpOnly: true, secure: true, sameSite: 'Strict' });
+            res.clearCookie('csrfToken', { path: '/', httpOnly: true, secure: true, sameSite: 'Strict' });
+
+            // Send a response to the frontend to take the user to the logout flow
+            return res.status(401).json({
+                error: 'Unauthorized: Token has expired',
+                action: 'logout' // Indicate that the frontend should redirect to the logout route or procedure
+            });
         }
 
         req.log.error(`JWT Verification Error: ${error.message}`);  // Updated logging method
