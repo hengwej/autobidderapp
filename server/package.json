@@ -64,17 +64,5 @@
         "prisma": "^5.5.2",
         "supertest": "^6.3.3",
         "ts-jest": "^29.1.1"
-    },
-    "jest": {
-        "reporters": [
-            "default",
-            [
-                "jest-junit",
-                {
-                    "outputDirectory": "test-results",
-                    "outputName": "junit-results.xml"
-                }
-            ]
-        ]
     }
 }
