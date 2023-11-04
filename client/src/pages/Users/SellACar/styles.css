@@ -7,12 +7,129 @@
     }
 }
 
+.sellcar-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Style for the form */
+.sellcar-page form {
+    width: 100%;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Style for labels */
+.sellcar-page label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.sellcar-page input,
+.sellcar-page textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+    margin: 0 auto;
+}
+
+/* Style for the submit button */
+.sellcar-page button {
+    padding: 10px;
+    background-color: #FF692D;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.sellcar-page button:hover {
+    background-color: #FF8E60;
+}
+
+.sellcar-page .error-message {
+    color: red;
+    font-size: 12px;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+.sellCar-title {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #f5671f;
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Styles for the rows and columns */
+.sellcar-page .row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -15px;
+}
+
+.sellcar-page .column {
+    padding: 0 15px;
+    flex: 50%;
+    box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+    .sellcar-page .column {
+        flex: 100%;
+    }
+}
+
+
+.sellcar-page .row {
+    display: flex;
+    justify-content: space-between;
+    /* This will put space between your two columns */
+    margin-bottom: 20px;
+    /* Adds space between rows */
+}
+
+.sellcar-page .column {
+    flex: 1;
+    /* This will make each column flex to fill the row */
+    padding: 0 15px;
+    /* Keeps a gap between the two columns */
+    box-sizing: border-box;
+}
+
+/* Input and Textarea styles */
+.sellcar-page input,
+.sellcar-page textarea {
+    width: 100%;
+    /* Full width of the column */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+
+
+
 .label-button {
     width: 100%;
-    max-width: 600px;
     margin: 0 auto;
-    height: 100%;
-    max-height: 300px;
+    height: 300px;
     display: flex;
     text-align: center;
     justify-content: center;
@@ -71,35 +188,9 @@
     color: #ffffff;
 }
 
-.sellCar-title {
-    font-size: 1rem;
-    /* Adjust the font size as needed */
-    font-weight: bold;
-    /* margin-top: 0.5rem; */
-    /* margin-bottom: 0.5rem;  */
-    color: #f5671f;
-    /* Adjust the color as needed */
-}
 
-.sellCar-input-margin {
-    /* margin-bottom: 0.3rem;  */
-    width: 100%;
-    max-width: 600px;
-    margin: 0 auto;
-}
 
-.sellcar-page {
-    overflow-y: auto;
-    max-height: calc(100vh - 100px);
-    padding-top: 50px;
-    /* Adjust as needed */
-    padding-bottom: 50px;
-    /* Adjust as needed */
-    width: 100%;
-    max-width: 600px;
-    margin: 0 auto;
-    z-index: 1;
-}
+
 
 .success {
     color: green;
@@ -127,5 +218,6 @@
 }
 
 .list-your-car-button.failure {
-    background-color: #d9534f;  /* Bootstrap's danger color */
+    background-color: #d9534f;
+    /* Bootstrap's danger color */
 }
