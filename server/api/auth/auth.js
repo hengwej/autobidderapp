@@ -172,7 +172,17 @@ router.post('/login', async (req, res) => {
         const csrfToken = generateCSRFToken();
         res.cookie('csrfToken', csrfToken, { httpOnly: true, secure: true, sameSite: 'Strict' });
         req.log.info('OTP sent to user');  // log successful OTP sent
-        return res.status(200).json({ message: 'OTP sent successfully. Please check your email.' });
+        //return res.status(200).json({ message: 'OTP sent successfully. Please check your email.' });
+        
+        const isTestEnvironment = process.env.REACT_APP_ENVIRONMENT === 'test';
+        
+        if (!isTestEnvironment){
+            return res.status(200).json({ message: 'OTP sent successfully. Please check your email.' });
+        }
+        else {
+            return res.status(200).json({ message: 'OTP sent successfully. Please check your email.', tempToken });
+        }
+        
     } catch (error) {
         req.log.error(`Error during login: ${error.message}`);
         return res.status(500).json({ error: 'Server error' });
