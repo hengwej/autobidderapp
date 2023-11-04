@@ -7,6 +7,7 @@ const jwt = require('jsonwebtoken');
 const rateLimit = require('express-rate-limit');
 const slowDown = require('express-slow-down');
 const rateLimitHeaderParser = require('ratelimit-header-parser');
+const { findAndScheduleAuctions } = require('./utils/CheckAuction');
 
 
 const app = express();
@@ -130,6 +131,7 @@ app.get('/error', (req, res, next) => {
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
   log.info({ message: `Server is running on port ${port}` });
+  findAndScheduleAuctions();
 });
 
 // app.use((err, req, res, next) => {

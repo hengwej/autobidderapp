@@ -10,29 +10,23 @@ const checkJwtToken = (req, res, next) => {
 
     const isTestEnvironment = process.env.REACT_APP_ENVIRONMENT === 'test';
 
-    if (!isTestEnvironment){
-        const token = req.cookies.token;
-        if (!token) {
-            req.log.warn('Unauthorized: No token provided');  // Use a proper logging mechanism
-            return res.status(401).json({ error: 'Unauthorized: No token provided' });
-        }
-    
-        try {
-            const decoded = jwt.verify(token, process.env.JWT_SECRET);
-            req.user = decoded;  // Add the user payload to the request object
-            next();
-        } catch (error) {
-            if (error.name === 'TokenExpiredError') {
-                // Handle token expiration. For example:
-                // 1. Refresh the token if you have a refresh token implemented.
-                // 2. Redirect the user to the login page.
-                // 3. Provide a helpful error message to the user.
-                req.log.warn('Token has expired');  // Updated logging method
-                return res.status(401).json({ error: 'Unauthorized: Token has expired' });
-            }
-    
-            req.log.error(`JWT Verification Error: ${error.message}`);  // Updated logging method
-            return res.status(401).json({ error: 'Unauthorized: Invalid token' });
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        req.user = decoded;  // Add the user payload to the request object
+        next();
+    } catch (error) {
+        if (error.name === 'TokenExpiredError') {
+            req.log.warn('Token has expired');  // Updated logging method
+
+            // Clear the cookies in case of token expiration
+            res.clearCookie('token', { path: '/', httpOnly: true, secure: true, sameSite: 'Strict' });
+            res.clearCookie('csrfToken', { path: '/', httpOnly: true, secure: true, sameSite: 'Strict' });
+
+            // Send a response to the frontend to take the user to the logout flow
+            return res.status(401).json({
+                error: 'Unauthorized: Token has expired',
+                action: 'logout' // Indicate that the frontend should redirect to the logout route or procedure
+            });
         }
     }
     next();
