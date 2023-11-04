@@ -14,7 +14,6 @@ export const updateBidHistoryToEnd = async (requestData) => {
         });
         return response;
     } catch (error) {
-        console.error("Error Updating History:", error);
         throw error;
     }
 };
@@ -29,7 +28,6 @@ export const allBidHistory = async (csrfToken) => {
         });
         return response;
     } catch (error) {
-        console.error("Error fetching cars:", error);
         throw error;
     }
 };
@@ -44,7 +42,6 @@ export const addBidHistory = async (requestData, csrfToken) => {
         });
         return response;
     } catch (error) {
-        console.error("Error Adding History:", error);
         throw error;
     }
 };

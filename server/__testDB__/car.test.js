@@ -1,7 +1,6 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-
 describe('Car Model Tests', () => {
     let testAccount;
     let createdCarID; // This will store the car ID for the created car

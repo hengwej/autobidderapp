@@ -63,15 +63,13 @@ const ResetPassword = () => {
       // Wait until csrfToken becomes available for 1 second
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
-
     try {
       const response = await api.resetPassword(requestData, csrfToken);
       if (response.status === 200) {
-        console.log("Password Reset successful");
         setShowSuccessModal(true);
       }
     } catch (error) {
-      console.error("Failed to reset password:", error);
+      console.error("Failed to reset password");
     }
   };
 
@@ -80,16 +78,12 @@ const ResetPassword = () => {
     // Close the confirmation and reset password modal
     setShowConfirmModal(false);
     setShowResetPasswordModal(false);
-
     // Set the new password in the state variable
     setNewPassword(data);
-
     const requestData = { password: newPassword.password };
-
     // Send an HTTP request to save the updated password in the database
     handleReset(requestData);
   };
-
   return (
     <div>
       <Button variant="primary" onClick={handleShowResetPassword} className="UserProfile-button">Reset Password</Button>
@@ -106,13 +100,11 @@ const ResetPassword = () => {
                   <Field id="newPassword" type="password" name="password" placeholder="New Password" className="form-control" />
                   <ErrorMessage className="error-message" name="password" component="span" />
                 </div>
-
                 <div className="UserProfileForm">
                   <label htmlFor="confirmPassword">Confirm New Password:</label>
                   <Field id="confirmPassword" type="password" name="confirmPassword" placeholder="Confrim New Password" className="form-control" />
                   <ErrorMessage className="error-message" name="confirmPassword" component="span" />
                 </div>
-
                 <Modal.Footer className="d-flex justify-content-center">
                   <Button variant="secondary" onClick={handleCloseResetPassword}>Cancel</Button>
                   <Button variant="primary" type="submit" className="UserProfileForm-button">Reset Password</Button>

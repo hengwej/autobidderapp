@@ -1,7 +1,5 @@
 import axios from 'axios';
-
 const BASE_URL = process.env.REACT_APP_API_URL;
-
 const api = axios.create({
     baseURL: BASE_URL,
     withCredentials: true,
@@ -17,7 +15,6 @@ export const updateUser = async (requestData, csrfToken) => {
         });
         return response;
     } catch (error) {
-        console.error("Error Updating profile:", error);
         throw error;
     }
 };
@@ -32,7 +29,6 @@ export const deleteAccount = async (csrfToken) => {
         });
         return response;
     } catch (error) {
-        console.error("Error Deleting profile:", error);
         throw error;
     }
 };
@@ -47,7 +43,6 @@ export const resetPassword = async (requestData, csrfToken) => {
         });
         return response;
     } catch (error) {
-        console.error("Error Updating password:", error);
         throw error;
     }
 };
@@ -62,7 +57,6 @@ export const biddingHistory = async (csrfToken) => {
         });
         return response;
     } catch (error) {
-        console.error("Error getting Bidding History profile:", error);
         throw error;
     }
 };
@@ -75,10 +69,8 @@ export const userProfileDetails = async (csrfToken) => {
                 'X-CSRF-Token': csrfToken,
             }
         });
-
         return response;
     } catch (error) {
-        console.error("Error getting User Profile:", error);
         throw error;
     }
 };
@@ -93,7 +85,6 @@ export const userSellingHistory = async (csrfToken) => {
         });
         return response;
     } catch (error) {
-        console.error("Error getting Selling History:", error);
         throw error;
     }
 };
@@ -109,7 +100,6 @@ export const userSellCarRequests = async (csrfToken) => {
         });
         return response;
     } catch (error) {
-        console.error("Error getting User Sell Car Requests:", error);
         throw error;
     }
 };
@@ -124,7 +114,6 @@ export const viewUser = async (userID, csrfToken) => {
         });
         return response;
     } catch (error) {
-        console.error("Error getting User Sell Car Requests:", error);
         throw error;
     }
 };
@@ -139,7 +128,6 @@ export const getAllUsers = async (csrfToken) => {
         });
         return response;
     } catch (error) {
-        console.error("Error getting User Sell Car Requests:", error);
         throw error;
     }
 };
@@ -154,7 +142,6 @@ export const deleteUser = async (userID, csrfToken) => {
         });
         return response;
     } catch (error) {
-        console.error("Error getting User Sell Car Requests:", error);
         throw error;
     }
 };

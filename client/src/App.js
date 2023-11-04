@@ -18,20 +18,16 @@ import { loadStripe } from '@stripe/stripe-js';
 import "./css/styles.css";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { useAuth } from "./utils/AuthProvider";
-
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PK);
-
 
 function App() {
     const { user, logout } = useAuth();
-
     return (
         <div className="App">
             <nav className="navbar navbar-expand-lg navbar-light" id="mainNav">
                 <div className="container px-4 px-lg-5">
                     <a className="navbar-brand" href="/" style={{ fontSize: 35 + 'px' }}>Auto Bid</a>
                     <ul className="navbar-nav ms-auto">
-
                         <li className="nav-item">
                             <Link className="nav-link" to="/">Auctions</Link>
                         </li>
@@ -53,7 +49,6 @@ function App() {
                                 <Link className="nav-link" to="/signup">Sign Up</Link>
                             </li>
                         )}
-
                         {user && (user.accountType === 'admin' || user.accountType === 'bidder') && (
                             <li className="nav-item">
                                 <Link className="nav-link" to="/" onClick={logout}>Logout</Link>

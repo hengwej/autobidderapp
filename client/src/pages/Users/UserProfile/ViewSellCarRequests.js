@@ -36,20 +36,17 @@ const ViewSellCarRequests = () => {
           setSellCarRequests(response.data);
         }
       } catch (error) {
-        console.error("Failed to fetch user profile:", error);
+        console.error("Failed to fetch user profile");
       } finally {
         setLoading(false);
       }
     }
-
     fetchUserSellCarRequests();
-
   }, [csrfToken]);
 
   useEffect(() => {
     // Create a copy of the sellCarRequests to avoid modifying the original data
     let sortedSellCarRequests = [...sellCarRequests];
-
     // Filter by request status
     if (requestStatusFilter === "Approved Requests") {
       sortedSellCarRequests = sortedSellCarRequests.filter(request => request.requestStatus.toLowerCase() === "approved");

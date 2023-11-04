@@ -14,7 +14,7 @@ const checkJwtToken = require('../../utils/JwtTokens');
  * @route POST /allAuction
  * @returns {Object[]} allAuctions - The list of all auctions.
  */
-router.post('/allAuction', async(req, res) => {
+router.post('/allAuction', async (req, res) => {
 
     try {
         const allAuctions = await prisma.auction.findMany();
@@ -36,7 +36,7 @@ router.post('/allAuction', async(req, res) => {
  * @param {Object} req.body - The bid details including carID and bidValue.
  * @returns {Object} - Updated auction details.
  */
-router.post('/addBid', csrfProtection, checkJwtToken, async(req, res) => {
+router.post('/addBid', csrfProtection, checkJwtToken, async (req, res) => {
     req.log.info("Attempt to add a bid.");
     try {
         // Extract user payload from the JWT
@@ -87,7 +87,7 @@ router.post('/addBid', csrfProtection, checkJwtToken, async(req, res) => {
  * @param {Object} req.body - The auction details including auctionID and new status.
  * @returns {Object} - Updated auction details.
  */
-router.post('/updateAuctionToClose', async(req, res) => {
+router.post('/updateAuctionToClose', async (req, res) => {
     const closeAuction = req.body; // Retrieve auction details from request body
     try {
         // Update the auction status to 'closed'
@@ -116,7 +116,7 @@ router.post('/updateAuctionToClose', async(req, res) => {
  * @param {Object} req.body - The order details including orderStatus and auctionID.
  * @returns {Object} - New or updated order details.
  */
-router.put('/addOrder', csrfProtection, checkJwtToken, async(req, res) => {
+router.put('/addOrder', csrfProtection, checkJwtToken, async (req, res) => {
     const { orderStatus, auctionID } = req.body; // Destructure orderStatus and auctionID from request body
     try {
         // Verify the token and extract the account ID
@@ -164,7 +164,7 @@ router.put('/addOrder', csrfProtection, checkJwtToken, async(req, res) => {
  * @param {Object} req.body - The order details including orderStatus and auctionID.
  * @returns {Object} - Updated order details.
  */
-router.put('/completeOrder', async(req, res) => {
+router.put('/completeOrder', async (req, res) => {
     const { orderStatus, auctionID } = req.body; // Destructure orderStatus and auctionID from request body
     try {
         // Find the order with the specified auctionID
@@ -199,7 +199,7 @@ router.put('/completeOrder', async(req, res) => {
  * @param {Object} req.body - The auctionID to identify the relevant order.
  * @returns {Object} - New selling history record or error message.
  */
-router.post('/addSellingHistory', csrfProtection, checkJwtToken, async(req, res) => {
+router.post('/addSellingHistory', csrfProtection, checkJwtToken, async (req, res) => {
     const { auctionID } = req.body; // Destructure auctionID from request body
     try {
         // Check if there's an existing order for the specified auctionID

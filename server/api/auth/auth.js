@@ -173,16 +173,16 @@ router.post('/login', async (req, res) => {
         res.cookie('csrfToken', csrfToken, { httpOnly: true, secure: true, sameSite: 'Strict' });
         req.log.info('OTP sent to user');  // log successful OTP sent
         //return res.status(200).json({ message: 'OTP sent successfully. Please check your email.' });
-        
+
         const isTestEnvironment = process.env.REACT_APP_ENVIRONMENT === 'test';
-        
-        if (!isTestEnvironment){
+
+        if (!isTestEnvironment) {
             return res.status(200).json({ message: 'OTP sent successfully. Please check your email.' });
         }
         else {
             return res.status(200).json({ message: 'OTP sent successfully. Please check your email.', tempToken });
         }
-        
+
     } catch (error) {
         req.log.error(`Error during login: ${error.message}`);
         return res.status(500).json({ error: 'Server error' });
@@ -200,7 +200,7 @@ router.post('/otp', async (req, res) => {
     try {
         const tempToken = req.cookies.tempToken;
         const isTestEnvironment = process.env.REACT_APP_ENVIRONMENT === 'test';
-        
+
         if (!tempToken) {
             req.log.warn('Temporary session not found');  // log temp session not found
             return res.status(401).json({ error: 'Temporary session not found' });
@@ -214,7 +214,7 @@ router.post('/otp', async (req, res) => {
             return res.status(401).json({ error: 'Invalid or expired temporary session' });
         }
 
-        if (!isTestEnvironment){
+        if (!isTestEnvironment) {
             if (tempUser.otp !== otp) {
                 req.log.warn('Invalid OTP provided');  // log when invalid OTP
                 return res.status(401).json({ error: 'Invalid OTP' });

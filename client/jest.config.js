@@ -6,5 +6,4 @@ module.exports = {
         "\\.(css|scss)$": "identity-obj-proxy"
     },
     testEnvironment: 'jsdom'
-
 };

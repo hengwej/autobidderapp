@@ -10,7 +10,6 @@ const jwt = require('jsonwebtoken');
 const rateLimit = require('express-rate-limit');
 const slowDown = require('express-slow-down');
 const { findAndScheduleAuctions } = require('./utils/CheckAuction');
-
 const app = express();
 const port = 5000;
 
@@ -132,6 +131,6 @@ app.listen(port, () => {
 });
 
 app.use((err, req, res, next) => {
-    req.log.error({ message: err.message, stack: err.stack });
-    res.status(500).send('Something went wrong!');
+  req.log.error({ message: err.message, stack: err.stack });
+  res.status(500).send('Something went wrong!');
 });

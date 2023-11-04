@@ -1,7 +1,6 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-
 describe('Orders Model Tests', () => {
     let testUser;
     let testAccount;
@@ -25,7 +24,7 @@ describe('Orders Model Tests', () => {
                 accountType: 'Premium',
                 accountStatus: 'Active',
                 username: 'order_owner',
-                password: 'securepassword', 
+                password: 'securepassword',
                 userID: testUser.userID,
             },
         });
@@ -121,7 +120,7 @@ describe('Orders Model Tests', () => {
 
     test('should handle errors when updating a non-existent order', async () => {
         let errorOccurred = false;
-    
+
         try {
             await prisma.orders.update({
                 where: { orderID: 99999 }, // Assuming this orderID does not exist
@@ -130,7 +129,7 @@ describe('Orders Model Tests', () => {
         } catch (error) {
             errorOccurred = true;
         }
-    
+
         expect(errorOccurred).toBe(true);
     });
 
@@ -145,16 +144,16 @@ describe('Orders Model Tests', () => {
 
         expect(deletedOrder).toBeNull();
     });
-    
+
     test('should delete orders when the related auction is deleted', async () => {
         await prisma.auction.delete({
             where: { auctionID: testAuction.auctionID },
         });
-    
+
         const relatedOrders = await prisma.orders.findMany({
             where: { auctionID: testAuction.auctionID },
         });
-    
+
         expect(relatedOrders.length).toBe(0);
     });
 });

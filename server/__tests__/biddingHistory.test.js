@@ -29,6 +29,4 @@ describe('biddingHistory API Endpoints', () => {
         const response = await request(app).post('/api/biddingHistory/allBidHistory')
         expect(response.status).toBe(200);
     });
-
-    // Add more test cases for other routes as needed
 });

@@ -1,7 +1,6 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-
 describe('User Model Tests', () => {
     // Test user data
     const testUserData = {

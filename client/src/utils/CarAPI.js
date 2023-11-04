@@ -12,7 +12,6 @@ export const getAllCars = async () => {
         const response = await api.get("/api/cars/allCar");
         return response;
     } catch (error) {
-        console.error("Error fetching cars:", error);
         throw error;
     }
 }
@@ -26,7 +25,6 @@ export const sellCar = async (data, csrfToken) => {
         });
         return response;
     } catch (error) {
-        console.error("Error fetching cars:", error);
         throw error;
     }
 }
@@ -36,7 +34,6 @@ export const checkConnection = async (data) => {
         const response = await api.post("/sellcar", data);
         return response;
     } catch (error) {
-        console.error("Error fetching cars:", error);
         throw error;
     }
 }

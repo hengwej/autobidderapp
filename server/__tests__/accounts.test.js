@@ -29,6 +29,4 @@ describe('accounts API Endpoints', () => {
         const response = await request(app).post('/api/accounts/allAccount')
         expect(response.status).toBe(200);
     });
-
-    // Add more test cases for other routes as needed
 });

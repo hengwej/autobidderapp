@@ -42,7 +42,7 @@ module.exports = (req, res, next) => {
             } else {
                 console.error('logging is not yet defined:', error);
             }
-            
+
         }
     } else if (user) {
         userId = user.userID;

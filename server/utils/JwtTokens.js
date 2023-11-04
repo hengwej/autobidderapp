@@ -10,7 +10,7 @@ const checkJwtToken = (req, res, next) => {
 
     const isTestEnvironment = process.env.REACT_APP_ENVIRONMENT === 'test';
 
-    if (!isTestEnvironment){
+    if (!isTestEnvironment) {
         try {
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
             req.user = decoded;  // Add the user payload to the request object
@@ -18,11 +18,11 @@ const checkJwtToken = (req, res, next) => {
         } catch (error) {
             if (error.name === 'TokenExpiredError') {
                 req.log.warn('Token has expired');  // Updated logging method
-    
+
                 // Clear the cookies in case of token expiration
                 res.clearCookie('token', { path: '/', httpOnly: true, secure: true, sameSite: 'Strict' });
                 res.clearCookie('csrfToken', { path: '/', httpOnly: true, secure: true, sameSite: 'Strict' });
-    
+
                 // Send a response to the frontend to take the user to the logout flow
                 return res.status(401).json({
                     error: 'Unauthorized: Token has expired',
@@ -31,7 +31,6 @@ const checkJwtToken = (req, res, next) => {
             }
         }
     }
-
     next();
 };
 

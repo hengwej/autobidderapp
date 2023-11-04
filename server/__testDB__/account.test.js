@@ -1,7 +1,6 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-
 describe('Account Model Tests', () => {
     let testUser;
 
@@ -117,7 +116,7 @@ describe('Account Model Tests', () => {
 
         await expect(prisma.account.create({ data: accountData })).rejects.toThrow();
     });
-    
+
     test('should delete an account', async () => {
         const username = 'jane_doe';
 

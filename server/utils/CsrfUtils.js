@@ -20,7 +20,7 @@ const csrfProtection = (req, res, next) => {
 
     const isTestEnvironment = process.env.REACT_APP_ENVIRONMENT === 'test';
 
-    if (!isTestEnvironment){
+    if (!isTestEnvironment) {
         const csrfTokenHeader = req.headers['x-csrf-token'];
         const csrfTokenCookie = req.cookies.csrfToken;
 
@@ -39,7 +39,6 @@ const csrfProtection = (req, res, next) => {
             return res.status(403).json({ error: 'CSRF token mismatch' });
         }
     }
-
     // If CSRF tokens match, proceed to the next middleware or route handler
     next();
 };
