@@ -7,25 +7,16 @@ import { useAuth } from '../../../utils/AuthProvider';
 import { Container } from 'react-bootstrap';
 
 function Login2FA() {
-    
     const initialValues = {
         Code2FA: '',
     };
-
     const { otp } = useAuth();
-
-
     const navigate = useNavigate();
-
-
     const onSubmit = async (data, { setSubmitting, setFieldError, resetForm }) => {
 
         try {
             const response = await otp(data.Code2FA);
-
             if (response.status === 200) {
-
-                console.log('OTP verification successful!');
                 window.alert('Login successful! You will redirected to the homepage.');
                 navigate('/');
             } else if (response.status === 401) {
@@ -35,13 +26,11 @@ function Login2FA() {
                 resetForm();
             }
         } catch (error) {
-            console.error('OTP verification failed:', error.response ? error.response.data : error.message);
             setFieldError('otp-error', 'OTP verification failed. Please try again.');
         } finally {
             setSubmitting(false);
         }
     };
-
 
     const validationSchema = Yup.object().shape({
         Code2FA: Yup.string().required("Enter OTP code"),
@@ -56,7 +45,6 @@ function Login2FA() {
                         <label>OTP Code: </label>
                         <Field id="inputCode2FA" type="text" name="Code2FA" placeholder="OTP" autoComplete="off" />
                         <ErrorMessage className="error-message" name="Code2FA" component="span" />
-
                         <button type="submit">Confirm</button>
                     </Form>
                 </Formik>

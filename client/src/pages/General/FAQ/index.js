@@ -24,21 +24,17 @@ export default class FAQ extends React.Component {
                 this.setState({ faqData: data, loading: false });
             }
         } catch (error) {
-            console.error("Error fetching data:", error);
             this.setState({ error, loading: false });
         }
     }
     render() {
-
         return (
-
             <Container>
                 <div className="main-container">
                     <div className="header-container">
                         <h2>Contact Us and FAQ</h2>
-                        <Header headerText="Contact Us"/>
+                        <Header headerText="Contact Us" />
                     </div>
-
                     <div className="contact-info-container">
                         <p>If you are in need of assistance or for any general enquiries, please feel free to contact the number or email address below.</p>
                         <p>Operating hours for phone calls are from 9am-6pm.</p>
@@ -59,18 +55,16 @@ export default class FAQ extends React.Component {
                             </div>
                         </div>
                     </div>
-
                     <div className="feedback-container">
                         <p>Feedback</p>
                         <p>For feedback or suggestions, please email us at autobidFeedback@gmail.com</p>
                     </div>
-
                     <div className="faq-container">
                         <h2>FAQ Section</h2>
                         <table>
                             <thead>
                                 <tr>
-                                    <th style={{color: 'orangered'}}>Question Type</th>
+                                    <th style={{ color: 'orangered' }}>Question Type</th>
                                     <th style={{ color: 'orangered' }}>Answer</th>
                                 </tr>
                             </thead>
@@ -86,9 +80,6 @@ export default class FAQ extends React.Component {
                     </div>
                 </div>
             </Container>
-
-
-
         );
     }
 }

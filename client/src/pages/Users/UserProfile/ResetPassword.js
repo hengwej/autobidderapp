@@ -11,16 +11,12 @@ const ResetPassword = () => {
   const [showResetPasswordModal, setShowResetPasswordModal] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-
   // CSRF Token
   const { csrfToken } = useAuth();
-
   // Define state variables for the form
   const [newPassword, setNewPassword] = useState(""); // New password
-
   // Get the navigate function from the hook
   const navigate = useNavigate();
-
   const initialValues = {
     password: ''
   };

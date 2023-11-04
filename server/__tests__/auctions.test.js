@@ -28,7 +28,6 @@ describe('auctions API Endpoints', () => {
     test('POST /api/auctions/allAuction should return all auctions', async () => {
         const response = await request(app).post('/api/auctions/allAuction')
 
-        console.log(response.body);
         expect(response.status).toBe(200);
     });
 

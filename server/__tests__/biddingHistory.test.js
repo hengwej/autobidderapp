@@ -28,7 +28,6 @@ describe('biddingHistory API Endpoints', () => {
     test('POST /api/biddingHistory/allBidHistory should return all bidding history records', async () => {
         const response = await request(app).post('/api/biddingHistory/allBidHistory')
 
-        console.log(response.body);
         expect(response.status).toBe(200);
     });
 

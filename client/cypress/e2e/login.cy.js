@@ -1,6 +1,6 @@
 // login.spec.js
 describe('Login Form Tests', () => {
-  
+
   it('validates logging in with valid credentials and log out functionality', () => {
     cy.visit('localhost:3000/auth/login'); // Assuming your login page is at '/login'
 
@@ -26,7 +26,7 @@ describe('Login Form Tests', () => {
     }).then((response) => {
       // Extract the tempToken from the response body
       const tempToken = response.body.tempToken;
-    
+
       // Set the tempToken as a cookie
       cy.setCookie('tempToken', tempToken);
     });
@@ -72,5 +72,5 @@ describe('Login Form Tests', () => {
     cy.url().should('include', '/auth/login');
 
   });
-  
+
 });

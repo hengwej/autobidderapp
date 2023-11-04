@@ -1,10 +1,15 @@
 /* styles.css */
 #view-user-details {
-    color: black; /* Change text color */
-    font-size: 16px; /* Change font size */
-    font-weight: bold; /* Add bold text */
+    color: black;
+    /* Change text color */
+    font-size: 16px;
+    /* Change font size */
+    font-weight: bold;
+    /* Add bold text */
 }
+
 .dropdown-container {
-   
-    display: inline-block; /* Add display property */
+
+    display: inline-block;
+    /* Add display property */
 }

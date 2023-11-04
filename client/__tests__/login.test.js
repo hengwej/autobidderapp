@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, act} from '@testing-library/react';
+import { render, screen, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 import { MemoryRouter } from 'react-router-dom'; // Import MemoryRouter
@@ -45,19 +45,19 @@ describe('Login Form Tests', () => {
         const passwordField = screen.getByTestId('inputLoginPassword');
         const loginButton = screen.getByRole('button', { name: /Login/i });
         const recaptchaRef = screen.getByTestId('reCAPTCHA');
-        
-        await act( async() => {
+
+        await act(async () => {
             // Try submitting the form without filling in any fields
             userEvent.type(usernameField, 'byleft555');
             userEvent.type(passwordField, 'byleft555');
             userEvent.click(loginButton);
         });
 
-        await act( async() => {
+        await act(async () => {
             // Trigger onChange handler manually to enable the button
             recaptchaRef.props.onChange('mock-recaptcha-value');
         });
-        
+
         expect(loginButton).toBeEnabled();
         //expect(window.location.pathname).toBe('/auth/confirmation');
     });

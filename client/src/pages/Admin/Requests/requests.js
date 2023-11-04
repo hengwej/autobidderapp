@@ -6,11 +6,6 @@ import { Dropdown } from 'react-bootstrap';
 import * as requestsAPI from "../../../utils/RequestsAPI.js";
 import { useAuth } from '../../../utils/AuthProvider';
 
-
-
-
-
-
 class Requests extends Component {
 
     constructor(props) {
@@ -40,7 +35,6 @@ class Requests extends Component {
             const response = await requestsAPI.getAllRequests(csrfToken);
             this.setState({ requests: response.data, loading: false });
         } catch (error) {
-            console.error("Error fetching data:", error);
             this.setState({ error, loading: false });
         }
     }
@@ -104,8 +98,6 @@ class Requests extends Component {
                                                     <td>{Date(request.requestSubmissionTime).toLocaleString('en-US', { timeZone: 'Asia/Singapore' })}</td>
                                                     <td>{request.vehicleNumber}</td>
                                                     <td>
-
-
                                                         <Button
                                                             style={{ backgroundColor: "#ff692d", border: "none" }}
                                                             onClick={() => this.handleViewDetails(request.requestID)}
@@ -129,6 +121,5 @@ class Requests extends Component {
 export default function RequestsWithNavigation() {
     const navigate = useNavigate();
     const { csrfToken } = useAuth();
-
     return <Requests navigate={navigate} csrfToken={csrfToken} />;
 }

@@ -9,7 +9,6 @@ import { Container, Modal, Button } from 'react-bootstrap';
 function SignUp() {
     const [showModal, setShowSucessModal] = useState(false);
     const [showFailModal, setShowFailModal] = useState(false);
-
     const handleClose = () => {
         setShowSucessModal(false); // Function to close the modal
     }
@@ -54,25 +53,16 @@ function SignUp() {
 
         try {
             const response = await api.signup(accountData, userData);
-
             if (response.status === 200) {
-                console.log('Account created successfully!');
-
                 handleOpen();
             }
-            else
-            {
+            else {
                 handleFailOpen();
             }
-
-
         } catch (error) {
-            console.error("Error fetching data:", error);
+            console.error("Error fetching data");
         }
-
     }
-
-
 
     const validationSchema = Yup.object().shape({
         username: Yup.string().required("You must enter a username"),
@@ -111,11 +101,9 @@ function SignUp() {
                         <label>Phone Number: </label>
                         <Field id="inputSignUpPhoneNumber" type="text" name="phoneNumber" placeholder="Phone Number" />
                         <ErrorMessage className="error-message" name="phoneNumber" component="span" />
-
                         <button type="submit">Sign Up</button>
                     </Form>
                 </Formik>
-
                 {/* Modal success component */}
                 <Modal show={showModal} onHide={handleClose}>
                     <Modal.Header closeButton>
@@ -132,7 +120,6 @@ function SignUp() {
                         </Button>
                     </Modal.Footer>
                 </Modal>
-
                 {/* Modal fail component */}
                 <Modal show={showFailModal} onHide={handleFailClose}>
                     <Modal.Header closeButton>

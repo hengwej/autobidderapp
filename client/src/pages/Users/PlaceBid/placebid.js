@@ -17,33 +17,26 @@ export default function PlaceBid({ carID, handleClose }) {
     const [currentHighestBid, setCurrentHighestBid] = useState(null);
     const [bidError, setBidError] = useState(null);
     const [auctionID, setAuctionID] = useState(null)
-
     const stripe = useStripe();
     const elements = useElements();
     const [isProcessing, setIsProcessing] = useState(false);
     const [paymentError, setPaymentError] = useState(null);
     const [paymentSuccess, setPaymentSuccess] = useState(false); // New state variable for tracking payment success
-
     const { csrfToken } = useAuth();
-
-
     useEffect(() => {
         async function fetchData() {
             try {
                 const response = await auctionAPI.getAllAuctions();
                 const data = await response.data;
                 const auction = data.find((auction) => carID === auction.carID);
-
                 setCurrentHighestBid(auction.currentHighestBid);
                 setAuctionID(auction.auctionID);
                 setAuctionData(data);
                 setLoading(false);
-
             } catch (error) {
-                console.error("Error fetching data:", error);
+                console.error("Error fetching data");
             }
         }
-
         fetchData();
     }, [carID, auctionID, setAuctionData, setLoading]);
 
@@ -69,45 +62,32 @@ export default function PlaceBid({ carID, handleClose }) {
     const bidOnIt = async () => {
         setBidError(null);
         setIsProcessing(true);
-
         if (!stripe || !elements) {
             // Stripe.js has not loaded yet. Make sure to disable
             // form submission until Stripe.js has loaded.
             return;
         }
-
         const cardElement = elements.getElement(CardElement);
-
         // Use your card Element with other Stripe.js APIs
         const { error, paymentMethod } = await stripe.createPaymentMethod({
             type: 'card',
             card: cardElement,
         });
-
         if (error) {
-            console.log('[error]', error);
             setIsProcessing(false);
             setPaymentError(error.message || 'Payment failed');
         } else {
-            console.log('[PaymentMethod]', paymentMethod);
-
             const response = await paymentAPI.createPayment(bidValue, csrfToken);
-
             const clientSecret = response.data.clientSecret;
-
             const { error: confirmError } = await stripe.confirmCardPayment(clientSecret, {
                 payment_method: paymentMethod.id
             });
-
             if (confirmError) {
-                console.log(confirmError.message);
                 setPaymentError(confirmError.message || 'Payment failed');
                 setIsProcessing(false);
             } else {
-                console.log('Payment successful!');
                 // Record the bid in the database now that payment was successful
                 //await axios.post(`http://127.0.0.1:5000/api/auctions/addBid`, { bidValue: bidValue, carID: carID },{withCredentials:true});
-
                 await auctionAPI.addBid(bidValue, carID, csrfToken);
                 // Create or Update a record the order table everytime a new bid is placed 
                 const orderData = { orderStatus: 'Pending', auctionID: auctionID };
@@ -120,11 +100,9 @@ export default function PlaceBid({ carID, handleClose }) {
                 handleClose();
                 setIsProcessing(false);
                 setPaymentSuccess(true);
-
                 // Reload the page
                 window.location.reload();
             }
-
             // Add to bidding history
             addBidHistory();
         }
@@ -135,13 +113,11 @@ export default function PlaceBid({ carID, handleClose }) {
         if (data.bid < currentHighestBid) {
             const errorMessage = "Your bid cannot be lower than the current highest bid. Please enter a higher bid.";
             setBidError(errorMessage);
-            console.log(errorMessage); // Log to see if this part of code executes
         } else {
             setBidError(null);
             handleOpenBid();
         }
     };
-
 
     const CARD_ELEMENT_OPTIONS = {
         style: {
@@ -170,10 +146,8 @@ export default function PlaceBid({ carID, handleClose }) {
                     <button className="btn btn-warning" type="submit" style={{ width: 29.2 + 'em' }}>Submit</button>
                     {/* This should be somewhere appropriate in your return statement, where you want the error to show */}
                     {bidError && <p style={{ color: 'red' }}>{bidError}</p>}
-
                 </Form>
             </Formik>
-
             {/* This for Bidding */}
             <Modal
                 show={OpenedBid} onHide={handleCloseBid}>

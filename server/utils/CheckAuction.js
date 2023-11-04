@@ -6,7 +6,7 @@ const nodemailer = require('nodemailer');
 let auctionQueue = []; // This will hold our queue of auction IDs
 
 function scheduleAuctionClose(auction) {
-    const endDate = new Date(auction.endDate);
+    const endDate = new Date(auction.endDate); // EC TO CHANGE CONESOLE LOG TO LOGGING
     const auctionIdStr = auction.auctionID.toString();
 
     // Check if the auction is already in the queue

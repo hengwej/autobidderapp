@@ -34,43 +34,28 @@ export default function ViewCarDetails() {
                     auctionAPI.getAllAuctions(),
                     accountAPI.allAccount()
                 ]);
-
                 const carData = await carResponse.data;
                 const auctionData = await auctionResponse.data;
                 const accountData = await accountResponse.data;
-
-                console.log(carData);
-                console.log(auctionData);
-                console.log(accountData);
-
                 const car = carData.find((car) => car.carID === parseInt(carID));
-                console.log("Extracted carID:", typeof carID);
-
                 if (car) {
-                    console.log("Data for ID", carID, ":", car);
                     setCarData(car);
                 } else {
-                    console.log("Data not found for ID", carID);
+                    console.log("Data not found");
                 }
-
                 const auction = auctionData.find((auction) => parseInt(carID) === auction.carID);
-                console.log(auction);
-
                 if (auction) {
                     setCurrentHighestBid(auction.currentHighestBid);
                     setAuctionEndDate(auction.endDate);
                 } else {
-                    console.log("Auction not found for carID: " + carID);
+                    console.log("Auction not found");
                 }
-
                 const account = accountData.find((account) => account.accountID);
                 setUserName(account.username);
-
             } catch (error) {
-                console.error("Error fetching data:", error);
+                console.error("Error fetching data");
             }
         }
-
         fetchData();
     }, [carID, setUserName]);
 
@@ -79,16 +64,12 @@ export default function ViewCarDetails() {
         const calculateTimeLeft = () => {
             const endDate = new Date(auctionEndDate);
             const currentDate = new Date();
-
-
             const difference = endDate - currentDate;
-
             if (difference > 0) {
                 const days = Math.floor(difference / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
                 const minutes = Math.floor((difference / (1000 * 60)) % 60);
                 const seconds = Math.floor((difference / 1000) % 60);
-
                 setTimeLeft({
                     days,
                     hours,
@@ -98,22 +79,18 @@ export default function ViewCarDetails() {
             } else {
                 clearInterval(countdownInterval);
                 setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-                console.log('The event has ended.');
             }
         };
-
         const startCountdown = () => {
             countdownInterval = setInterval(() => {
                 calculateTimeLeft();
             }, 1000);
         };
-
         if (carData && carData.createdAt) {
             calculateTimeLeft();
             startCountdown();
         }
     }, [carData, auctionEndDate]);
-
     return (
         <Container>
             <div className="wrapper">
@@ -122,12 +99,10 @@ export default function ViewCarDetails() {
                         <label className="cardetails_label">{carData.make}&nbsp;{carData.model}</label><br />
                         <div className="carDetails">
                             {carData && carData.carImage && carData.carImage.data && (
-                                <img src={URL.createObjectURL(new File([new Blob([new Uint8Array(carData.carImage.data)])], { type: 'image/jpeg' }))} className="carImages"  alt=""/>
+                                <img src={URL.createObjectURL(new File([new Blob([new Uint8Array(carData.carImage.data)])], { type: 'image/jpeg' }))} className="carImages" alt="" />
                             )}
                         </div>
                     </div>
-
-
                     <div className="side-table">
                         <table>
                             <tbody>
@@ -135,7 +110,6 @@ export default function ViewCarDetails() {
                                     <th className="table-header" style={{ borderRight: '2px solid black' }}>Vehicle Number</th>
                                     <td className="table-cell" style={{ width: '500px' }}>{carData.vehicleNumber}</td>
                                 </tr>
-
                                 <tr>
                                     <th className="table-header" style={{ borderRight: '2px solid black' }}>Make</th>
                                     <td className="table-cell">{carData.make}</td>
@@ -155,10 +129,7 @@ export default function ViewCarDetails() {
                             </tbody>
                         </table>
                     </div>
-
-
                 </div>
-
                 {user ? (
                     user.accountType === 'admin' || user.accountType === 'bidder' ? (
                         <>
@@ -200,7 +171,6 @@ export default function ViewCarDetails() {
                         <span>{currentHighestBid}</span>
                     </div>
                 )}
-
                 <Modal show={showPlaceBidModal} onHide={handlePlaceBidClose}>
                     <Modal.Header closeButton>
                         <Modal.Title>Place Bid</Modal.Title>
@@ -214,9 +184,6 @@ export default function ViewCarDetails() {
                         </Button>
                     </Modal.Footer>
                 </Modal>
-
-
-
                 <div key={carData.carID}>
                     <div>
                         <label className="cardetails_label" style={{ marginTop: 30 + 'px' }}>Highlights</label>
@@ -231,7 +198,6 @@ export default function ViewCarDetails() {
                             )}
                         </ul>
                     </div>
-
                     <div>
                         <label className="cardetails_label">Equipment</label>
                         <hr className="solid" />
@@ -245,7 +211,6 @@ export default function ViewCarDetails() {
                             )}
                         </ul>
                     </div>
-
                     <div>
                         <label className="cardetails_label">Modifications</label>
                         <hr className="solid" />
@@ -259,7 +224,6 @@ export default function ViewCarDetails() {
                             )}
                         </ul>
                     </div>
-
                     <div>
                         <label className="cardetails_label">Known Flaws</label>
                         <hr className="solid" />
@@ -274,7 +238,6 @@ export default function ViewCarDetails() {
                         </ul>
                     </div>
                 </div>
-
             </div>
         </Container>
     );

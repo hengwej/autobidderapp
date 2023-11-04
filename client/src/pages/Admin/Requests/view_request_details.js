@@ -12,12 +12,9 @@ export default function ViewRequestDetails() {
     const [carImageSrc, setCarImageSrc] = useState(null);
     const [successMessage, setSuccessMessage] = useState("");
     const navigate = useNavigate();
-
     const { csrfToken } = useAuth();
 
     useEffect(() => {
-
-
         requestsAPI.viewRequestDetails(requestID, csrfToken)
             .then((response) => {
                 setRequest(response.data);
@@ -33,52 +30,45 @@ export default function ViewRequestDetails() {
                 setError(error);
                 setLoading(false);
             });
-    }, [csrfToken,requestID]);
+    }, [csrfToken, requestID]);
 
     const handleApprove = () => {
-
         requestsAPI.approveRequest(requestID, csrfToken)
             .then((response) => {
                 setSuccessMessage("Request approved successfully");
-                console.log('Request approved successfully:', response.data);
             })
             .catch((error) => {
                 // Display the error message or handle the error as needed
-                console.error('Error while approving request:', error);
+                console.error('Error while approving request');
                 if (error.response) {
                     // The request was made, but the server responded with an error.
                     // You can access the response status and data.
-                    console.error('Status:', error.response.status);
-                    console.error('Data:', error.response.data);
+                    console.error('Status and data');
                 } else if (error.request) {
                     // The request was made, but no response was received (e.g., network error).
-                    console.error('Request:', error.request);
+                    console.error('Request');
                 } else {
                     // Something happened in setting up the request that triggered the error.
-                    console.error('Error:', error.message);
+                    console.error('Error');
                 }
             });
     };
 
-
     const handleReject = () => {
         // Display a confirmation dialog
         const shouldDelete = window.confirm("Are you sure you want to reject this request?");
-
         if (shouldDelete) {
             // Send an API request to delete the request when the "Reject" button is clicked.
             requestsAPI.rejectRequest(requestID, csrfToken)
                 .then((response) => {
                     // Handle success, show a message, and refresh the page.
                     setSuccessMessage("Request rejected successfully");
-                    console.log('Request rejected successfully:', response.data);
                 })
                 .catch((error) => {
                     setError(error);
                 });
         }
     };
-
 
     useEffect(() => {
         // Automatically refresh the page after deletion
@@ -90,12 +80,9 @@ export default function ViewRequestDetails() {
             return () => clearTimeout(timer);
         }
     }, [successMessage, navigate]);
-
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error.message}</div>;
-
     if (!request) return <div>Request not found</div>;
-
     return (
         <Container>
             <Card>

@@ -10,10 +10,8 @@ const EditUserProfile = ({ user, account }) => {
   const [showEditProfileModal, setShowEditProfileModal] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-
   // CSRF Token
   const { csrfToken } = useAuth();
-
   const initialValues = {
     username: account.username || '',
     firstName: user.firstName || '',
@@ -22,9 +20,7 @@ const EditUserProfile = ({ user, account }) => {
     address: user.address || '',
     phoneNumber: user.phoneNumber || ''
   };
-
   const [newValues, setNewValues] = useState({ ...initialValues });
-
   const validationSchema = Yup.object().shape({
     username: Yup.string().required("You must enter a username."),
     emailAddress: Yup.string().email("Invalid email.").required("You must enter an email."),
@@ -33,7 +29,6 @@ const EditUserProfile = ({ user, account }) => {
     address: Yup.string().required("You must enter an address."),
     phoneNumber: Yup.string().required("You must enter a phone number.")
   });
-
 
   // Function to show the edit profile modal
   const handleShowEditProfile = () => {
@@ -64,7 +59,6 @@ const EditUserProfile = ({ user, account }) => {
   const handleCloseSuccessModal = () => {
     // Close the success message modal
     setShowSuccessModal(false);
-
     // Reload the page
     window.location.reload();
   };
@@ -74,15 +68,13 @@ const EditUserProfile = ({ user, account }) => {
       // Wait until csrfToken becomes available for 1 second
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
-
     try {
       const response = await api.updateUser(requestData, csrfToken);
       if (response.status === 200) {
-        console.log("Profile edited successfully");
         setShowSuccessModal(true);
       }
     } catch (error) {
-      console.error("Failed to edit profile:", error);
+      console.error("Failed to edit profile");
     }
   };
 
@@ -91,7 +83,6 @@ const EditUserProfile = ({ user, account }) => {
     // Close the confirmation and edit profile modal
     setShowConfirmModal(false);
     setShowEditProfileModal(false);
-
     const requestData = {
       newUserData: {
         firstName: newValues.firstName,
@@ -100,12 +91,10 @@ const EditUserProfile = ({ user, account }) => {
         phoneNumber: newValues.phoneNumber,
         emailAddress: newValues.emailAddress
       },
-
       newAccountData: {
         username: newValues.username,
       },
     };
-
     // Send an HTTP request to save the updated profile data in the database
     handleUpdate(requestData);
   };
@@ -126,31 +115,26 @@ const EditUserProfile = ({ user, account }) => {
                   <Field id="editUsername" type="text" name="username" placeholder="Username" className="form-control" />
                   <ErrorMessage className="error-message" name="username" component="span" />
                 </div>
-
                 <div className="UserProfileForm">
                   <label htmlFor="editFirstName">First Name:</label>
                   <Field id="editFirstName" type="text" name="firstName" placeholder="First Name" className="form-control" />
                   <ErrorMessage className="error-message" name="firstName" component="span" />
                 </div>
-
                 <div className="UserProfileForm">
                   <label htmlFor="editLastName">Last Name:</label>
                   <Field id="editLastName" type="text" name="lastName" placeholder="Last Name" className="form-control" />
                   <ErrorMessage className="error-message" name="lastName" component="span" />
                 </div>
-
                 <div className="UserProfileForm">
                   <label htmlFor="editEmail">Email:</label>
                   <Field id="editEmail" type="email" name="emailAddress" placeholder="Email" className="form-control" />
                   <ErrorMessage className="error-message" name="emailAddress" component="span" />
                 </div>
-
                 <div className="UserProfileForm">
                   <label htmlFor="editAddress">Address:</label>
                   <Field id="editAddress" type="text" name="address" placeholder="Address" className="form-control" />
                   <ErrorMessage className="error-message" name="address" component="span" />
                 </div>
-
                 <div className="UserProfileForm">
                   <label htmlFor="editPhoneNumber">Phone Number:</label>
                   <Field id="editPhoneNumber" type="text" name="phoneNumber" placeholder="Phone Number" className="form-control" />

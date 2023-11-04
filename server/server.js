@@ -1,4 +1,7 @@
 // Importing necessary libraries and modules
+require('dotenv').config({
+  path: process.env.NODE_ENV === 'production' ? '.env.production' : '.env.test'
+});
 require('express-async-errors');
 const express = require('express');
 const cors = require('cors');
@@ -6,9 +9,7 @@ const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 const rateLimit = require('express-rate-limit');
 const slowDown = require('express-slow-down');
-const rateLimitHeaderParser = require('ratelimit-header-parser');
 const { findAndScheduleAuctions } = require('./utils/CheckAuction');
-
 
 const app = express();
 const port = 5000;

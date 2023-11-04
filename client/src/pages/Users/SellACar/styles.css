@@ -95,7 +95,6 @@ button:disabled {
     }
 }
 
-
 .sellcar-page .row {
     display: flex;
     justify-content: space-between;
@@ -122,9 +121,6 @@ button:disabled {
     border-radius: 4px;
     font-size: 14px;
 }
-
-
-
 
 .label-button {
     width: 100%;
@@ -187,10 +183,6 @@ button:disabled {
     padding: 10px;
     color: #ffffff;
 }
-
-
-
-
 
 .success {
     color: green;

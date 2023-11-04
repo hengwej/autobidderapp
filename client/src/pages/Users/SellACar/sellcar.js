@@ -58,7 +58,6 @@ const sanitizeInput = (input) => {
 function SellCar() {
     const { csrfToken } = useAuth();
     const [errors, setErrors] = useState({});
-
     const [formData, setFormData] = useState({
         vehicleNumber: "",
         images: null,
@@ -133,7 +132,6 @@ function SellCar() {
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState(null);
-
     const handleSubmit = async (event) => {
         event.preventDefault();
         setSubmissionStatus('');  // reset submission status
@@ -162,23 +160,20 @@ function SellCar() {
                     setSubmissionStatus('success');
                 }
             } catch (error) {
-                console.error('Error:', error);
                 setSubmissionStatus('failure');
 
             }
         } catch (validationError) {
             // If validation fails, validationError.message will contain the validation error message
-            console.error('Validation Error:', validationError.message);
+            console.error('Validation Error');
         }
         setLoading(false);  // set loading back to false at the end
     };
     return (
         <Container>
             <div className="sellcar-page">
-
                 <form onSubmit={handleSubmit}>
                     <h2 className="sellCar-title">List Your Car</h2>
-
                     <div className="image-upload-container">
                         <label className="label-button">
                             {formData.images ? (
