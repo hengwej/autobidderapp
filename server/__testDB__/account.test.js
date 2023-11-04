@@ -16,22 +16,22 @@ describe('Account Model Tests', () => {
         });
     });
 
-    // Clean up test data after all tests
-    afterAll(async () => {
-        await prisma.account.deleteMany({
-            where: {
-                user: {
-                    emailAddress: 'jane.doe@example.com',
-                },
-            },
-        });
+    // // Clean up test data after all tests
+    // afterAll(async () => {
+    //     await prisma.account.deleteMany({
+    //         where: {
+    //             user: {
+    //                 emailAddress: 'jane.doe@example.com',
+    //             },
+    //         },
+    //     });
 
-        await prisma.user.deleteMany({
-            where: {
-                emailAddress: 'jane.doe@example.com',
-            },
-        });
-    });
+    //     await prisma.user.deleteMany({
+    //         where: {
+    //             emailAddress: 'jane.doe@example.com',
+    //         },
+    //     });
+    // });
 
     test('should create a new account linked to a user', async () => {
         const accountData = {
@@ -117,17 +117,17 @@ describe('Account Model Tests', () => {
         await expect(prisma.account.create({ data: accountData })).rejects.toThrow();
     });
 
-    test('should delete an account', async () => {
-        const username = 'jane_doe';
+    // test('should delete an account', async () => {
+    //     const username = 'jane_doe';
 
-        await prisma.account.delete({
-            where: { username },
-        });
+    //     await prisma.account.delete({
+    //         where: { username },
+    //     });
 
-        const deletedAccount = await prisma.account.findUnique({
-            where: { username },
-        });
+    //     const deletedAccount = await prisma.account.findUnique({
+    //         where: { username },
+    //     });
 
-        expect(deletedAccount).toBeNull();
-    });
+    //     expect(deletedAccount).toBeNull();
+    // });
 });

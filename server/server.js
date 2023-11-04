@@ -1,6 +1,6 @@
 // Importing necessary libraries and modules
 require('dotenv').config({
-  path: process.env.NODE_ENV === 'production' ? '.env.production' : '.env.test'
+  path: process.env.NODE_ENV === 'production' ? '.env' : '.env.test'
 });
 require('express-async-errors');
 const express = require('express');
