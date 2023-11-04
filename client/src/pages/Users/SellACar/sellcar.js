@@ -154,21 +154,17 @@ function SellCar() {
                 data.append('images', formData.images);
             }
             try {
-                const response = await carAPI.checkConnection(data);
+                const response = await carAPI.sellCar(data, csrfToken)
+
                 if (response.status === 200) {
+                    // set submission status to success on successful submission
                     setSuccess(true);  // set success to true on successful submission
-                    setSubmissionStatus('success');  // set submission status to success on successful submission
+                    setSubmissionStatus('success');
                 }
             } catch (error) {
                 console.error('Error:', error);
-                await carAPI.sellCar(data, csrfToken).then(response => {
-                    //Handle JSON Response Here
-                    // console.log(response.formData);
-                }).catch(error => {
-                    // console.error("Failed to create new entry:", error);
-                    // setError(error.message);  // set error on failure
-                    setSubmissionStatus('failure');  // set submission status to failure on error
-                });
+                setSubmissionStatus('failure');
+
             }
         } catch (validationError) {
             // If validation fails, validationError.message will contain the validation error message
@@ -179,8 +175,7 @@ function SellCar() {
     return (
         <Container>
             <div className="sellcar-page">
-                {success && <div className="success">Car listed successfully!</div>}
-                {error && <div className="error">Error: {error}</div>}
+
                 <form onSubmit={handleSubmit}>
                     <h2 className="sellCar-title">List Your Car</h2>
 
@@ -356,6 +351,8 @@ function SellCar() {
                             {errors.reservePrice && <div className="error-message">{errors.reservePrice}</div>}
                         </div>
                     </div>
+                    {success && <div className="success">Success! Listing sent to for verification</div>}
+                    {error && <div className="error">Error: {error}</div>}
                     <button type="submit" className={`list-your-car-button ${submissionStatus}`}>
                         {loading ? 'Loading...' : submissionStatus === 'success' ? 'Success!' : submissionStatus === 'failure' ? 'Failure' : 'List Your Car'}
                     </button>

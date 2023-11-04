@@ -183,8 +183,24 @@ async function emailWinner(auctionDetails, carDetails, accountDetails) {
         from: process.env.EMAIL,
         to: accountDetails.user.emailAddress,
         subject: 'Autobidder Bid Winner!',
-        text: `Congratulations! you have won the bid for ${carDetails.make} ${carDetails.model} ${carDetails.vehicleNumber} at $${auctionDetails.currentHighestBid}`,
+        html: `
+        <div style="font-family: 'Arial', sans-serif; text-align: center; padding: 20px; background-color: #f2f4f6;">
+            <h1 style="color: #333;">🎉 Congratulations! 🎉</h1>
+            <h2>You've won the auction!</h2>
+            <div style="border: 1px solid #ddd; padding: 20px; background: white; margin: 20px;">
+                <h3>${carDetails.make} ${carDetails.model}</h3>
+                <p style="color: #555;">Vehicle Number: <strong>${carDetails.vehicleNumber}</strong></p>
+                <p style="color: #555;">Winning Bid: <strong>$${auctionDetails.currentHighestBid}</strong></p>
+                <p>We are thrilled to inform you that you've won the bid for this beautiful car.</p>
+                <p>Please contact us to arrange for collection of your new vehicle.</p>
+            </div>
+            <footer style="color: #777; padding-top: 10px;">
+                Thank you for using Autobidder.
+            </footer>
+        </div>
+    `
     };
+
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
             req.log.error(`Error sending OTP: ${error}`);  // Log error sending OTP 
