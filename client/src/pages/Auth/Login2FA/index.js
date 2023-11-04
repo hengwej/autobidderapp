@@ -7,6 +7,7 @@ import { useAuth } from '../../../utils/AuthProvider';
 import { Container } from 'react-bootstrap';
 
 function Login2FA() {
+    
     const initialValues = {
         Code2FA: '',
     };
