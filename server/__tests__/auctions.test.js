@@ -27,7 +27,6 @@ app.use('/api/auctions', auctionsRouter);
 describe('auctions API Endpoints', () => {
     test('POST /api/auctions/allAuction should return all auctions', async () => {
         const response = await request(app).post('/api/auctions/allAuction')
-
         expect(response.status).toBe(200);
     });
 

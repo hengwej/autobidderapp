@@ -27,7 +27,6 @@ app.use('/api/biddingHistory', biddingHistoryRouter);
 describe('biddingHistory API Endpoints', () => {
     test('POST /api/biddingHistory/allBidHistory should return all bidding history records', async () => {
         const response = await request(app).post('/api/biddingHistory/allBidHistory')
-
         expect(response.status).toBe(200);
     });
 

@@ -27,7 +27,6 @@ app.use('/api/accounts', accountsRouter);
 describe('accounts API Endpoints', () => {
     test('POST /api/accounts/allAccount should return all accounts', async () => {
         const response = await request(app).post('/api/accounts/allAccount')
-
         expect(response.status).toBe(200);
     });
 
