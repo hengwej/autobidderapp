@@ -135,6 +135,7 @@ router.post('/login', async (req, res) => {
         }
         //otp generation
         const generatedOtp = crypto.randomInt(100000, 1000000).toString();
+
         req.log.info('Generated OTP for login'); // Log Generated OTP for login request
         // console.log("Generated OTP: " + generatedOtp);
         //nodemailer backend
