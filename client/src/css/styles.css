@@ -454,6 +454,10 @@ button,
 [type=reset],
 [type=submit] {
     -webkit-appearance: button;
+    -moz-appearance: button;
+    /* For Mozilla browsers */
+    appearance: button;
+    /* Standard property */
 }
 
 button:not(:disabled),
@@ -514,17 +518,11 @@ legend+* {
 
 [type=search] {
     outline-offset: -2px;
-    -webkit-appearance: textfield;
+    -webkit-appearance: textfield; /* For WebKit browsers */
+    appearance: textfield;         /* Standard property */
 }
 
-/* rtl:raw:
-[type="tel"],
-[type="url"],
-[type="email"],
-[type="number"] {
-  direction: ltr;
-}
-*/
+
 ::-webkit-search-decoration {
     -webkit-appearance: none;
 }

@@ -26,7 +26,6 @@ const ResetPassword = () => {
     confirmPassword: Yup.string().oneOf([Yup.ref('password')], 'Passwords must match.').required("Please confirm your password."),
   });
 
-
   // Function to show the edit password modal
   const handleShowResetPassword = () => {
     setShowResetPasswordModal(true);
