@@ -5,7 +5,7 @@ import DOMPurify from 'dompurify';
 import { debounce } from 'lodash';
 import * as carAPI from "../../../utils/CarAPI.js"
 import { useAuth } from '../../../utils/AuthProvider';
-import { Modal, Button, Container } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;  // 5 MB in bytes
 

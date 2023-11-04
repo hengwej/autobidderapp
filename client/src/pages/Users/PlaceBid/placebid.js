@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../../../css/styles.css";
 import "./styles.css";
-import axios from 'axios';
 import { Formik, Form, Field } from 'formik';
 import { Modal, Button } from "react-bootstrap";
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js'; // Import Stripe components
