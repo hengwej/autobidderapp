@@ -4,7 +4,6 @@ import './index.css';
 import App from './App';
 import { BrowserRouter } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.css';
-import { StrictMode } from 'react';
 import { AuthProvider } from './utils/AuthProvider';
 
 

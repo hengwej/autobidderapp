@@ -19,7 +19,7 @@ export const signup = async (accountData, userData) => {
         console.error("Error Signing Up:", error);
         throw error;
     }
-};
+}; 
 
 export const login = async (username, password) => {
     try {
