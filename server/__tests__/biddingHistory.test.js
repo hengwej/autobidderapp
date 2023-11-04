@@ -1,7 +1,7 @@
 
 const request = require('supertest');
 const express = require('express');
-const auctionsRouter = require('../api/auctions/auctions');
+const biddingHistoryRouter = require('../api/biddingHistory/biddingHistory');
 const { log, createLogWrapper } = require('../api/Log/log');
 
 
@@ -11,7 +11,7 @@ const app = express();
 const context = {
     userId: 'test', // You can provide the user ID as needed
     method: 'POST', // The HTTP method
-    url: '/api/auctions/allAuction', // The route URL
+    url: '/api/biddingHistory/allBidHistory', // The route URL
     ip: '127.0.0.1', // IP address
     userAgent: 'Test User Agent', // User-Agent header
 };
@@ -22,11 +22,11 @@ app.use((req, res, next) => {
 });
  
 app.use(express.json());
-app.use('/api/auctions', auctionsRouter);
+app.use('/api/biddingHistory', biddingHistoryRouter);
 
-describe('auctions API Endpoints', () => {
-    test('POST /api/auctions/allAuction should return all auctions', async() => {
-        const response = await request(app).post('/api/auctions/allAuction')
+describe('biddingHistory API Endpoints', () => {
+    test('POST /api/biddingHistory/allBidHistory should return all bidding history records', async() => {
+        const response = await request(app).post('/api/biddingHistory/allBidHistory')
 
         console.log(response.body);
         expect(response.status).toBe(200);

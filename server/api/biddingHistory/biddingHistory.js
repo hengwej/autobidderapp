@@ -10,10 +10,10 @@ const checkJwtToken = require('../../utils/JwtTokens');
  * Endpoint to retrieve all bidding history records.
  * This endpoint fetches all bidding history records from the database and returns them in an array.
  * 
- * @route GET /allBidHistory
+ * @route POST /allBidHistory
  * @returns {Object[]} allBiddingHistory - The list of all bidding history records.
  */
-router.get('/allBidHistory', csrfProtection, checkJwtToken, async (req, res) => {
+router.post('/allBidHistory', csrfProtection, checkJwtToken, async (req, res) => {
     try {
         req.log.info('Fetching all bidding history');
         const allBiddingHistory = await prisma.biddingHistory.findMany();

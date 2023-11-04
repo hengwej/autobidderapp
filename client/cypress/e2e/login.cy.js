@@ -1,6 +1,7 @@
 // login.spec.js
 describe('Login Form Tests', () => {
-  it('validates the login form with valid data', () => {
+  
+  it('validates logging in with valid credentials and log out functionality', () => {
     cy.visit('localhost:3000/auth/login'); // Assuming your login page is at '/login'
 
     // Fill in other form fields
@@ -39,19 +40,37 @@ describe('Login Form Tests', () => {
 
     cy.contains('Logout').should('be.visible');
     cy.contains('User Profile').should('be.visible');
-  });
 
-  /**
-  it('validates the login form with valid data', () => {
-    
     cy.get(':nth-child(4) > .nav-link').click();
 
     cy.wait(1000);
 
     cy.contains('Login').should('be.visible');
     cy.contains('Sign Up').should('be.visible');
+  });
+
+  it('validates logging in with invalid credentials', () => {
+    cy.visit('localhost:3000/auth/login'); // Assuming your login page is at '/login'
+
+    // Fill in other form fields
+    cy.get('[data-testid=inputLoginUsername]').type('invalid');
+    cy.get('[data-testid=inputLoginPassword]').type('invalid');
+    cy.wait(2000);
+
+    cy.get('.error-message').should('be.visible');
+    cy.get('[type=submit]').should('be.disabled');
+
+
+    cy.get('[data-testid=inputLoginUsername]').type('invalid123');
+    cy.get('[data-testid=inputLoginPassword]').type('invalid123');
+
+    cy.get('[type=submit]').should('not.be.disabled');
+
+    // Submit the form
+    cy.get('[type=submit]').click(); // Submit button selector may vary
+
+    cy.url().should('include', '/auth/login');
 
   });
-  */
   
 });

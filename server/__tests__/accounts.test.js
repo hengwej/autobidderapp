@@ -1,7 +1,7 @@
 
 const request = require('supertest');
 const express = require('express');
-const auctionsRouter = require('../api/auctions/auctions');
+const accountsRouter = require('../api/accounts/accounts');
 const { log, createLogWrapper } = require('../api/Log/log');
 
 
@@ -11,7 +11,7 @@ const app = express();
 const context = {
     userId: 'test', // You can provide the user ID as needed
     method: 'POST', // The HTTP method
-    url: '/api/auctions/allAuction', // The route URL
+    url: '/api/accounts/allAccount', // The route URL
     ip: '127.0.0.1', // IP address
     userAgent: 'Test User Agent', // User-Agent header
 };
@@ -22,11 +22,11 @@ app.use((req, res, next) => {
 });
  
 app.use(express.json());
-app.use('/api/auctions', auctionsRouter);
+app.use('/api/accounts', accountsRouter);
 
-describe('auctions API Endpoints', () => {
-    test('POST /api/auctions/allAuction should return all auctions', async() => {
-        const response = await request(app).post('/api/auctions/allAuction')
+describe('accounts API Endpoints', () => {
+    test('POST /api/accounts/allAccount should return all accounts', async() => {
+        const response = await request(app).post('/api/accounts/allAccount')
 
         console.log(response.body);
         expect(response.status).toBe(200);

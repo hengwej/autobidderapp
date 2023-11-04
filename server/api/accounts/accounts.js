@@ -30,11 +30,11 @@ router.post('/addAccount', async (req, res) => {
  * This endpoint fetches all accounts from the database and returns them in an array.
  * If successful, it returns the list of all accounts; otherwise, it sends an error response.
  * 
- * @route GET /allAccount
+ * @route POST /allAccount
  * @param {Object} req - Express request object.
  * @param {Object} res - Express response object used to send the response.
  */
-router.get('/allAccount', async (req, res) => {
+router.post('/allAccount', async (req, res) => {
     try {
         const allAccounts = await prisma.account.findMany();
         req.log.info(`All accounts have been accessed`);  // Logging the successful account retrieval
