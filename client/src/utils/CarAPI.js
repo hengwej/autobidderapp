@@ -30,13 +30,3 @@ export const sellCar = async (data, csrfToken) => {
         throw error;
     }
 }
-
-export const checkConnection = async (data) => {
-    try {
-        const response = await api.post("/sellcar", data);
-        return response;
-    } catch (error) {
-        console.error("Error fetching cars:", error);
-        throw error;
-    }
-}
