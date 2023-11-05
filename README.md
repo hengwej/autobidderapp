@@ -5,7 +5,7 @@ AutoBid aims to provide a seamless, user-friendly platform where buyers can expl
 
 ## Installation
 
-Dillinger requires [Node.js](https://nodejs.org/) and [npm](https://docs.npmjs.com/about-npm).
+AutoBid requires [Node.js](https://nodejs.org/) and [npm](https://docs.npmjs.com/about-npm).
 
 Install the dependencies and devDependencies in both client and server
 
