@@ -23,7 +23,6 @@ export const viewRequestDetails = async (requestData, csrfToken) => {
 };
 
 export const approveRequest = async (requestData, csrfToken) => {
-    console.log(csrfToken);
     try {
         const response = await api.post("/api/requests/approveRequest/" + requestData, {}, {
             headers: {

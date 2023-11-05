@@ -39,22 +39,15 @@ export default function ViewCarDetails() {
                 const auctionData = await auctionResponse.data;
                 const accountData = await accountResponse.data;
 
-                console.log(carData);
-                console.log(auctionData);
-                console.log(accountData);
-
                 const car = carData.find((car) => car.carID === parseInt(carID));
-                console.log("Extracted carID:", typeof carID);
 
                 if (car) {
-                    console.log("Data for ID", carID, ":", car);
                     setCarData(car);
                 } else {
                     console.log("Data not found for ID", carID);
                 }
 
                 const auction = auctionData.find((auction) => parseInt(carID) === auction.carID);
-                console.log(auction);
 
                 if (auction) {
                     setCurrentHighestBid(auction.currentHighestBid);
@@ -122,7 +115,7 @@ export default function ViewCarDetails() {
                         <label className="cardetails_label">{carData.make}&nbsp;{carData.model}</label><br />
                         <div className="carDetails">
                             {carData && carData.carImage && carData.carImage.data && (
-                                <img src={URL.createObjectURL(new File([new Blob([new Uint8Array(carData.carImage.data)])], { type: 'image/jpeg' }))} className="carImages"  alt=""/>
+                                <img src={URL.createObjectURL(new File([new Blob([new Uint8Array(carData.carImage.data)])], { type: 'image/jpeg' }))} className="carImages" alt="" />
                             )}
                         </div>
                     </div>

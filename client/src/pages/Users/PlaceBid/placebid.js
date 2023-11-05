@@ -136,7 +136,6 @@ export default function PlaceBid({ carID, handleClose }) {
         if (data.bid < currentHighestBid) {
             const errorMessage = "Your bid cannot be lower than the current highest bid. Please enter a higher bid.";
             setBidError(errorMessage);
-            console.log(errorMessage); // Log to see if this part of code executes
         } else {
             setBidError(null);
             handleOpenBid();

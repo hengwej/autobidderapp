@@ -7,7 +7,7 @@ import { useAuth } from '../../../utils/AuthProvider';
 import { Container } from 'react-bootstrap';
 
 function Login2FA() {
-    
+
     const initialValues = {
         Code2FA: '',
     };
@@ -25,7 +25,6 @@ function Login2FA() {
 
             if (response.status === 200) {
 
-                console.log('OTP verification successful!');
                 window.alert('Login successful! You will redirected to the homepage.');
                 navigate('/');
             } else if (response.status === 401) {

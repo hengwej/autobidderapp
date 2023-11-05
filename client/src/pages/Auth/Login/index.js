@@ -43,7 +43,6 @@ function Login() {
                     const response = await login(username, password);
 
                     if (response.status === 200) {
-                        console.log('Login successful!');
                         // Pop-up to tell user that otp is sent to email
                         window.alert('An OTP has been sent to your email!');
                         navigate('/auth/confirmation');
@@ -66,7 +65,6 @@ function Login() {
                 const response = await login(username, password);
 
                 if (response.status === 200) {
-                    console.log('Login successful!');
                     // Pop-up to tell user that otp is sent to email
                     window.alert('An OTP has been sent to your email!');
                     navigate('/auth/confirmation');
@@ -115,7 +113,6 @@ function Login() {
                                     ref={recaptchaRef}
                                     sitekey={process.env.REACT_APP_RECAPTCHA_CLIENT_KEY} // change to .env, temporary testing key, please swap out later              
                                     onChange={(value) => {
-                                        console.log("Captcha value:", value);
                                         setIsButtonDisabled(false);
                                     }} //value will be parsed into backend as "token"
                                 />

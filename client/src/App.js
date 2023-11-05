@@ -43,6 +43,23 @@ function App() {
                                 <Link className="nav-link" to="/sellCar">Sell a Car</Link>
                             </li>
                         )}
+
+                        {user && (user.accountType === 'admin') && (
+                            <li className="nav-item">
+                                <Link className="nav-link" to="/userManagement">Manage User</Link>
+                            </li>
+                        )}
+                        {user && (user.accountType === 'admin') && (
+                            <li className="nav-item">
+                                <Link className="nav-link" to="/Requests">Requests</Link>
+                            </li>
+                        )}
+                        {user && (user.accountType === 'admin' || user.accountType === 'bidder') && (
+                            <li className="nav-item">
+                                <Link className="nav-link" to="/userProfile">User Profile</Link>
+                            </li>
+                        )}
+
                         {!user && (
                             <li className="nav-item">
                                 <Link className="nav-link" to="/auth/login">Login</Link>
@@ -57,21 +74,6 @@ function App() {
                         {user && (user.accountType === 'admin' || user.accountType === 'bidder') && (
                             <li className="nav-item">
                                 <Link className="nav-link" to="/" onClick={logout}>Logout</Link>
-                            </li>
-                        )}
-                        {user && (user.accountType === 'admin') && (
-                            <li className="nav-item">
-                                <Link className="nav-link" to="/userManagement">Manage User</Link>
-                            </li>
-                        )}
-                        {user && (user.accountType === 'admin') && (
-                            <li className="nav-item">
-                                <Link className="nav-link" to="/Requests">Requests</Link>
-                            </li>
-                        )}
-                        {user && (user.accountType === 'admin' || user.accountType === 'bidder') && (
-                            <li className="nav-item">
-                                <Link className="nav-link" to="/userProfile">User Profile</Link>
                             </li>
                         )}
                     </ul>
