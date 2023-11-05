@@ -14,7 +14,7 @@ function Login() {
     };
 
     const isTestEnvironment = process.env.REACT_APP_ENVIRONMENT === 'test';
-    
+
 
     const { login, user } = useAuth();
     const navigate = useNavigate();
@@ -31,17 +31,17 @@ function Login() {
         setIsButtonDisabled(true);
         const { username, password } = data;
         // start of captcha logic, uncomment to get it up    
-        
+
         if (!isTestEnvironment) {
             const recaptchaValue = recaptchaRef.current.getValue();
-            if (!recaptchaValue){
+            if (!recaptchaValue) {
                 alert("Please verify you're not a robot.");
             }
             else {
                 try {
 
                     const response = await login(username, password);
-    
+
                     if (response.status === 200) {
                         console.log('Login successful!');
                         // Pop-up to tell user that otp is sent to email
@@ -110,15 +110,15 @@ function Login() {
                             <ErrorMessage className="error-message" name="password" component="span" />
                             <ErrorMessage className="error-message" name="login-error" component="span" />
                             {!isTestEnvironment && (
-                            <ReCAPTCHA
-                                data-testid="reCAPTCHA"
-                                ref={recaptchaRef}
-                                sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" // change to .env, temporary testing key, please swap out later              
-                                onChange={(value) => {
-                                    console.log("Captcha value:", value);
-                                    setIsButtonDisabled(false);
-                                }} //value will be parsed into backend as "token"
-                            />
+                                <ReCAPTCHA
+                                    data-testid="reCAPTCHA"
+                                    ref={recaptchaRef}
+                                    sitekey={process.env.REACT_APP_RECAPTCHA_CLIENT_KEY} // change to .env, temporary testing key, please swap out later              
+                                    onChange={(value) => {
+                                        console.log("Captcha value:", value);
+                                        setIsButtonDisabled(false);
+                                    }} //value will be parsed into backend as "token"
+                                />
                             )}
                             <button type="submit" disabled={isSubmitting || !isValid || !values.username || values.password.length < 8 || isButtonDisabled}>
                                 Login
