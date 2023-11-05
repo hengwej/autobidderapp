@@ -19,78 +19,7 @@ const checkJwtToken = require('../../utils/JwtTokens');
 
 router.use(cookieParser());  // Middleware for parsing cookies from the client
 
-// Middleware to set cookie for session management
-router.use((req, res, next) => {
-    // Setting a cookie named 'session' with value '1'
-    // The cookie is HttpOnly, has a SameSite policy of 'strict', and is sent only over HTTPS
-    res.cookie('session', '1', {
-        httpOnly: true,
-        sameSite: 'strict',
-        secure: true  // Only send cookie over HTTPS
-    });
-    next();  // Move to the next middleware in the chain
-});
 
-// Configuring CORS (Cross-Origin Resource Sharing) options
-const corsOptions = {
-    origin: 'http://localhost:3000',  // Specify the allowed origin for cross-origin requests
-    credentials: true,  // Allow credentials (cookies, authorization headers, etc.) to be shared across origins
-};
-
-router.use(cors(corsOptions));  // Use the cors middleware with the specified options
-
-// Configure and apply various security headers using helmet
-router.use(helmet.contentSecurityPolicy({
-    directives: {
-        // Specify sources for various types of content
-        defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", "'unsafe-inline'"],
-        styleSrc: ["'self'", "'unsafe-inline'"],
-        imgSrc: [
-            "'self'", "data:",
-            "https://localhost:3000/processed_car_images/",
-            "https://localhost:3000/uploads/"
-        ],
-        connectSrc: ["'self'"],
-        fontSrc: ["'self'", "https://fonts.gstatic.com"],  // Example: Allow fonts from self and Google Fonts
-        objectSrc: ["'none'"], // disallow the embedding of objects (like Flash or Java applets)
-    }
-}));
-
-// Remove potentially sensitive headers
-router.use(helmet.hidePoweredBy());
-
-// Apply HTTP Strict Transport Security (HSTS) to enforce secure connections
-router.use(helmet.hsts({
-    maxAge: 31536000, // Set the max age of the HSTS header to 1 year in seconds
-    includeSubDomains: true,  // Apply HSTS to all subdomains
-    preload: true  // Opt-in to the HSTS preload list
-}));
-
-// Prevent clickjacking by denying the ability to embed site in an iframe
-router.use(helmet.frameguard({ action: 'deny' }));
-
-// Control DNS prefetching
-router.use(helmet.dnsPrefetchControl());
-
-// Set Referrer Policy to not leak referrer information
-router.use(helmet.referrerPolicy({ policy: 'no-referrer' }));
-
-// Protect against Cross-site Scripting (XSS) attacks
-router.use(helmet.xssFilter());
-
-// Prevent clients from MIME type sniffing
-router.use(helmet.noSniff());
-
-// Prevent IE from executing downloads in site's context
-router.use(helmet.ieNoOpen());
-
-// Middleware for rate limiting to help prevent abuse and protect against DDoS attacks
-const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // Set a time window of 15 minutes
-    max: 100 // limit each IP to 100 requests per windowMs
-});
-router.use(limiter);
 
 /**
  * Function to handle image processing, resizing, and compression.
