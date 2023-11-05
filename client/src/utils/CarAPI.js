@@ -27,13 +27,5 @@ export const sellCar = async (data, csrfToken) => {
     } catch (error) {
         throw error;
     }
-}
 
-export const checkConnection = async (data) => {
-    try {
-        const response = await api.post("/sellcar", data);
-        return response;
-    } catch (error) {
-        throw error;
-    }
 }

@@ -133,12 +133,26 @@ router.post('/login', async (req, res) => {
             req.log.warn('Invalid login credentials provided');  // Log Invalid credentials
             return res.status(401).json({ error: 'Invalid credentials' });
         }
-        //otp generation
-        const generatedOtp = crypto.randomInt(100000, 1000000).toString();
 
+        //Retrieve accountID from account table
+        const accountID = await prisma.account.findUnique({
+            where: { username },
+            select: { accountID: true },
+        });
+
+
+        // Generate OTP
+        const generatedOtp = crypto.randomInt(100000, 1000000).toString();
         req.log.info('Generated OTP for login'); // Log Generated OTP for login request
-        // console.log("Generated OTP: " + generatedOtp);
-        //nodemailer backend
+
+
+        // Store the OTP in the database
+        await prisma.account.update({
+            where: { accountID: accountID.accountID },
+            data: { token2fa: generatedOtp },
+        });
+
+        // Send OTP to user's email
         const transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
@@ -146,12 +160,16 @@ router.post('/login', async (req, res) => {
                 pass: process.env.EPASSWORD,
             },
         });
+
+
         const mailOptions = {
             from: process.env.EMAIL,
             to: account.user.emailAddress,
             subject: 'Autobidder OTP',
             text: generatedOtp.toString()
         };
+
+
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
                 req.log.error(`Error sending OTP: ${error}`);  // Log error sending OTP 
@@ -159,12 +177,15 @@ router.post('/login', async (req, res) => {
             }
             req.log.info(`OTP email sent: ${info.response}`);
         });
+
+
         // Create temporary session token
         const tempPayload = {
             accountID: account.accountID,
-            otp: generatedOtp,
             timestamp: new Date(),
         };
+
+
         const tempToken = jwt.sign(tempPayload, process.env.JWT_TEMP_SECRET, { expiresIn: '10m' });
         // Send temporary token as a cookie
         res.cookie('tempToken', tempToken, { httpOnly: true, secure: true, sameSite: 'None' });
@@ -205,6 +226,7 @@ router.post('/otp', async (req, res) => {
             req.log.warn('Temporary session not found');  // log temp session not found
             return res.status(401).json({ error: 'Temporary session not found' });
         }
+
         // Verify temporary session token
         let tempUser;
         try {
@@ -214,13 +236,22 @@ router.post('/otp', async (req, res) => {
             return res.status(401).json({ error: 'Invalid or expired temporary session' });
         }
 
+        //Retrieve OTP from account table
+        const otpFromDB = await prisma.account.findUnique({
+            where: { accountID: tempUser.accountID },
+            select: { token2fa: true },
+        });
+
+        // Verify OTP
         if (!isTestEnvironment) {
-            if (tempUser.otp !== otp) {
+            if (otpFromDB.token2fa !== otp) {
+
                 req.log.warn('Invalid OTP provided');  // log when invalid OTP
                 return res.status(401).json({ error: 'Invalid OTP' });
             }
         }
-        //get accountType from account table
+
+        //Get accountType from account table
         const account = await prisma.account.findUnique({
             where: { accountID: tempUser.accountID },
         });
@@ -228,18 +259,28 @@ router.post('/otp', async (req, res) => {
             req.log.warn('Account not found');  // log when entered account not found
             return res.status(401).json({ error: 'Account not found' });
         }
+
         // OTP is valid, create a new fully authenticated session token
         const payload = {
             accountID: tempUser.accountID,
             accountType: account.accountType,
         };
-        const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+
+
         // Generate CSRF token
         const csrfToken = generateCSRFToken();
+
         res.cookie('csrfToken', csrfToken, { httpOnly: true, secure: true, sameSite: 'Strict' });
+
+        // Generate JWT token
+        const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
+
         // Store the CSRF token in a secure, HttpOnly cookie
-        res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'None' });
+        res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'Strict' });
+
         res.clearCookie('tempToken');
+
         req.log.info('User authenticated successfully using OTP');  // log when login is successful
         return res.status(200).json({ accountType: account.accountType, csrfToken: csrfToken, message: 'Logged in successfully.' });
     } catch (error) {
@@ -288,7 +329,7 @@ router.get('/user', authenticateToken, async (req, res) => {
  */
 router.post('/logout', (req, res) => {
     req.log.info('Logging out user');  // log start of logging out
-    res.clearCookie('token', { path: '/', httpOnly: true, secure: true, sameSite: 'None' });
+    res.clearCookie('token', { path: '/', httpOnly: true, secure: true, sameSite: 'Strict' });
     res.clearCookie('csrfToken', { path: '/', httpOnly: true, secure: true, sameSite: 'Strict' });
     req.log.info('User logged out successfully');  // log end of logging out
     res.json({ message: "Logged out successfully." });

@@ -107,7 +107,14 @@ function App() {
                 />
                 <Route path="/userProfile" element={<UserProfile />} />
                 <Route path="/viewUser/:userID" element={<ViewDetails />} />
-                <Route path="/requests" element={<Requests />} />
+                <Route
+                    path="/requests"
+                    element={
+                        <ProtectedRoute allowedAccountTypes={['admin']}>
+                            <Requests />
+                        </ProtectedRoute>
+                    }
+                />
                 <Route path="/viewRequestDetails/:requestID" element={<ViewRequestDetails />} />
             </Routes>
         </div>

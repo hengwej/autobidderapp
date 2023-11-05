@@ -14,6 +14,7 @@ function Login() {
     };
 
     const isTestEnvironment = process.env.REACT_APP_ENVIRONMENT === 'test';
+
     const { login, user } = useAuth();
     const navigate = useNavigate();
     const recaptchaRef = useRef();
@@ -101,8 +102,11 @@ function Login() {
                                 <ReCAPTCHA
                                     data-testid="reCAPTCHA"
                                     ref={recaptchaRef}
-                                    sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" // change to .env, temporary testing key, please swap out later              
+
+                                    sitekey={process.env.REACT_APP_RECAPTCHA_CLIENT_KEY} // change to .env, temporary testing key, please swap out later              
                                     onChange={(value) => {
+                                        console.log("Captcha value:", value);
+
                                         setIsButtonDisabled(false);
                                     }} //value will be parsed into backend as "token"
                                 />
