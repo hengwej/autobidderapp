@@ -1,23 +1,49 @@
-# Project Title
+# AutoBid
+## _Team 15_
 
-Car auction site :red_car:
+AutoBid aims to provide a seamless, user-friendly platform where buyers can explore and purchase cars with ease. AutoBid prides itself in its user-friendliness and security in the form of a comprehensive platform that redefines the car shopping experience. By bridging the gap between buyers and sellers through modern technology, AutoBid promises a hassle-free, efficient, and enjoyable car-buying journey for all its users.
 
-## Getting Started
+## Installation
 
-### Installing
+Dillinger requires [Node.js](https://nodejs.org/) and [npm](https://docs.npmjs.com/about-npm).
 
-Provide a step by step series of examples that tell how to get a development environment running.
+Install the dependencies and devDependencies in both client and server
 
-```
-git clone https://github.com/hengweij/autobidderapp
-cd autobidderapp
+```sh
 cd client
 npm install
-cd ../server
+...
+cd server
 npm install
 ```
-open two terminal, one for client, one for server
-```
+
+Start both the client and server
+
+```sh
+cd client
+npm start
+...
+cd server
 npm start
 ```
 
+## Testing
+
+AutoBid comes with several test suites to ensure functionality
+
+Unit Tests
+
+```sh
+cd server
+npm test
+...
+cd client
+npm test
+```
+
+UI Tests
+
+```sh
+cd client
+npx cypress open
+```
