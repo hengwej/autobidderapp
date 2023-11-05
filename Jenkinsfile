@@ -12,14 +12,7 @@ pipeline {
             }
         }
 
-        stage('OWASP Dependency-Check Vulnerabilities') {
-        steps {
-            dependencyCheck additionalArguments: '--format HTML --format XML', odcInstallation: 'OWASP Dependency-Check Vulnerabilities'
-
-        }
-        }
-
-        stage('Run Unit Tests') {
+        stage('Install dependencies') {
             steps {
                 dir('server') {
                     sh 'npm install'  // Run server-side tests
@@ -30,6 +23,13 @@ pipeline {
                 
                 junit '**/test-results.xml'  // Optionally, save test results for Jenkins visualization
             }
+        }
+
+        stage('OWASP Dependency-Check Vulnerabilities') {
+        steps {
+            dependencyCheck additionalArguments: '--format HTML --format XML', odcInstallation: 'OWASP Dependency-Check Vulnerabilities'
+
+        }
         }
           
         stage('Run Unit Tests') {
