@@ -1,19 +1,23 @@
+# Project Title
+
+Car auction site
+
 ## Getting Started
 
-To run the app:
+### Installing
 
-1. Install Server Dependencies & Run The Server
+Provide a step by step series of examples that tell how to get a development environment running.
 
-   a. Navigate to the server directory ```cd server```
+```
+git clone https://github.com/hengweij/autobidderapp
+cd autobidderapp
+cd client
+npm install
+cd ../server
+npm install
+```
+open two terminal, one for client, one for server
+```
+npm start
+```
 
-   b. Install the dependencies ```npm install```
-
-   c. Run the server ```npm start```
-
-2. Install Client Dependencies & Run The Client
-
-   a. Navigate to the server directory ```cd client```
-
-   b. Install the dependencies ```npm install```
-
-   c. Run the client app ```npm start```
