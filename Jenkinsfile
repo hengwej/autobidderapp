@@ -11,6 +11,26 @@ pipeline {
                     url: 'git@github.com:hengwej/autobidderapp.git'
             }
         }
+
+        stage('OWASP Dependency-Check Vulnerabilities') {
+        steps {
+            dependencyCheck additionalArguments: '--format HTML --format XML', odcInstallation: 'OWASP Dependency-Check Vulnerabilities'
+
+        }
+        }
+
+        stage('Run Unit Tests') {
+            steps {
+                dir('server') {
+                    sh 'npm install'  // Run server-side tests
+                }
+                dir('client') {
+                    sh 'npm install'  // Run client-side tests
+                }
+                
+                junit '**/test-results.xml'  // Optionally, save test results for Jenkins visualization
+            }
+        }
           
         stage('Run Unit Tests') {
             steps {
@@ -28,7 +48,8 @@ pipeline {
     
     post {
         success {
-            echo 'Build succeeded!'
+            dependencyCheckPublisher pattern: 'dependency-check-report.xml'
+            echo 'Success!'
         }
     }
 }
