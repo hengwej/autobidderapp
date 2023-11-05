@@ -8,14 +8,10 @@ import { useAuth } from '../../../utils/AuthProvider';
 const UserAccountDeletion = () => {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-
   // CSRF Token
   const { setUser, csrfToken } = useAuth();
-
-
   // Get the navigate function from the hook
   const navigate = useNavigate();
-
   const showDeleteConfirmation = () => {
     setShowConfirmationModal(true);
   };
@@ -33,15 +29,12 @@ const UserAccountDeletion = () => {
     try {
       const response = await api.deleteAccount(csrfToken);
       if (response.status === 200) {
-        console.log("Account deleted successfully");
         setShowSuccessModal(true);
       }
     } catch (error) {
-      console.error("Failed to delete account:", error);
+      console.error("Failed to delete account");
     }
   };
-
-
 
   const handleCloseConfirmation = () => {
     // Close the confirmation modal
@@ -51,7 +44,6 @@ const UserAccountDeletion = () => {
   const handleCloseSuccessModal = () => {
     // Close the success message modal
     setShowSuccessModal(false);
-    
     // Redirect to the login page
     navigate('/auth/login');
     setUser(null);

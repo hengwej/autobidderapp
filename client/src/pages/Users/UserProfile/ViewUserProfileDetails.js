@@ -22,16 +22,14 @@ const ViewUserProfileDetails = () => {
           setAccount(response.data.account);
         }
       } catch (error) {
-        console.error("Failed to fetch user profile:", error);
+        console.error("Failed to fetch user profile");
       } finally {
         setLoading(false);
       }
     }
-
     if (csrfToken) {
       fetchUserProfileDetails();
     }
-
   }, [csrfToken]);
 
   return (

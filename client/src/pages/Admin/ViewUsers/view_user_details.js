@@ -9,7 +9,6 @@ export default function ViewUserDetails() {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-
     const { csrfToken } = useAuth();
 
     useEffect(() => {
@@ -30,9 +29,7 @@ export default function ViewUserDetails() {
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error.message}</div>;
-
     if (!user) return <div>User not found</div>;
-
     return (
         <Container>
             <Card>

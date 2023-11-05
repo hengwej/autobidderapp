@@ -15,13 +15,10 @@ function Login() {
 
     const isTestEnvironment = process.env.REACT_APP_ENVIRONMENT === 'test';
 
-
     const { login, user } = useAuth();
     const navigate = useNavigate();
     const recaptchaRef = useRef();
-
     const [isButtonDisabled, setIsButtonDisabled] = useState(!isTestEnvironment);
-
 
     if (user) {
         navigate('/');
@@ -39,11 +36,9 @@ function Login() {
             }
             else {
                 try {
-
                     const response = await login(username, password);
 
                     if (response.status === 200) {
-                        console.log('Login successful!');
                         // Pop-up to tell user that otp is sent to email
                         window.alert('An OTP has been sent to your email!');
                         navigate('/auth/confirmation');
@@ -54,7 +49,6 @@ function Login() {
                         resetForm();
                     }
                 } catch (error) {
-                    console.error("Failed to login:", error);
                     setFieldError('login-error', 'Failed to login. Please check your credentials and try again.');
                 } finally {
                     setSubmitting(false);
@@ -62,11 +56,8 @@ function Login() {
             }
         } else {
             try {
-
                 const response = await login(username, password);
-
                 if (response.status === 200) {
-                    console.log('Login successful!');
                     // Pop-up to tell user that otp is sent to email
                     window.alert('An OTP has been sent to your email!');
                     navigate('/auth/confirmation');
@@ -77,14 +68,12 @@ function Login() {
                     resetForm();
                 }
             } catch (error) {
-                console.error("Failed to login:", error);
                 setFieldError('login-error', 'Failed to login. Please check your credentials and try again.');
             } finally {
                 setSubmitting(false);
             }
         }//end of captcha logic
     };
-
 
     const validationSchema = Yup.object().shape({
         username: Yup.string().required("You must enter a username"),
@@ -113,9 +102,11 @@ function Login() {
                                 <ReCAPTCHA
                                     data-testid="reCAPTCHA"
                                     ref={recaptchaRef}
+
                                     sitekey={process.env.REACT_APP_RECAPTCHA_CLIENT_KEY} // change to .env, temporary testing key, please swap out later              
                                     onChange={(value) => {
                                         console.log("Captcha value:", value);
+
                                         setIsButtonDisabled(false);
                                     }} //value will be parsed into backend as "token"
                                 />

@@ -2,6 +2,8 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const schedule = require('node-schedule');
 const nodemailer = require('nodemailer');
+const { createLogWrapper } = require('../api/Log/log');
+const accountLog = createLogWrapper();
 
 let auctionQueue = []; // This will hold our queue of auction IDs
 
@@ -16,25 +18,22 @@ function scheduleAuctionClose(auction) {
             await closeAuction(auction.auctionID);
             // Remove from the queue after the job has been executed
             auctionQueue = auctionQueue.filter(id => id !== auction.auctionID);
-            console.log('Auction closed and removed from the queue:', auction.auctionID);
+            accountLog.info(`Auction closed and removed from the queue:' ${auction.auctionID}`);
         });
 
         // Add the auction ID to the queue
         auctionQueue.push(auction.auctionID);
-        console.log(`Scheduled and added to queue: Auction ${auction.auctionID} at ${endDate}`);
+        accountLog.info(`Scheduled and added to queue: Auction ${auction.auctionID} at ${endDate}`);
         logAuctionQueue()
     } else {
-        console.log(`Auction ${auction.auctionID} is already in the queue.`);
+        accountLog.info(`Auction ${auction.auctionID} is already in the queue.`);
     }
 }
 
-
-
 // Function to log the auction queue
 function logAuctionQueue() {
-    console.log('Current auction queue:', auctionQueue);
+    accountLog.info(`Current auction queue: ${auctionQueue}`);
 }
-
 
 // Function to close the auction
 async function closeAuction(auctionID) {
@@ -43,8 +42,7 @@ async function closeAuction(auctionID) {
             where: { auctionID },
             data: { auctionStatus: 'CLOSED' },
         });
-        console.log(`Auction ${auctionID} closed.`);
-
+        accountLog.info(`Auction ${auctionID} closed.`);
         // Query 1: Retrieve details from the Auction table
         const auctionDetails = await prisma.auction.findUnique({
             where: {
@@ -58,6 +56,7 @@ async function closeAuction(auctionID) {
         });
 
         if (!auctionDetails) {
+            accountLog.error(`Auction not found`);
             throw new Error('Auction not found');
         }
 
@@ -76,6 +75,7 @@ async function closeAuction(auctionID) {
         });
 
         if (!carDetails) {
+            accountLog.error(`Car not found`);
             throw new Error('Car not found');
         }
 
@@ -94,6 +94,7 @@ async function closeAuction(auctionID) {
         });
 
         if (!accountDetails) {
+            accountLog.error(`Account not found`);
             throw new Error('Account not found');
         }
 
@@ -111,7 +112,6 @@ async function closeAuction(auctionID) {
                 bidStatus: 'Winner',
             },
         });
-
         // Query to set bidStatus to "Ended" for all other bids in the auction
         await prisma.biddingHistory.updateMany({
             where: {
@@ -124,14 +124,11 @@ async function closeAuction(auctionID) {
                 bidStatus: 'Ended',
             },
         });
-
-
         emailWinner(auctionDetails, carDetails, accountDetails);
     } catch (error) {
-        console.error(`Failed to close auction ${auctionID}: ${error}`);
+        accountLog.error(`Failed to close auction ${auctionID}: ${error}`);
     }
 }
-
 
 // Function to query the database and schedule the top 10 closest endDates
 async function findAndScheduleAuctions() {
@@ -150,7 +147,6 @@ async function findAndScheduleAuctions() {
             },
             take: 10,
         });
-
         closestAuctions.forEach(auction => {
             // Check if a job has already been scheduled for this auction
             const existingJob = schedule.scheduledJobs[auction.auctionID.toString()];
@@ -159,7 +155,7 @@ async function findAndScheduleAuctions() {
             }
         });
     } catch (error) {
-        console.error('Error in findAndScheduleAuctions:', error);
+        accountLog.error(`Error in findAndScheduleAuctions: ${error}`);
     }
 }
 
@@ -168,10 +164,8 @@ setInterval(logAuctionQueue, 60000);
 // Schedule findAndScheduleAuctions to run every minute
 schedule.scheduleJob('* * * * *', findAndScheduleAuctions);
 
-
 // Function to send email to winner
 async function emailWinner(auctionDetails, carDetails, accountDetails) {
-
     const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
@@ -200,17 +194,13 @@ async function emailWinner(auctionDetails, carDetails, accountDetails) {
         </div>
     `
     };
-
-    transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-            req.log.error(`Error sending OTP: ${error}`);  // Log error sending OTP 
-            return res.status(500).json({ error: 'Error sending OTP' });
-        }
-        req.log.info(`Congratulations! you have won the bid ${info.response}`);
-    });
+    try {
+        let info = await transporter.sendMail(mailOptions);
+        accountLog.info(`Email sent to winner: ${info.response}`);
+    } catch (error) {
+        accountLog.error(`Error sending winning bid email: ${error}`);
+        // Handle the error according to your application's requirements
+    }
 }
 
-
 module.exports = { findAndScheduleAuctions };
-
-// ... rest of your Express.js application setup

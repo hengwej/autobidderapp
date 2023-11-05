@@ -9,25 +9,35 @@
 }
 
 .payment-error {
-  min-height: 20px; /* Adjust based on your design */
+  min-height: 20px;
+  /* Adjust based on your design */
   color: red;
-  margin-bottom: 10px; /* Space between error message and the next element */
+  margin-bottom: 10px;
+  /* Space between error message and the next element */
 }
 
 .payment-form {
-  margin: 0 auto; /* centers the form on the page */
+  margin: 0 auto;
+  /* centers the form on the page */
   padding: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* optional: for some shadow */
-  background: white; /* or any other color */
-  border-radius: 8px; /* optional: if you want rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  /* optional: for some shadow */
+  background: white;
+  /* or any other color */
+  border-radius: 8px;
+  /* optional: if you want rounded corners */
 }
 
 .card-element {
   width: 100%;
-  padding: 10px 15px; /* or any other value to give some space inside the input */
-  margin-bottom: 20px; /* space between input and button */
-  border: 1px solid #ccc; /* or any other color */
-  border-radius: 4px; /* optional: if you want rounded corners */
+  padding: 10px 15px;
+  /* or any other value to give some space inside the input */
+  margin-bottom: 20px;
+  /* space between input and button */
+  border: 1px solid #ccc;
+  /* or any other color */
+  border-radius: 4px;
+  /* optional: if you want rounded corners */
 }
 
 .payment-form button {
@@ -42,17 +52,25 @@
 
 /* New styles for the modal body and button container */
 .modal-body {
-  position: relative; /* If not already set */
-  padding: 20px; /* Adjust if necessary to give more space */
-  overflow-y: auto; /* Adds scrollbar if content overflows */
+  position: relative;
+  /* If not already set */
+  padding: 20px;
+  /* Adjust if necessary to give more space */
+  overflow-y: auto;
+  /* Adds scrollbar if content overflows */
 }
 
 .button-container {
   display: flex;
-  gap: 10px; /* space between buttons */
-  justify-content: center; /* centers buttons horizontally */
+  gap: 10px;
+  /* space between buttons */
+  justify-content: center;
+  /* centers buttons horizontally */
   position: absolute;
-  bottom: 20px; /* Adjust as needed */
-  left: 20px; /* Adjust as needed */
-  right: 20px; /* Adjust as needed */
+  bottom: 20px;
+  /* Adjust as needed */
+  left: 20px;
+  /* Adjust as needed */
+  right: 20px;
+  /* Adjust as needed */
 }

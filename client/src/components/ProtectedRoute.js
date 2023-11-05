@@ -10,7 +10,6 @@ const ProtectedRoute = ({ children, allowedAccountTypes = [] }) => {
         return <div>Loading...</div>;
     }
 
-
     if (!user) {
         // User is not authenticated, redirect to login page
         return <Navigate to="/auth/login" />;

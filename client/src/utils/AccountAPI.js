@@ -12,7 +12,6 @@ export const allAccount = async () => {
         const response = await api.get("/api/accounts/allAccount");
         return response;
     } catch (error) {
-        console.error("Error fetching accounts:", error);
         throw error;
     }
 };

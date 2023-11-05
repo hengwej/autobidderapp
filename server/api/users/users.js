@@ -5,7 +5,6 @@ const prisma = new PrismaClient();
 const bcrypt = require('bcrypt');
 const { sanitiseObj } = require('../../utils/Validator');
 const saltRounds = 10;
-
 const csrfProtection = require('../../utils/CsrfUtils');
 const checkJwtToken = require('../../utils/JwtTokens');
 

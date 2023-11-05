@@ -33,14 +33,12 @@ const ViewUserSellingHistory = () => {
           setSellingHistory(response.data);
         }
       } catch (error) {
-        console.error("Failed to fetch selling history:", error);
+        console.error("Failed to fetch selling history");
       } finally {
         setLoading(false);
       }
     }
-
     fetchUserSellingHistory();
-
   }, [csrfToken]);
 
   useEffect(() => {

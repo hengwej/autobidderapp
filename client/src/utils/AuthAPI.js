@@ -16,7 +16,6 @@ export const signup = async (accountData, userData) => {
         });
         return response;
     } catch (error) {
-        console.error("Error Signing Up:", error);
         throw error;
     }
 };
@@ -29,7 +28,6 @@ export const login = async (username, password) => {
         });
         return response;
     } catch (error) {
-        console.error("Error logging in:", error);
         throw error;
     }
 };
@@ -46,7 +44,6 @@ export const otp = async (otp, csrfToken) => {
         });
         return response;
     } catch (error) {
-        console.error("Error verifying OTP:", error);
         throw error;
     }
 }
@@ -62,7 +59,6 @@ export const logout = async (csrfToken) => {
         return response;
     } catch (error) {
         // Log any errors to the console
-        console.error("Error logging out:", error);
         throw error;
     }
 };
@@ -72,7 +68,6 @@ export const user = async () => {
         const response = await api.get("/api/auth/user");
         return response;
     } catch (error) {
-        console.error("Error logging existing user in:", error);
         throw error;
     }
 }
@@ -82,10 +77,7 @@ export const refreshCSRFToken = async () => {
         const response = await api.post("/api/auth/refreshCSRFToken");
         return response;
     } catch (error) {
-        console.error("Error refreshing CSRF token:", error);
         throw error;
     }
 }
-
-
 // Export other API functions as needed

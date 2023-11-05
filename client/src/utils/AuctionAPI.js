@@ -1,7 +1,5 @@
 import axios from 'axios';
-
 const BASE_URL = process.env.REACT_APP_API_URL;
-
 const api = axios.create({
     baseURL: BASE_URL,
     withCredentials: true,
@@ -19,7 +17,6 @@ export const addBid = async (bidValue, carID, csrfToken) => {
             });
         return response;
     } catch (error) {
-        console.error("Error Updating profile:", error);
         throw error;
     }
 };
@@ -34,7 +31,6 @@ export const addOrder = async (requestData, csrfToken) => {
         });
         return response;
     } catch (error) {
-        console.error("Error Updating Order:", error);
         throw error;
     }
 };
@@ -49,7 +45,6 @@ export const addSellingHistory = async (requestData, csrfToken) => {
         });
         return response;
     } catch (error) {
-        console.error("Error Adding History:", error);
         throw error;
     }
 };
@@ -59,7 +54,6 @@ export const getAllAuctions = async () => {
         const response = await api.post("/api/auctions/allAuction");
         return response;
     } catch (error) {
-        console.error("Error fetching cars:", error);
         throw error;
     }
 }
@@ -69,7 +63,6 @@ export const updateAuctionToClose = async (data) => {
         const response = await api.post("/api/auctions/updateAuctionToClose", data);
         return response;
     } catch (error) {
-        console.error("Error fetching cars:", error);
         throw error;
     }
 }
@@ -79,7 +72,6 @@ export const completeOrder = async (data) => {
         const response = await api.put("/api/auctions/completeOrder", data);
         return response;
     } catch (error) {
-        console.error("Error fetching cars:", error);
         throw error;
     }
 }

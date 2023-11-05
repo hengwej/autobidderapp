@@ -61,9 +61,9 @@ const log = createLogger({
     exitOnError: false,  // Do not exit on handled exceptions
     levels: customLevels.levels,  // Custom log levels
     format: combine(
-        timestamp({  
+        timestamp({
             format: () => moment().format('DD-MM-YYYY HH:mm:ss')  // Add timestamp to logs
-        }), 
+        }),
         // colorize(),  
         format.json()
     ),

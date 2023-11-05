@@ -24,19 +24,14 @@ export default class Home extends Component {
         try {
             const carResponse = await carAPI.getAllCars();
             const data = carResponse.data;
-
             this.setState({ carData: data, loading: false });
-
             const auctionResponse = await auctionAPI.getAllAuctions();
             const retrieveAuctionData = auctionResponse.data;
-
             this.setState({ auctionData: retrieveAuctionData, loading: false });
-
             // Initialize timers for each car
             const initialTimers = {};
             retrieveAuctionData.forEach((auctionItem) => {
                 const auction = retrieveAuctionData.find((auctionItem) => data.carID === auctionItem.carID);
-
                 if (auction) {
                     initialTimers[auctionItem.carID] = this.calculateTimeLeft(
                         new Date(auction.startDate),
@@ -46,10 +41,8 @@ export default class Home extends Component {
                 }
             });
             this.setState({ timeLeft: initialTimers });
-
             this.startCountdown();
         } catch (error) {
-            console.error("Error fetching data:", error);
             this.setState({ error, loading: false });
         }
     }
@@ -77,17 +70,14 @@ export default class Home extends Component {
             const { auctionData, timeLeft } = this.state;
             const updatedTimers = { ...timeLeft };
             let auctionsToUpdate = [];
-
             auctionData.forEach((auction) => {
                 const timer = this.calculateTimeLeft(auction.startDate, auction.endDate);
                 updatedTimers[auction.carID] = timer;
-
                 // Check if the auction has just completed
                 if (this.isAuctionJustCompleted(timer, timeLeft[auction.carID])) {
                     auctionsToUpdate.push(auction.auctionID);
                 }
             });
-
             this.setState({ timeLeft: updatedTimers }, () => {
                 auctionsToUpdate.forEach((auctionID) => {
                     this.handleAuctionCompletion(auctionID);

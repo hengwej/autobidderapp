@@ -36,27 +36,23 @@ const ViewUserBiddingHistory = () => {
           setBiddingHistory(response.data);
         }
       } catch (error) {
-        console.error("Failed to fetch user bidding history:", error);
+        console.error("Failed to fetch user bidding history");
       } finally {
         setLoading(false);
       }
     }
-
     fetchBiddingHistory();
-
   }, [csrfToken]);
 
   useEffect(() => {
     // Create a copy of the biddingHistory to avoid modifying the original data
     let sortedBiddingHistory = [...biddingHistory];
-
     // Filter by bid status
     if (bidStatusFilter === "Ongoing Bids") {
       sortedBiddingHistory = sortedBiddingHistory.filter(bid => bid.bidStatus.toLowerCase() === "ongoing");
     } else if (bidStatusFilter === "Ended Bids") {
       sortedBiddingHistory = sortedBiddingHistory.filter(bid => bid.bidStatus.toLowerCase() === "ended");
     }
-
     // Sort the filtered data
     sortedBiddingHistory.sort((a, b) => {
       if (sortBy === "bidTimestamp") {

@@ -1,7 +1,5 @@
 import axios from 'axios';
-
 const BASE_URL = process.env.REACT_APP_API_URL;
-
 const api = axios.create({
     baseURL: BASE_URL,
     withCredentials: true,
@@ -17,13 +15,11 @@ export const viewRequestDetails = async (requestData, csrfToken) => {
         });
         return response;
     } catch (error) {
-        console.error("Error Updating History:", error);
         throw error;
     }
 };
 
 export const approveRequest = async (requestData, csrfToken) => {
-    console.log(csrfToken);
     try {
         const response = await api.post("/api/requests/approveRequest/" + requestData, {}, {
             headers: {
@@ -33,7 +29,6 @@ export const approveRequest = async (requestData, csrfToken) => {
         });
         return response;
     } catch (error) {
-        console.error("Error Updating History:", error);
         throw error;
     }
 };
@@ -48,7 +43,6 @@ export const rejectRequest = async (requestData, csrfToken) => {
         });
         return response;
     } catch (error) {
-        console.error("Error Updating History:", error);
         throw error;
     }
 };
@@ -63,7 +57,6 @@ export const getAllRequests = async (csrfToken) => {
         });
         return response;
     } catch (error) {
-        console.error("Error Fetching All Requests:", error);
         throw error;
     }
 };

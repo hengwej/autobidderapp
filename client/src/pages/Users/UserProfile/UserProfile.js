@@ -8,7 +8,6 @@ import './styles.css';
 
 const UserProfile = () => {
   const [activeTab, setActiveTab] = useState("profileDetails");
-
   const handleTabChange = (eventKey) => {
     setActiveTab(eventKey);
   };

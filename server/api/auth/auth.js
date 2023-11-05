@@ -245,6 +245,7 @@ router.post('/otp', async (req, res) => {
         // Verify OTP
         if (!isTestEnvironment) {
             if (otpFromDB.token2fa !== otp) {
+
                 req.log.warn('Invalid OTP provided');  // log when invalid OTP
                 return res.status(401).json({ error: 'Invalid OTP' });
             }

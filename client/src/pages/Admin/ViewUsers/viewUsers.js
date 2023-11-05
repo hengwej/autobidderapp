@@ -10,7 +10,6 @@ import { Table, Card } from "react-bootstrap";
 import * as usersAPI from "../../../utils/UserProfileAPI.js";
 import { useAuth } from "../../../utils/AuthProvider";
 
-
 class UserManagement extends Component {
     constructor(props) {
         super(props);
@@ -41,7 +40,6 @@ class UserManagement extends Component {
         }
     }
 
-
     async fetchData(csrfToken) {
         try {
             const response = await usersAPI.getAllUsers(csrfToken);
@@ -69,22 +67,19 @@ class UserManagement extends Component {
                         }
                     })
                     .catch((error) => {
-                        console.error("Error deleting user:", error);
+                        console.error("Error deleting user");
                         window.alert("Failed to delete user");
                     });
             }
         } else {
-            console.error("Invalid user ID:", userID);
+            console.error("Invalid user");
         }
     }
 
-    
     // Handle navigation to edit user details page
     handleViewUser = (userID) => {
         this.props.navigate(`/viewUser/${userID}`); // Use the passed navigate function
     }
-
-
 
     render() {
         if (this.state.loading) return <div>Loading...</div>;
