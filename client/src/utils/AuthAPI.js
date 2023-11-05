@@ -48,6 +48,22 @@ export const otp = async (otp, csrfToken) => {
     }
 }
 
+export const otpSignUp = async (otp, csrfToken) => {
+    try {
+        const response = await api.post("/api/auth/signUp2FA", {
+            otp: otp
+        }, {
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': csrfToken,
+            }
+        });
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
+
 export const logout = async (csrfToken) => {
     try {
         // Send a POST request to the /logout endpoint

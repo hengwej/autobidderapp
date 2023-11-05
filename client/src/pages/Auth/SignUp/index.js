@@ -5,8 +5,10 @@ import * as Yup from 'yup';
 import * as api from '../../../utils/AuthAPI';
 import { useNavigate } from 'react-router-dom';
 import { Container, Modal, Button } from 'react-bootstrap';
+import { useAuth } from '../../../utils/AuthProvider';
 
 function SignUp() {
+    const { signUp } = useAuth();
     const [showModal, setShowSucessModal] = useState(false);
     const [showFailModal, setShowFailModal] = useState(false);
     const handleClose = () => {
@@ -15,6 +17,7 @@ function SignUp() {
 
     const handleOpen = () => {
         setShowSucessModal(true); // Function to open the modal
+        navigate('/auth/signUp2FA');
     }
 
     const handleFailClose = () => {
@@ -52,7 +55,9 @@ function SignUp() {
         }
 
         try {
-            const response = await api.signup(accountData, userData);
+
+            const response = await signUp(accountData, userData);
+
             if (response.status === 200) {
                 handleOpen();
             }

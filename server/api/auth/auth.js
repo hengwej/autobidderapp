@@ -79,6 +79,8 @@ const authenticateToken = (req, res, next) => {
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
  */
+
+/**
 router.post('/signUp', async (req, res) => {
     // Validate the request body
     const errors = validationResult(req);
@@ -107,6 +109,183 @@ router.post('/signUp', async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 });
+ */
+
+router.post('/signup', async (req, res) => {
+    console.log(req.body);
+    // Validate the request body
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        req.log.warn('Validation errors during signup', errors.array()); // Log validation errors
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    let { userData, accountData } = req.body;
+
+    // Sanitise user input to prevent malicious data
+    userData = sanitiseObj(userData);
+    accountData = sanitiseObj(accountData);
+
+    try {
+        req.log.info('Processing signup request');
+
+        // Hash password
+        const hashedPassword = await bcrypt.hash(accountData.password, saltRounds);
+        accountData.password = hashedPassword;
+
+        // Generate OTP
+        const otp = crypto.randomInt(100000, 1000000).toString();
+
+        //const otpExpiry = new Date(Date.now() + OTP_EXPIRY_TIME);
+
+        console.log(otp);
+
+        // Store user and account details temporarily
+        await prisma.tempUserAccount.create({
+            data: {
+                firstName: userData.firstName,
+                lastName: userData.lastName,
+                address: userData.address,
+                phoneNumber: userData.phoneNumber,
+                emailAddress: userData.emailAddress,
+                username: accountData.username,
+                password: hashedPassword,
+                token2fa: otp,
+                createdAt: new Date(), // This will be set by default, but you can explicitly set it if you want
+                updatedAt: new Date()  // This will be set by default as well
+            }
+        });
+
+
+
+        // Send OTP to user's email
+        // const transporter = nodemailer.createTransport({
+        //     service: 'gmail',
+        //     auth: {
+        //         user: process.env.EMAIL,
+        //         pass: process.env.EPASSWORD,
+        //     },
+        // });
+
+
+        // const mailOptions = {
+        //     from: process.env.EMAIL,
+        //     to: userData.emailAddress,
+        //     subject: 'Autobidder Email OTP',
+        //     text: generatedOtp.toString()
+        // };
+
+
+        // transporter.sendMail(mailOptions, (error, info) => {
+        //     if (error) {
+        //         req.log.error(`Error sending OTP: ${error}`);  // Log error sending OTP 
+        //         return res.status(500).json({ error: 'Error sending OTP' });
+        //     }
+        //     req.log.info(`OTP email sent: ${info.response}`);
+        // });
+
+        const tempPayload = {
+            emailAddress: userData.emailAddress,
+        };
+
+        // Create temporary session token
+        const tempToken = jwt.sign(tempPayload, process.env.JWT_TEMP_SECRET, { expiresIn: '10m' });
+        // Send temporary token as a cookie
+        res.cookie('tempToken', tempToken, { httpOnly: true, secure: true, sameSite: 'None' }, { expiresIn: '10m' });
+        // Generate CSRF token
+        const csrfToken = generateCSRFToken();
+        res.cookie('csrfToken', csrfToken, { httpOnly: true, secure: true, sameSite: 'Strict' });
+
+
+        req.log.info('User registered temporarily and OTP sent');
+        // Redirect to OTP confirmation page or send a response to redirect on client-side
+        res.json({ message: 'Please check your email for the OTP to complete your registration.' });
+    } catch (error) {
+        req.log.error(`Error during initial signup: ${error.message}`);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+
+router.post('/signUp2FA', async (req, res) => {
+    const { otp } = req.body;
+    const { tempToken } = req.cookies;
+
+    console.log(req.cookies.tempToken);
+
+
+
+    try {
+
+        // Verify temporary session token
+        let tempUserToken;
+        try {
+            tempUserToken = jwt.verify(tempToken, process.env.JWT_TEMP_SECRET);
+        } catch (error) {
+            req.log.warn('Invalid or expired temporary session');  // log invalid/expired temp session
+            return res.status(401).json({ error: 'Invalid or expired temporary session' });
+        }
+
+        const emailAddress = tempUserToken.emailAddress;
+
+
+        // Retrieve the temporary user details
+        const tempUser = await prisma.tempUserAccount.findUnique({
+            where: { emailAddress: emailAddress }
+        });
+
+        console.log(tempUser.emailAddress);
+        console.log(tempUser.token2fa);
+        console.log(otp);
+
+        // Verify OTP
+        if (tempUser.token2fa !== otp) {
+
+            console.log("Error!");
+            req.log.warn('Invalid OTP provided');  // log when invalid OTP
+            return res.status(401).json({ error: 'Invalid OTP' });
+        } else {
+            console.log("Success!");
+        }
+
+
+        // Create the permanent user record
+        const user = await prisma.user.create({
+            data: {
+                firstName: tempUser.firstName,
+                lastName: tempUser.lastName,
+                address: tempUser.address,
+                phoneNumber: tempUser.phoneNumber,
+                emailAddress: tempUser.emailAddress,
+                createdAt: new Date(),
+                updatedAt: new Date()
+            }
+        });
+
+        // Create the associated account with the user ID
+        const accountData = {
+            username: tempUser.username,
+            password: tempUser.password,
+            userID: user.userID,
+            accountType: "bidder",
+            accountStatus: "Active"
+        };
+        const account = await prisma.account.create({ data: accountData });
+
+        // Delete the temporary user record
+        await prisma.tempUserAccount.delete({
+            where: { emailAddress: tempUser.emailAddress }
+        });
+
+        req.log.info('User and account creation confirmed');
+        res.json({ message: 'Account successfully verified and created!', user, account });
+    } catch (error) {
+        req.log.error(`Error during OTP confirmation: ${error.message}`);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+
 
 /**
  * Endpoint to handle user login.
@@ -115,6 +294,7 @@ router.post('/signUp', async (req, res) => {
  * @param {Object} res - Express response object.
  */
 router.post('/login', async (req, res) => {
+    console.log(req.body);
     let { username, password } = req.body;
     //sanitise str
     username = sanitiseStr(username);
@@ -188,7 +368,7 @@ router.post('/login', async (req, res) => {
 
         const tempToken = jwt.sign(tempPayload, process.env.JWT_TEMP_SECRET, { expiresIn: '10m' });
         // Send temporary token as a cookie
-        res.cookie('tempToken', tempToken, { httpOnly: true, secure: true, sameSite: 'None' });
+        res.cookie('tempToken', tempToken, { httpOnly: true, secure: true, sameSite: 'None' }, { expiresIn: '10m' });
         // Generate CSRF token
         const csrfToken = generateCSRFToken();
         res.cookie('csrfToken', csrfToken, { httpOnly: true, secure: true, sameSite: 'Strict' });
@@ -274,10 +454,10 @@ router.post('/otp', async (req, res) => {
         res.cookie('csrfToken', csrfToken, { httpOnly: true, secure: true, sameSite: 'Strict' });
 
         // Generate JWT token
-        const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '3m' });
 
         // Store the CSRF token in a secure, HttpOnly cookie
-        res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'Strict' });
+        res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'Strict' }, { expiresIn: '3m' });
 
         res.clearCookie('tempToken');
 

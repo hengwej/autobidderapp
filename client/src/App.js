@@ -18,6 +18,7 @@ import { loadStripe } from '@stripe/stripe-js';
 import "./css/styles.css";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { useAuth } from "./utils/AuthProvider";
+import SignUp2FA from "./pages/Auth/SignUp2FA";
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PK);
 
 function App() {
@@ -87,6 +88,14 @@ function App() {
                     element={
                         <ProtectedRoute allowedAccountTypes={['preOTP']}>
                             <Login2FA />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/auth/signUp2FA"
+                    element={
+                        <ProtectedRoute allowedAccountTypes={['preOTP']}>
+                            <SignUp2FA />
                         </ProtectedRoute>
                     }
                 />

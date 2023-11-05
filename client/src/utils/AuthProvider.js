@@ -43,6 +43,7 @@ export const AuthProvider = ({ children }) => {
         };
         fetchData();
     }, []);  // Runs once on component mount
+
     const otp = async (Code2FA, csrfToken) => {
         try {
             // Send a POST request to the /otp endpoint with the CSRF token in the headers
@@ -51,6 +52,43 @@ export const AuthProvider = ({ children }) => {
             if (response.status === 200) {
                 setCsrfToken(response.data.csrfToken);
                 setUser({ accountType: response.data.accountType });
+            }
+            return response;
+        } catch (error) {
+            if (error.response.status === 401) {
+                return { status: 401, data: { message: 'Invalid OTP' } };
+            } else {
+                console.error('Failed to login');
+            }
+        }
+    };
+
+    const signUp = async (accountData, userData) => {
+        try {
+            const response = await api.signup(accountData, userData);
+            if (response.status === 200) {
+                setCsrfToken(response.data.csrfToken);
+                document.cookie = `token=${response.data.token}; HttpOnly; Secure; SameSite=None`;
+                setUser({ accountType: "preOTP" });
+            }
+            return response;
+        } catch (error) {
+            if (error.response.status === 401) {
+                return { status: 401, data: { message: 'Invalid username or password' } };
+            } else {
+                console.error('Failed to login');
+            }
+        }
+    };
+
+    const otpSignUp = async (Code2FA, csrfToken) => {
+        try {
+            // Send a POST request to the /otp endpoint with the CSRF token in the headers
+            const response = await api.otpSignUp(Code2FA, csrfToken);
+            // If the response is successful (status code 200), update the CSRF token and user state
+            if (response.status === 200) {
+                setCsrfToken(response.data.csrfToken);
+                setUser(null);
             }
             return response;
         } catch (error) {
@@ -80,6 +118,8 @@ export const AuthProvider = ({ children }) => {
             }
         }
     };
+
+
     const logout = async () => {
         try {
             // Send a POST request to the /logout endpoint with the CSRF token in the headers
@@ -100,7 +140,7 @@ export const AuthProvider = ({ children }) => {
             console.error("Failed to logout");
         }
     };
-    const value = { user, login, otp, logout, csrfToken, loading, setUser };
+    const value = { user, signUp, login, otp, otpSignUp, logout, csrfToken, loading, setUser };
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
